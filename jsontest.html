@@ -1,0 +1,18 @@
+<script type="text/javascript">
+
+var ajaxreq = new XMLHttpRequest();
+  ajaxreq.onload = function() {
+        if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
+          responseObject = JSON.parse(ajaxreq.responseText);
+            console.log("test test test");
+          
+        }
+  };
+  
+  ajaxreq.open('GET', 'mapdata.php', true);
+  ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  ajaxreq.send();
+  
+  console.log("test test test");
+
+</script>

@@ -1,0 +1,160 @@
+[10-Jul-2017 18:20:12 UTC] PHP Fatal error:  Namespace declaration statement has to be the very first statement in the script in /home/ubuntu/workspace/geowars/src/Controller/CanvasController.php on line 3
+[10-Jul-2017 18:20:12 UTC] PHP Stack trace:
+[10-Jul-2017 18:20:12 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[10-Jul-2017 18:20:12 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[10-Jul-2017 18:20:12 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[10-Jul-2017 18:20:12 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[10-Jul-2017 18:20:12 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:20:12 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[10-Jul-2017 18:20:12 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:20:12 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[10-Jul-2017 18:20:12 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:20:12 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[10-Jul-2017 18:20:12 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:20:12 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[10-Jul-2017 18:20:12 UTC] PHP  13. Cake\Http\ControllerFactory->create() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:92
+[10-Jul-2017 18:20:12 UTC] PHP  14. Cake\Core\App::className() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ControllerFactory.php:70
+[10-Jul-2017 18:20:12 UTC] PHP  15. Cake\Core\App::_classExistsInBase() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:64
+[10-Jul-2017 18:20:12 UTC] PHP  16. class_exists() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:20:12 UTC] PHP  17. spl_autoload_call() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:20:12 UTC] PHP  18. Composer\Autoload\ClassLoader->loadClass() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:20:12 UTC] PHP  19. Composer\Autoload\includeFile() /home/ubuntu/workspace/geowars/vendor/composer/ClassLoader.php:322
+[10-Jul-2017 18:20:43 UTC] PHP Fatal error:  Namespace declaration statement has to be the very first statement in the script in /home/ubuntu/workspace/geowars/src/Controller/CanvasController.php on line 3
+[10-Jul-2017 18:20:43 UTC] PHP Stack trace:
+[10-Jul-2017 18:20:43 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[10-Jul-2017 18:20:43 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[10-Jul-2017 18:20:43 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[10-Jul-2017 18:20:43 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[10-Jul-2017 18:20:43 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:20:43 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[10-Jul-2017 18:20:43 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:20:43 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[10-Jul-2017 18:20:43 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:20:43 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[10-Jul-2017 18:20:43 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:20:43 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[10-Jul-2017 18:20:43 UTC] PHP  13. Cake\Http\ControllerFactory->create() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:92
+[10-Jul-2017 18:20:43 UTC] PHP  14. Cake\Core\App::className() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ControllerFactory.php:70
+[10-Jul-2017 18:20:43 UTC] PHP  15. Cake\Core\App::_classExistsInBase() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:64
+[10-Jul-2017 18:20:43 UTC] PHP  16. class_exists() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:20:43 UTC] PHP  17. spl_autoload_call() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:20:43 UTC] PHP  18. Composer\Autoload\ClassLoader->loadClass() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:20:43 UTC] PHP  19. Composer\Autoload\includeFile() /home/ubuntu/workspace/geowars/vendor/composer/ClassLoader.php:322
+[10-Jul-2017 18:21:10 UTC] PHP Fatal error:  Namespace declaration statement has to be the very first statement in the script in /home/ubuntu/workspace/geowars/src/Controller/CanvasController.php on line 3
+[10-Jul-2017 18:21:10 UTC] PHP Stack trace:
+[10-Jul-2017 18:21:10 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[10-Jul-2017 18:21:10 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[10-Jul-2017 18:21:10 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[10-Jul-2017 18:21:10 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[10-Jul-2017 18:21:10 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:21:10 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[10-Jul-2017 18:21:10 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:21:10 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[10-Jul-2017 18:21:10 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:21:10 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[10-Jul-2017 18:21:10 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:21:10 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[10-Jul-2017 18:21:10 UTC] PHP  13. Cake\Http\ControllerFactory->create() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:92
+[10-Jul-2017 18:21:10 UTC] PHP  14. Cake\Core\App::className() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ControllerFactory.php:70
+[10-Jul-2017 18:21:10 UTC] PHP  15. Cake\Core\App::_classExistsInBase() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:64
+[10-Jul-2017 18:21:10 UTC] PHP  16. class_exists() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:21:10 UTC] PHP  17. spl_autoload_call() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:21:10 UTC] PHP  18. Composer\Autoload\ClassLoader->loadClass() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:21:10 UTC] PHP  19. Composer\Autoload\includeFile() /home/ubuntu/workspace/geowars/vendor/composer/ClassLoader.php:322
+[10-Jul-2017 18:22:56 UTC] PHP Fatal error:  Namespace declaration statement has to be the very first statement in the script in /home/ubuntu/workspace/geowars/src/Controller/CanvasController.php on line 3
+[10-Jul-2017 18:22:56 UTC] PHP Stack trace:
+[10-Jul-2017 18:22:56 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[10-Jul-2017 18:22:56 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[10-Jul-2017 18:22:56 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[10-Jul-2017 18:22:56 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[10-Jul-2017 18:22:56 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:22:56 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[10-Jul-2017 18:22:56 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:22:56 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[10-Jul-2017 18:22:56 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:22:56 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[10-Jul-2017 18:22:56 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:22:56 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[10-Jul-2017 18:22:56 UTC] PHP  13. Cake\Http\ControllerFactory->create() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:92
+[10-Jul-2017 18:22:56 UTC] PHP  14. Cake\Core\App::className() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ControllerFactory.php:70
+[10-Jul-2017 18:22:56 UTC] PHP  15. Cake\Core\App::_classExistsInBase() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:64
+[10-Jul-2017 18:22:56 UTC] PHP  16. class_exists() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:22:56 UTC] PHP  17. spl_autoload_call() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:22:56 UTC] PHP  18. Composer\Autoload\ClassLoader->loadClass() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[10-Jul-2017 18:22:56 UTC] PHP  19. Composer\Autoload\includeFile() /home/ubuntu/workspace/geowars/vendor/composer/ClassLoader.php:322
+[10-Jul-2017 18:23:40 UTC] PHP Parse error:  syntax error, unexpected '<' in /home/ubuntu/workspace/geowars/src/Template/Canvas/index.ctp on line 15
+[10-Jul-2017 18:23:40 UTC] PHP Stack trace:
+[10-Jul-2017 18:23:40 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[10-Jul-2017 18:23:40 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[10-Jul-2017 18:23:40 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[10-Jul-2017 18:23:40 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[10-Jul-2017 18:23:40 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:23:40 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[10-Jul-2017 18:23:40 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:23:40 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[10-Jul-2017 18:23:40 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:23:40 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[10-Jul-2017 18:23:40 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:23:40 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[10-Jul-2017 18:23:40 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[10-Jul-2017 18:23:40 UTC] PHP  14. Cake\Controller\Controller->render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:127
+[10-Jul-2017 18:23:40 UTC] PHP  15. Cake\View\View->render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:617
+[10-Jul-2017 18:23:40 UTC] PHP  16. Cake\View\View->_render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/View/View.php:597
+[10-Jul-2017 18:23:40 UTC] PHP  17. Cake\View\View->_evaluate() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/View/View.php:973
+[10-Jul-2017 18:24:12 UTC] PHP Parse error:  syntax error, unexpected '<' in /home/ubuntu/workspace/geowars/src/Template/Canvas/index.ctp on line 15
+[10-Jul-2017 18:24:12 UTC] PHP Stack trace:
+[10-Jul-2017 18:24:12 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[10-Jul-2017 18:24:12 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[10-Jul-2017 18:24:12 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[10-Jul-2017 18:24:12 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[10-Jul-2017 18:24:12 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:24:12 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[10-Jul-2017 18:24:12 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:24:12 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[10-Jul-2017 18:24:12 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:24:12 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[10-Jul-2017 18:24:12 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:24:12 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[10-Jul-2017 18:24:12 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[10-Jul-2017 18:24:12 UTC] PHP  14. Cake\Controller\Controller->render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:127
+[10-Jul-2017 18:24:12 UTC] PHP  15. Cake\View\View->render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:617
+[10-Jul-2017 18:24:12 UTC] PHP  16. Cake\View\View->_render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/View/View.php:597
+[10-Jul-2017 18:24:12 UTC] PHP  17. Cake\View\View->_evaluate() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/View/View.php:973
+[10-Jul-2017 18:25:20 UTC] PHP Parse error:  syntax error, unexpected '<' in /home/ubuntu/workspace/geowars/src/Template/Canvas/index.ctp on line 15
+[10-Jul-2017 18:25:20 UTC] PHP Stack trace:
+[10-Jul-2017 18:25:20 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[10-Jul-2017 18:25:20 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[10-Jul-2017 18:25:20 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[10-Jul-2017 18:25:20 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[10-Jul-2017 18:25:20 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:25:20 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[10-Jul-2017 18:25:20 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:25:20 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[10-Jul-2017 18:25:20 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:25:20 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[10-Jul-2017 18:25:20 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:25:20 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[10-Jul-2017 18:25:20 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[10-Jul-2017 18:25:20 UTC] PHP  14. Cake\Controller\Controller->render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:127
+[10-Jul-2017 18:25:20 UTC] PHP  15. Cake\View\View->render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:617
+[10-Jul-2017 18:25:20 UTC] PHP  16. Cake\View\View->_render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/View/View.php:597
+[10-Jul-2017 18:25:20 UTC] PHP  17. Cake\View\View->_evaluate() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/View/View.php:973
+[10-Jul-2017 18:25:42 UTC] PHP Parse error:  syntax error, unexpected '<' in /home/ubuntu/workspace/geowars/src/Template/Canvas/index.ctp on line 15
+[10-Jul-2017 18:25:42 UTC] PHP Stack trace:
+[10-Jul-2017 18:25:42 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[10-Jul-2017 18:25:42 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[10-Jul-2017 18:25:42 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[10-Jul-2017 18:25:42 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[10-Jul-2017 18:25:42 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:25:42 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[10-Jul-2017 18:25:42 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:25:42 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[10-Jul-2017 18:25:42 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:25:42 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[10-Jul-2017 18:25:42 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[10-Jul-2017 18:25:42 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[10-Jul-2017 18:25:42 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[10-Jul-2017 18:25:42 UTC] PHP  14. Cake\Controller\Controller->render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:127
+[10-Jul-2017 18:25:42 UTC] PHP  15. Cake\View\View->render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:617
+[10-Jul-2017 18:25:42 UTC] PHP  16. Cake\View\View->_render() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/View/View.php:597
+[10-Jul-2017 18:25:42 UTC] PHP  17. Cake\View\View->_evaluate() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/View/View.php:973

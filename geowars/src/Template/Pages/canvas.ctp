@@ -1,0 +1,189 @@
+<?php
+/**
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ *
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @since         0.10.0
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ */
+ ?>
+<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes -->
+
+<html>
+
+<canvas id="canvas" width="500" height="500"></canvas>
+</body>
+</html>
+ <script>
+	//Establish the Canvas variable
+   var canvas = document.getElementById('canvas');
+   var ctx = canvas.getContext('2d');
+ 
+ //Hold Shapes to draw board
+ //Points: an array to hold all the corners of the shape, does not close the shape
+ //color: the color of the shape to be drawn
+ //Center: hold the points averaged center for determining which shape was clicked on
+var shapes = [
+	{ points: [{ x: 0, y: 0}, { x: 50, y: 0}, { x: 25, y: 43}],
+	  color: "red",
+	  center: { x: 25, y: 14.333333333333334}
+	},
+	{ points: [{ x: 25, y: 43}, { x: 50, y: 0}, { x: 75, y: 43}],
+	  color: "blue",
+	  center: { x: 50, y: 28.666666666666668}
+	},
+
+	{ points: [{ x: 50, y: 0}, { x: 100, y: 0}, { x: 75, y: 43}],
+	  color: "green",
+	  center: { x: 75, y: 14.333333333333334}
+	},
+
+	{ points: [{ x: 75, y: 43}, { x: 100, y: 0}, { x: 125, y: 43}],
+	  color: "yellow",
+ 	  center: { x: 100, y: 28.666666666666668}
+	},
+
+	{ points: [{ x: 100, y: 0}, { x: 150, y: 0}, { x: 125, y: 43}],
+	  color: "orange",
+	  center: { x: 125, y: 14.333333333333334},
+	},
+
+	{ points: [{ x: 150, y: 0}, { x: 200, y: 0}, { x: 225, y: 43}, { x: 125, y: 43}],
+	  color: "red",
+	  center: { x: 175, y: 21.5}
+	},
+	{ points: [{ x: 225, y: 43}, { x: 200, y: 0}, { x: 250, y: 0}, { x: 275, y: 43}],
+	  color: "blue",
+	  center: { x: 237.5, y: 21.5}
+	},
+
+];
+
+
+//This cycles through and draws each shape but loopoing thoruhg the list of points
+function drawBoard(board) {
+
+	//Get context	
+	if (canvas.getContext) {
+    	//var ctx = canvas.getContext('2d');
+    	
+    	//Loop through ever shape in array passed into board function
+		for(var i = 0; i < board.length; i++) {
+		
+			//These are used to hold the sum of x and y values to average and 
+			//calculate the center locations
+			var xSum = 0;
+			var ySum = 0;
+			
+			//Start new path at the first points location for shape
+    		ctx.beginPath();
+    		ctx.moveTo(board[i].points[0].x, board[i].points[0].y);
+    		
+			for(var j = 1; j < board[i].points.length; j++) {
+				
+				//Draw a line to the remaining points in the array for the object
+				ctx.lineTo(board[i].points[j].x, board[i].points[j].y);
+
+				//Add all the x and y positions for calculating the center
+				xSum = xSum + board[i].points[j].x;
+				ySum = ySum + board[i].points[j].y;
+
+			}
+		
+			//Add the first point to the sums which was not added in the loop
+			xSum = xSum + board[i].points[0].x;
+			ySum = ySum + board[i].points[0].y;
+
+			//Print center location
+			console.log("center: { x: " + xSum/board[i].points.length + ", y: " + ySum/board[i].points.length + "}");
+		
+			//Fill shape with color 
+			ctx.fillStyle = shapes[i].color;
+    
+    		//Fill/draw shape to canvas
+			ctx.fill(); 
+
+			//Create new path to draw shape boarder
+			ctx.beginPath();
+    		ctx.moveTo(board[i].points[0].x, board[i].points[0].y);
+    		
+    		//Loop through rest of points for boardeer
+			for(j = 1; j < board[i].points.length; j++) {
+				ctx.lineTo(board[i].points[j].x, board[i].points[j].y);
+			}
+
+			//Close shape border
+			ctx.lineTo(board[i].points[0].x, board[i].points[0].y);
+			
+			//Set boarder width
+			ctx.lineWidth = 3;
+			
+			//Draw boareder to canvas
+			ctx.stroke();
+
+
+		
+		//ctx.font = '12px serif';
+		//ctx.strokeText('Hello world', 10, 50);
+		
+		//ctx.closePath();
+    		//ctx.stroke();
+	}
+  }
+}
+
+
+//Handle clicks on board
+canvas.addEventListener('click', function(event) {
+	
+	//Get location of click from click event
+	//Because canvas is not at page location 0, 0 apply offset
+	var x = event.pageX - canvas.offsetLeft;
+	var y = event.pageY - canvas.offsetTop;
+	
+	//Temp distance to hold calculated distance
+	var tempDistance;
+	
+	//Hold the current shortest or best distance
+	var bestDistance = 999999999;
+	
+	//Hold the object with the current shortest distance
+	var bestObject;
+	
+    //Print to log click location on canvas
+    console.log(x + ' ' + y);
+
+	//Calcualte shortest distance for all shapes/objects on the screen
+	for(var i = 0; i < shapes.length; i++) {
+		tempDistance = Math.sqrt(Math.pow((x - shapes[i].center.x), 2) + Math.pow((y - shapes[i].center.y), 2));
+		
+		//Update the shape with the shortest distance as required
+		if(bestDistance > tempDistance) {
+			bestDistance = tempDistance;
+			bestObject = i;
+		}
+
+			
+	}
+
+	//Print to console the object location in the array and the color of that object
+	console.log("Object:" + bestObject + " Color:" + shapes[bestObject].color);
+	
+	
+			ctx.fillStyle = shapes[bestObject].color;
+			ctx.fillRect(100,100,150,75);
+		
+
+}, false);
+
+
+//Call the draw funtion
+drawBoard(shapes);
+
+</script>
