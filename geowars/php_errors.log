@@ -178,3 +178,39 @@
 [14-Jul-2017 04:49:36 UTC] PHP  16. Cake\Event\EventManager->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Event/EventDispatcherTrait.php:78
 [14-Jul-2017 04:49:36 UTC] PHP  17. Cake\Event\EventManager->_callListener() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Event/EventManager.php:391
 [14-Jul-2017 04:49:36 UTC] PHP  18. App\Controller\UsersController->beforeFilter() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Event/EventManager.php:422
+[15-Jul-2017 20:42:30 UTC] PHP Fatal error:  Call to a member function find() on a non-object in /home/ubuntu/workspace/geowars/src/Controller/ApiController.php on line 37
+[15-Jul-2017 20:42:30 UTC] PHP Stack trace:
+[15-Jul-2017 20:42:30 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[15-Jul-2017 20:42:30 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[15-Jul-2017 20:42:30 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[15-Jul-2017 20:42:30 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[15-Jul-2017 20:42:30 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[15-Jul-2017 20:42:30 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[15-Jul-2017 20:42:30 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[15-Jul-2017 20:42:30 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[15-Jul-2017 20:42:30 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[15-Jul-2017 20:42:30 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[15-Jul-2017 20:42:30 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[15-Jul-2017 20:42:30 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[15-Jul-2017 20:42:30 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[15-Jul-2017 20:42:30 UTC] PHP  14. Cake\Controller\Controller->invokeAction() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:121
+[15-Jul-2017 20:42:30 UTC] PHP  15. call_user_func_array:{/home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435}() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[15-Jul-2017 20:42:30 UTC] PHP  16. App\Controller\ApiController->getMap() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[15-Jul-2017 20:43:58 UTC] PHP Fatal error:  Call to a member function find() on a non-object in /home/ubuntu/workspace/geowars/src/Controller/ApiController.php on line 37
+[15-Jul-2017 20:43:58 UTC] PHP Stack trace:
+[15-Jul-2017 20:43:58 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[15-Jul-2017 20:43:58 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[15-Jul-2017 20:43:58 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[15-Jul-2017 20:43:58 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[15-Jul-2017 20:43:58 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[15-Jul-2017 20:43:58 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[15-Jul-2017 20:43:58 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[15-Jul-2017 20:43:58 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[15-Jul-2017 20:43:58 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[15-Jul-2017 20:43:58 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[15-Jul-2017 20:43:58 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[15-Jul-2017 20:43:58 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[15-Jul-2017 20:43:58 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[15-Jul-2017 20:43:58 UTC] PHP  14. Cake\Controller\Controller->invokeAction() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:121
+[15-Jul-2017 20:43:58 UTC] PHP  15. call_user_func_array:{/home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435}() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[15-Jul-2017 20:43:58 UTC] PHP  16. App\Controller\ApiController->getMap() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435

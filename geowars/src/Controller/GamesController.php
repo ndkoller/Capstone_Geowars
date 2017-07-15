@@ -2,7 +2,7 @@
 namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
-class CanvasController extends AppController
+class GamesController extends AppController
 {
 	
 /*	public function beforeFilter(Event $event)
