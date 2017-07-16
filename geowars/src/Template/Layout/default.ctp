@@ -200,8 +200,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Blank Page
-                            <small>Subheading</small>
+                            GeoWars
+                            <small>A Geometric war where only one faction can remain standing</small>
                         </h1>
                         <ol class="breadcrumb">
                             <li>
