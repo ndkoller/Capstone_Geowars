@@ -214,3 +214,47 @@
 [15-Jul-2017 20:43:58 UTC] PHP  14. Cake\Controller\Controller->invokeAction() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:121
 [15-Jul-2017 20:43:58 UTC] PHP  15. call_user_func_array:{/home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435}() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
 [15-Jul-2017 20:43:58 UTC] PHP  16. App\Controller\ApiController->getMap() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[16-Jul-2017 06:04:49 UTC] PHP Fatal error:  Class 'App\Model\Entity\DefaultPasswordHasher' not found in /home/ubuntu/workspace/geowars/src/Model/Entity/User.php on line 45
+[16-Jul-2017 06:04:49 UTC] PHP Stack trace:
+[16-Jul-2017 06:04:49 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[16-Jul-2017 06:04:49 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[16-Jul-2017 06:04:49 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[16-Jul-2017 06:04:49 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[16-Jul-2017 06:04:49 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[16-Jul-2017 06:04:49 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[16-Jul-2017 06:04:49 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[16-Jul-2017 06:04:49 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[16-Jul-2017 06:04:49 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[16-Jul-2017 06:04:49 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[16-Jul-2017 06:04:49 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[16-Jul-2017 06:04:49 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[16-Jul-2017 06:04:49 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[16-Jul-2017 06:04:49 UTC] PHP  14. Cake\Controller\Controller->invokeAction() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:121
+[16-Jul-2017 06:04:49 UTC] PHP  15. call_user_func_array:{/home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435}() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[16-Jul-2017 06:04:49 UTC] PHP  16. App\Controller\UsersController->add() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[16-Jul-2017 06:04:49 UTC] PHP  17. Cake\ORM\Table->patchEntity() /home/ubuntu/workspace/geowars/src/Controller/UsersController.php:34
+[16-Jul-2017 06:04:49 UTC] PHP  18. Cake\ORM\Marshaller->merge() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/ORM/Table.php:2235
+[16-Jul-2017 06:04:49 UTC] PHP  19. Cake\ORM\Entity->set() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/ORM/Marshaller.php:565
+[16-Jul-2017 06:04:49 UTC] PHP  20. App\Model\Entity\User->_setPassword() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Datasource/EntityTrait.php:265
+[16-Jul-2017 06:05:11 UTC] PHP Fatal error:  Class 'App\Model\Entity\DefaultPasswordHasher' not found in /home/ubuntu/workspace/geowars/src/Model/Entity/User.php on line 45
+[16-Jul-2017 06:05:11 UTC] PHP Stack trace:
+[16-Jul-2017 06:05:11 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[16-Jul-2017 06:05:11 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[16-Jul-2017 06:05:11 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[16-Jul-2017 06:05:11 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[16-Jul-2017 06:05:11 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[16-Jul-2017 06:05:11 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[16-Jul-2017 06:05:11 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[16-Jul-2017 06:05:11 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[16-Jul-2017 06:05:11 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[16-Jul-2017 06:05:11 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[16-Jul-2017 06:05:11 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[16-Jul-2017 06:05:11 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[16-Jul-2017 06:05:11 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[16-Jul-2017 06:05:11 UTC] PHP  14. Cake\Controller\Controller->invokeAction() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:121
+[16-Jul-2017 06:05:11 UTC] PHP  15. call_user_func_array:{/home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435}() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[16-Jul-2017 06:05:11 UTC] PHP  16. App\Controller\UsersController->add() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[16-Jul-2017 06:05:11 UTC] PHP  17. Cake\ORM\Table->patchEntity() /home/ubuntu/workspace/geowars/src/Controller/UsersController.php:34
+[16-Jul-2017 06:05:11 UTC] PHP  18. Cake\ORM\Marshaller->merge() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/ORM/Table.php:2235
+[16-Jul-2017 06:05:11 UTC] PHP  19. Cake\ORM\Entity->set() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/ORM/Marshaller.php:565
+[16-Jul-2017 06:05:11 UTC] PHP  20. App\Model\Entity\User->_setPassword() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Datasource/EntityTrait.php:265
