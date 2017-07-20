@@ -16,9 +16,15 @@ class ApiController extends AppController
         $this->Auth->allow('getMap');
     }
     
+    //Ajax action
+    //Return: all the data for a given map
+    //
+    //Currently holds all data for one map. Plan to move data to new location and
+    //make it an option to have mulitple maps.
     public function getMap()
     {
         
+        //For Ajax requests
         $this->viewBuilder()->layout('ajax');
         
       //Template to hold map data
@@ -60,6 +66,7 @@ class ApiController extends AppController
         ),
       );
         
+        //Set the map array to be availble in the view with name of map
         $this->set('map', $map);
     }
     
