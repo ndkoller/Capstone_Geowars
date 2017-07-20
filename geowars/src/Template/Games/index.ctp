@@ -1,27 +1,11 @@
-<?php
-/**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
- */
- ?>
-<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes -->
-
 <html>
 
-<canvas id="canvas" width="500" height="500"></canvas>
+<canvas id="canvas" width="700" height="700"></canvas>
 </body>
 </html>
  <script>
-	//Establish the Canvas variable
+
+ //Establish the Canvas variable
    var canvas = document.getElementById('canvas');
    var ctx = canvas.getContext('2d');
  
@@ -30,43 +14,110 @@
  //color: the color of the shape to be drawn
  //Center: hold the points averaged center for determining which shape was clicked on
 var shapes = [
-	{ points: [{ x: 0, y: 0}, { x: 50, y: 0}, { x: 25, y: 43}],
+	// top hexagon 1st
+	{ points: [{ x: 150, y: 0}, { x: 250, y: 0},  { x: 300, y: 116.666666667},  { x: 250, y: 233.3333333334}, { x: 150, y: 233.3333333334}, { x: 100, y: 116.666666667} ],
 	  color: "red",
-	  center: { x: 25, y: 14.333333333333334}
+	  center: { x: 200, y: 116.666666667}
 	},
-	{ points: [{ x: 25, y: 43}, { x: 50, y: 0}, { x: 75, y: 43}],
-	  color: "blue",
-	  center: { x: 50, y: 28.666666666666668}
-	},
-
-	{ points: [{ x: 50, y: 0}, { x: 100, y: 0}, { x: 75, y: 43}],
-	  color: "green",
-	  center: { x: 75, y: 14.333333333333334}
-	},
-
-	{ points: [{ x: 75, y: 43}, { x: 100, y: 0}, { x: 125, y: 43}],
-	  color: "yellow",
- 	  center: { x: 100, y: 28.666666666666668}
-	},
-
-	{ points: [{ x: 100, y: 0}, { x: 150, y: 0}, { x: 125, y: 43}],
+	// top upper trapizoid
+	{ points: [{ x: 250, y: 0}, { x: 450, y: 0}, { x: 400, y: 116.666666667}, { x: 300, y: 116.666666667} ],
 	  color: "orange",
-	  center: { x: 125, y: 14.333333333333334},
+	  center: { x: 325, y: 58.3333333334}
 	},
-
-	{ points: [{ x: 150, y: 0}, { x: 200, y: 0}, { x: 225, y: 43}, { x: 125, y: 43}],
+	// top hexagon 2nd
+	{ points: [{ x: 450, y: 0}, { x: 550, y: 0}, { x: 600, y: 116.666666667}, { x: 550, y: 233.3333333334}, { x: 450, y: 233.3333333334}, { x: 400, y: 116.666666667}],
 	  color: "red",
-	  center: { x: 175, y: 21.5}
+	  center: { x: 500, y: 116.666666667}
 	},
-	{ points: [{ x: 225, y: 43}, { x: 200, y: 0}, { x: 250, y: 0}, { x: 275, y: 43}],
+	// top lower triangle 1st
+	{ points: [{ x: 100, y: 116.666666667}, { x: 50, y: 233.3333333334}, {x: 150, y: 233.3333333334}],
+	  color: "yellow",
+ 	  center: { x: 100, y: 194}
+	},
+	// top lower Trapizoid
+	{ points: [{ x: 300, y: 116.666666667}, {x: 400, y: 116.666666667}, { x: 450, y: 233.3333333334 }, {x: 250, y: 233.3333333334} ],
+	  color: "orange",
+	  center: { x: 375, y: 175},
+	},
+	// top lower triangle 2nd
+	{ points: [{ x: 600, y: 116.666666667}, {x: 550, y: 233.3333333334}, {x: 650, y: 233.3333333334}],
+	  color: "yellow",
+ 	  center: { x: 600, y: 194}
+	},
+	// middle hexagon 1
+	{ points: [{ x: 50, y: 233.3333333334}, {x: 150, y: 233.3333333334}, { x: 200, y: 350}, {x: 150, y: 466.666666667}, {x: 50, y: 466.666666667}, { x: 0, y: 350}],
+	  color: "red",
+	  center: { x: 100, y: 350}
+	},
+	// middle upper Rhombus 1
+	{ points: [{x: 150, y: 233.3333333334}, {x: 250, y: 233.3333333334}, { x: 300, y: 350}, { x: 200, y: 350} ],
 	  color: "blue",
-	  center: { x: 237.5, y: 21.5}
+	  center: { x: 225, y: 291.666666667}
 	},
-
+	// middle upper trapizoid
+	{ points: [{x: 250, y: 233.3333333334}, {x: 450, y: 233.3333333334}, { x: 400, y: 350}, { x: 300, y: 350} ],
+	  color: "orange",
+	  center: { x: 325, y: 291.666666667}
+	},
+	// middle upper Rhombus 2
+	{ points: [{x: 450, y: 233.3333333334}, {x: 550, y: 233.3333333334}, { x: 500, y: 350}, { x: 400, y: 350} ],
+	  color: "blue",
+	  center: {x: 475, y: 291.666666667}
+	},
+	// middle lower trapizoid
+	{ points: [{ x: 300, y: 350}, { x: 400, y: 350}, {x: 450, y: 466.666666667}, {x: 250, y: 466.666666667} ],
+	  color: "Orange",
+	  center: { x: 375, y: 233.3333333334}
+	},
+	// Middle lower Rhombus 1
+	{ points: [{ x: 200, y: 350}, { x: 300, y: 350}, {x: 250, y: 466.666666667}, {x: 150, y: 466.666666667} ],
+	  color: "blue",
+	  center: { x: 225, y: 408.3333333334}
+	},
+	// Middle lower Rhombus 2
+	{ points: [{ x: 400, y: 350}, { x: 500, y: 350}, {x: 550, y: 466.666666667}, {x: 450, y: 466.666666667}],
+	  color: "blue",
+	  center: { x: 475, y: 408.3333333334}
+	},
+	// middle hexagon 2
+	{ points: [{x: 550, y: 233.3333333334}, {x: 650, y: 233.3333333334}, { x: 700, y: 350}, {x: 650, y: 466.666666667}, {x: 550, y: 466.666666667}, { x: 500, y: 350} ],
+	  color: "red",
+	  center: { x: 600, y: 350}
+	},
+	// Bottom Upper Triangle 1
+	{ points: [{x: 150, y: 466.666666667}, {x: 50, y: 466.666666667}, { x: 100, y: 583.3333333334} ],
+	  color: "yellow",
+	  center: { x: 100, y: 505}
+	},
+	// Bottom Upper Triangle 2
+	{ points: [{x: 550, y: 466.666666667}, {x: 650, y: 466.666666667}, { x: 600, y: 583.3333333334}],
+	  color: "yellow",
+	  center: { x: 600, y: 505}
+	},
+	// Bottom Hexagon 1
+	{ points: [{x: 150, y: 466.666666667}, {x: 250, y: 466.666666667}, { x: 300, y: 583.3333333334}, { x: 250, y: 700}, {x: 150, y: 700}, { x: 100, y: 583.3333333334}],
+	  color: "red",
+	  center: { x: 200, y: 583.3333333334}
+	},
+	// Bottom Upper Trapizoid
+	{ points: [{x: 250, y: 466.666666667}, {x: 450, y: 466.666666667}, { x: 400, y: 583.3333333334}, { x: 300, y: 583.3333333334} ],
+	  color: "orange",
+	  center: { x: 325, y: 525}
+	},
+	// Bottom Lower Trapizoid
+	{ points: [{ x: 300, y: 583.3333333334}, { x: 400, y: 583.3333333334}, { x: 450, y: 700}, { x: 250, y: 700} ],
+	  color: "orange",
+	  center: { x: 375, y: 641.666666667}
+	},
+	// Bottom Hexagon 2
+	{ points: [{x: 450, y: 466.666666667}, {x: 550, y: 466.666666667}, { x: 600, y: 583.3333333334}, { x: 550, y: 700}, { x: 450, y: 700}, { x: 400, y: 583.3333333334}  ],
+	  color: "red",
+	  center: { x: 500, y: 583.3333333334}
+	},
 ];
 
 
-//This cycles through and draws each shape but loopoing thoruhg the list of points
+//This cycles through and draws each shape but looping through the list of points
 function drawBoard(board) {
 
 	//Get context	
@@ -126,8 +177,6 @@ function drawBoard(board) {
 			
 			//Draw boareder to canvas
 			ctx.stroke();
-
-
 		
 		//ctx.font = '12px serif';
 		//ctx.strokeText('Hello world', 10, 50);

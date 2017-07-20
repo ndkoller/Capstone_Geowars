@@ -1,27 +1,19 @@
 <!-- src/Template/Users/add.ctp -->
 
 <div class="col-lg-6">
-
+<?= $this->Flash->render() ?>
     <form role="form">
         <div class="form-group">
             <label>Username</label>
-            <input id="username" class="form-control">
+            <input id="username" name="username" class="form-control">
             <p class="help-block">This username will be what other users see< p>
         </div>
         <div class="form-group">
-            <label>Email</label>
-            <input id="email" class="form-control">
-            <p class="help-block">Your email will be use if Geo Wars needsto contact you.</p>
-        </div>  
-        <div class="form-group">
             <label>Password</label>
-            <input id="password1" type="password" class="form-control">
+            <input id="password1" name="password" type="password" class="form-control">
         </div>
-        <div class="form-group">
-            <label>Re-enter Password</label>
-            <input id="password2" type="password" class="form-control">   
-        </div> 
         
+        <button  type="submit" class="btn btn-default">Submit Button</button>
     </form>
     <button  onclick="register()" class="btn btn-default">Submit Button</button>
         <button type="reset" class="btn btn-default">Reset Button</button>
