@@ -79,7 +79,7 @@ class ApiController extends AppController
                         array( 'x' => 450, 'y' => 233.3333334),
                         array( 'x'=> 250, 'y' => 233.33334)),
 	        "color" => "orange",
-	        "center" => array( 'x' => 375, 'y' => 175)
+	        "center" => array( 'x' => 350, 'y' => 175)
         ),
         //top lower triangle 2nd
         array(
@@ -116,7 +116,7 @@ class ApiController extends AppController
                         array( 'x' => 400, 'y' => 350),
                         array( 'x'=> 300, 'y' => 350)),
 	        "color" => "orange",
-	        "center" => array( 'x' => 325, 'y' => 291.666667)
+	        "center" => array( 'x' => 350, 'y' => 291.666667)
         ),
         //middle upper Rhombus 2
         array(
@@ -134,7 +134,7 @@ class ApiController extends AppController
                         array( 'x' => 450, 'y' => 466.666667),
                         array( 'x'=> 250, 'y' => 466.66667)),
 	        "color" => "orange",
-	        "center" => array( 'x' => 325, 'y' => 233.333334)
+	        "center" => array( 'x' => 350, 'y' => 233.333334)
         ),
         //middle lower Rhombus 1
         array(
@@ -163,12 +163,67 @@ class ApiController extends AppController
                         array( 'x' => 550, 'y' => 466.6666667),
                         array( 'x'=> 500, 'y' => 350)),
 	        "color" => "red",
-	        "center" => array( 'x' => 100, 'y' => 350)
+	        "center" => array( 'x' => 600, 'y' => 350)
         ),
-        
+        // Bottom Upper Triangle 2
+        array(
+          "points" => array( array('x' => 150, 'y' => 466.6666667),
+                      array('x' => 50, 'y' =>  466.6666667),
+                      array('x' => 100, 'y' => 583.333334)),
+          "color" => "yellow",
+          "center" => array('x' => 100, 'y' => 505.5555556)
+          ),
+          // Bottom Upper Triangle 2
+          array(
+            "points" => array( array('x' => 550, 'y' => 466.6666667),
+                       array('x' => 650, 'y' => 466.6666667),
+                       array('x' => 600, 'y' => 583.333334)),
+            "color" => "yellow",
+            "center" => array('x' => 600, 'y' => 505.5555556)
+          ),
+          // Bottom Hexagon 1 
+          array(
+            "points" => array(array('x' => 150, 'y' => 466.6666667),
+                        array('x' => 250, 'y' => 466.6666667),
+                        array('x' => 300, 'y' => 583.3333334),
+                        array('x' => 250, 'y' => 700),
+                        array('x' => 150, 'y' => 700),
+                        array('x' => 100, 'y' => 583.3333334)),
+              "color" => "red",
+              "center" => array('x' => 200, 'y' => 583.3333334)
+            ), 
+            // Bottom Upper Trapizoid
+            array(
+              "points" => array( array('x' => 250, 'y' => 466.6666667),
+                          array('x' => 450, 'y' => 466.6666667),
+                          array('x' => 400, 'y' => 583.3333334),
+                          array('x' => 300, 'y' => 583.3333334)),
+              "color" => "orange",
+              "center" => array('x' => 350, 'y' => 525)
+              ),
+          // Bottom Lower Trapizoid
+          array(
+            "points" => array( array('x' => 300, 'y' => 583.3333334),
+                        array('x' => 400, 'y' => 583.3333334),
+                        array('x' => 450, 'y' => 700),
+                        array('x' => 250, 'y' => 700)),
+            "color" => "orange",
+            "center" => array('x' => 350, 'y' => 641.6666667)
+            ),
+          // Bottom Hexagon 2
+          array(
+            "points" => array(array('x' => 450, 'y' => 466.6666667),
+                        array('x' => 550, 'y' => 466.6666667),
+                        array('x' => 600, 'y' => 583.3333334),
+                        array('x' => 550, 'y' => 700),
+                        array('x' => 450, 'y' => 700),
+                        array('x' => 400, 'y' => 583.3333334)),
+            "color" => "red",
+            "center" => array('x' => 500, 'y' => 583.3333334)
+          )
       );
         
-        //Set the map array to be availble in the view with name of map
+        //Set the map array to be available in the view with name of map
         $this->set('map', $map);
     }
     
