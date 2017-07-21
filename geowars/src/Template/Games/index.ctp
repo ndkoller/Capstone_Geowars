@@ -155,7 +155,7 @@ function drawBoard(board) {
 			console.log("center: { x: " + xSum/board[i].points.length + ", y: " + ySum/board[i].points.length + "}");
 		
 			//Fill shape with color 
-			ctx.fillStyle = shapes[i].color;
+			ctx.fillStyle = board[i].color;
     
     		//Fill/draw shape to canvas
 			ctx.fill(); 
