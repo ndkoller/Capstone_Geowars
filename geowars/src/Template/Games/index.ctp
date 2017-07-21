@@ -155,7 +155,7 @@ function drawBoard(board) {
 			console.log("center: { x: " + xSum/board[i].points.length + ", y: " + ySum/board[i].points.length + "}");
 		
 			//Fill shape with color 
-			ctx.fillStyle = shapes[i].color;
+			ctx.fillStyle = board[i].color;
     
     		//Fill/draw shape to canvas
 			ctx.fill(); 
@@ -231,8 +231,28 @@ canvas.addEventListener('click', function(event) {
 
 }, false);
 
+//Ajax request to get map data
+var xhttp = new XMLHttpRequest();
+
+  //The function that will be run on state change
+  xhttp.onreadystatechange = function() {
+  	
+  	//What will happen once return is succesful
+    if (this.readyState == 4 && this.status == 200) {
+    
+    //Parse the JSON response
+     var response = JSON.parse(this.responseText);
+     
+     //Call the drawboard function and send the map array in the response
+     drawBoard(response.map);
+     
+    }
+  };
+  xhttp.open("GET", "/api/getmap", true);
+  xhttp.send();
+
 
 //Call the draw funtion
-drawBoard(shapes);
+//drawBoard(shapes);
 
 </script>
