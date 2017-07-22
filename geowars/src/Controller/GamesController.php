@@ -5,7 +5,7 @@ use Cake\Event\Event;
 class GamesController extends AppController
 {
 	
-/*	public function beforeFilter(Event $event)
+	public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
         // Allow users to register and logout.
@@ -13,8 +13,8 @@ class GamesController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        //$this->Auth->allow('add');
-    }*/
+        $this->Auth->allow('add');
+    }
     
     public function index()
     {
