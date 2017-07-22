@@ -2,7 +2,7 @@
 
 <div class="col-lg-6">
 <?= $this->Flash->render() ?>
-    <form role="form">
+    <form role="form" method="post" action="/users/login">
         <div class="form-group">
             <label>Username</label>
             <input id="username" name="username" class="form-control">
@@ -15,7 +15,7 @@
         
         <button  type="submit" class="btn btn-default">Submit Button</button>
     </form>
-    <button  onclick="register()" class="btn btn-default">Submit Button</button>
+    <button  onclick="register()" class="btn btn-default">Dont Submit Button</button>
         <button type="reset" class="btn btn-default">Reset Button</button>
 
 </div>
@@ -38,7 +38,7 @@ function register() {
     var ajaxreq = new XMLHttpRequest();
     ajaxreq.onload = function() {
           if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
-            responseObject = JSON.parse(ajaxreq.responseText);
+            var responseObject = JSON.parse(ajaxreq.responseText);
             if (responseObject.success == true) {
               //Todo
             } else {
