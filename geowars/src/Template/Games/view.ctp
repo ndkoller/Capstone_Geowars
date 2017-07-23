@@ -1,6 +1,46 @@
 <html>
+<body>
+<style type="text/css">
+#map{
+	/*position: relative;*/
+}
+.buy_phase_menu{
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    top: 350px;
+    left: 550px;
+}
+</style>
+<div id="map">
+	<canvas id="canvas" width="700" height="700"></canvas>
 
-<canvas id="canvas" width="700" height="700"></canvas>
+	<form class="buy_phase_menu" method="POST" >
+		<fieldset>
+			<legend>Buy Phase</legend>
+			<div>
+			  <label>Owner:</label>
+			  <text id="buy_phase_owner_name"></text>
+			</div>
+			<div>
+			  <label>Troops:</label>
+			  <text id="buy_phase_troop_numbers"></text>
+			</div>   
+			<p>
+				<input type="button" value="Buy" id="buy_phase_buy_button">
+				<input type="button" value="Move" id="buy_phase_move_button">  
+			</p>
+			<p>
+				<input type="submit">
+				<input id="buy_phase_cancel" type="button" value="Cancel">
+			</p>
+		</fieldset>
+	</form>
+	
+</div>
+
+
 </body>
 </html>
  <script>
@@ -8,114 +48,10 @@
  //Establish the Canvas variable
    var canvas = document.getElementById('canvas');
    var ctx = canvas.getContext('2d');
- 
- //Hold Shapes to draw board
- //Points: an array to hold all the corners of the shape, does not close the shape
- //color: the color of the shape to be drawn
- //Center: hold the points averaged center for determining which shape was clicked on
-var shapes = [
-	// top hexagon 1st
-	{ points: [{ x: 150, y: 0}, { x: 250, y: 0},  { x: 300, y: 116.666666667},  { x: 250, y: 233.3333333334}, { x: 150, y: 233.3333333334}, { x: 100, y: 116.666666667} ],
-	  color: "red",
-	  center: { x: 200, y: 116.666666667}
-	},
-	// top upper trapizoid
-	{ points: [{ x: 250, y: 0}, { x: 450, y: 0}, { x: 400, y: 116.666666667}, { x: 300, y: 116.666666667} ],
-	  color: "orange",
-	  center: { x: 325, y: 58.3333333334}
-	},
-	// top hexagon 2nd
-	{ points: [{ x: 450, y: 0}, { x: 550, y: 0}, { x: 600, y: 116.666666667}, { x: 550, y: 233.3333333334}, { x: 450, y: 233.3333333334}, { x: 400, y: 116.666666667}],
-	  color: "red",
-	  center: { x: 500, y: 116.666666667}
-	},
-	// top lower triangle 1st
-	{ points: [{ x: 100, y: 116.666666667}, { x: 50, y: 233.3333333334}, {x: 150, y: 233.3333333334}],
-	  color: "yellow",
- 	  center: { x: 100, y: 194}
-	},
-	// top lower Trapizoid
-	{ points: [{ x: 300, y: 116.666666667}, {x: 400, y: 116.666666667}, { x: 450, y: 233.3333333334 }, {x: 250, y: 233.3333333334} ],
-	  color: "orange",
-	  center: { x: 375, y: 175},
-	},
-	// top lower triangle 2nd
-	{ points: [{ x: 600, y: 116.666666667}, {x: 550, y: 233.3333333334}, {x: 650, y: 233.3333333334}],
-	  color: "yellow",
- 	  center: { x: 600, y: 194}
-	},
-	// middle hexagon 1
-	{ points: [{ x: 50, y: 233.3333333334}, {x: 150, y: 233.3333333334}, { x: 200, y: 350}, {x: 150, y: 466.666666667}, {x: 50, y: 466.666666667}, { x: 0, y: 350}],
-	  color: "red",
-	  center: { x: 100, y: 350}
-	},
-	// middle upper Rhombus 1
-	{ points: [{x: 150, y: 233.3333333334}, {x: 250, y: 233.3333333334}, { x: 300, y: 350}, { x: 200, y: 350} ],
-	  color: "blue",
-	  center: { x: 225, y: 291.666666667}
-	},
-	// middle upper trapizoid
-	{ points: [{x: 250, y: 233.3333333334}, {x: 450, y: 233.3333333334}, { x: 400, y: 350}, { x: 300, y: 350} ],
-	  color: "orange",
-	  center: { x: 325, y: 291.666666667}
-	},
-	// middle upper Rhombus 2
-	{ points: [{x: 450, y: 233.3333333334}, {x: 550, y: 233.3333333334}, { x: 500, y: 350}, { x: 400, y: 350} ],
-	  color: "blue",
-	  center: {x: 475, y: 291.666666667}
-	},
-	// middle lower trapizoid
-	{ points: [{ x: 300, y: 350}, { x: 400, y: 350}, {x: 450, y: 466.666666667}, {x: 250, y: 466.666666667} ],
-	  color: "Orange",
-	  center: { x: 375, y: 233.3333333334}
-	},
-	// Middle lower Rhombus 1
-	{ points: [{ x: 200, y: 350}, { x: 300, y: 350}, {x: 250, y: 466.666666667}, {x: 150, y: 466.666666667} ],
-	  color: "blue",
-	  center: { x: 225, y: 408.3333333334}
-	},
-	// Middle lower Rhombus 2
-	{ points: [{ x: 400, y: 350}, { x: 500, y: 350}, {x: 550, y: 466.666666667}, {x: 450, y: 466.666666667}],
-	  color: "blue",
-	  center: { x: 475, y: 408.3333333334}
-	},
-	// middle hexagon 2
-	{ points: [{x: 550, y: 233.3333333334}, {x: 650, y: 233.3333333334}, { x: 700, y: 350}, {x: 650, y: 466.666666667}, {x: 550, y: 466.666666667}, { x: 500, y: 350} ],
-	  color: "red",
-	  center: { x: 600, y: 350}
-	},
-	// Bottom Upper Triangle 1
-	{ points: [{x: 150, y: 466.666666667}, {x: 50, y: 466.666666667}, { x: 100, y: 583.3333333334} ],
-	  color: "yellow",
-	  center: { x: 100, y: 505}
-	},
-	// Bottom Upper Triangle 2
-	{ points: [{x: 550, y: 466.666666667}, {x: 650, y: 466.666666667}, { x: 600, y: 583.3333333334}],
-	  color: "yellow",
-	  center: { x: 600, y: 505}
-	},
-	// Bottom Hexagon 1
-	{ points: [{x: 150, y: 466.666666667}, {x: 250, y: 466.666666667}, { x: 300, y: 583.3333333334}, { x: 250, y: 700}, {x: 150, y: 700}, { x: 100, y: 583.3333333334}],
-	  color: "red",
-	  center: { x: 200, y: 583.3333333334}
-	},
-	// Bottom Upper Trapizoid
-	{ points: [{x: 250, y: 466.666666667}, {x: 450, y: 466.666666667}, { x: 400, y: 583.3333333334}, { x: 300, y: 583.3333333334} ],
-	  color: "orange",
-	  center: { x: 325, y: 525}
-	},
-	// Bottom Lower Trapizoid
-	{ points: [{ x: 300, y: 583.3333333334}, { x: 400, y: 583.3333333334}, { x: 450, y: 700}, { x: 250, y: 700} ],
-	  color: "orange",
-	  center: { x: 375, y: 641.666666667}
-	},
-	// Bottom Hexagon 2
-	{ points: [{x: 450, y: 466.666666667}, {x: 550, y: 466.666666667}, { x: 600, y: 583.3333333334}, { x: 550, y: 700}, { x: 450, y: 700}, { x: 400, y: 583.3333333334}  ],
-	  color: "red",
-	  center: { x: 500, y: 583.3333333334}
-	},
-];
 
+// Shapes vairable used for the functions
+// intialized with ajax call
+	 var shapes;
 
 //This cycles through and draws each shape but looping through the list of points
 function drawBoard(board) {
@@ -191,45 +127,85 @@ function drawBoard(board) {
 //Handle clicks on board
 canvas.addEventListener('click', function(event) {
 	
-	//Get location of click from click event
-	//Because canvas is not at page location 0, 0 apply offset
-	var x = event.pageX - canvas.offsetLeft;
-	var y = event.pageY - canvas.offsetTop;
-	
-	//Temp distance to hold calculated distance
-	var tempDistance;
-	
-	//Hold the current shortest or best distance
-	var bestDistance = 999999999;
-	
-	//Hold the object with the current shortest distance
-	var bestObject;
-	
-    //Print to log click location on canvas
-    console.log(x + ' ' + y);
-
-	//Calcualte shortest distance for all shapes/objects on the screen
-	for(var i = 0; i < shapes.length; i++) {
-		tempDistance = Math.sqrt(Math.pow((x - shapes[i].center.x), 2) + Math.pow((y - shapes[i].center.y), 2));
+	var x = document.getElementsByClassName("buy_phase_menu"),
+    style = window.getComputedStyle(x[0]),
+    display = style.getPropertyValue('display');
+    
+	if(display === "none"){
 		
-		//Update the shape with the shortest distance as required
-		if(bestDistance > tempDistance) {
-			bestDistance = tempDistance;
-			bestObject = i;
+		// moved the location determining point inside the code for the menu because we don't care where clicks originate from if the menu is visible.
+		
+		//Get location of click from click event
+		//Because canvas is not at page location 0, 0 apply offset
+		var x = event.pageX - canvas.offsetLeft;
+		var y = event.pageY - canvas.offsetTop;
+		
+		//Temp distance to hold calculated distance
+		var tempDistance;
+		
+		//Hold the current shortest or best distance
+		var bestDistance = 999999999;
+		
+		//Hold the object with the current shortest distance
+		var bestObject;
+		
+	    //Print to log click location on canvas
+	    console.log(x + ' ' + y);
+	
+		//Calculate shortest distance for all shapes/objects on the screen
+		for(var i = 0; i < shapes.length; i++) {
+			tempDistance = Math.sqrt(Math.pow((x - shapes[i].center.x), 2) + Math.pow((y - shapes[i].center.y), 2));
+			
+			//Update the shape with the shortest distance as required
+			if(bestDistance > tempDistance) {
+				bestDistance = tempDistance;
+				bestObject = i;
+			}
+	
+				
 		}
-
+	
+		//Print to console the object location in the array and the color of that object
+		console.log("Object:" + bestObject + " Color:" + shapes[bestObject].color);
+	
+		// updating owner information
+		var owner = document.getElementById("buy_phase_owner_name");
+		owner.innerHTML = shapes[bestObject].color;
+		// updating Troop Numbers
+		var x = document.getElementsByClassName("buy_phase_menu");
+		x[0].style.display = "block";
 			
 	}
-
-	//Print to console the object location in the array and the color of that object
-	console.log("Object:" + bestObject + " Color:" + shapes[bestObject].color);
 	
 	
-			ctx.fillStyle = shapes[bestObject].color;
-			ctx.fillRect(100,100,150,75);
-		
+	//ctx.fillStyle = shapes[bestObject].color;
+	//ctx.fillRect(100,100,150,75);
 
 }, false);
+
+// The following are the button listeners for the menu.
+// They should be invisible until a territory click occurs
+// Buy Phase Menu's Cancel button listener
+document.getElementById("buy_phase_cancel").addEventListener("click", function(){
+    
+    //Add: Clear any data fields that haven't been submitted
+	
+	var x = document.getElementsByClassName("buy_phase_menu");
+    x[0].style.display = "none";
+	
+});
+
+document.getElementById("buy_phase_move_button").addEventListener("click", function(){
+
+	// fill in with move functionality
+
+});
+
+document.getElementById("buy_phase_buy_button").addEventListener("click", function(){
+
+	// fill in with buy functionality 
+
+});
 
 //Ajax request to get map data
 var xhttp = new XMLHttpRequest();
@@ -244,8 +220,9 @@ var xhttp = new XMLHttpRequest();
      var response = JSON.parse(this.responseText);
      
      //Call the drawboard function and send the map array in the response
-     drawBoard(response.map);
-     
+    shapes = response.map;
+    drawBoard(shapes);
+
     }
   };
   xhttp.open("GET", "/api/getmap", true);
