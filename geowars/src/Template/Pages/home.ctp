@@ -1,2 +1,2 @@
 <a href="/users/add">Register</a> <br>
-<a href="/Games">Canvas</a>
+<a href="/users/login">Login</a>
