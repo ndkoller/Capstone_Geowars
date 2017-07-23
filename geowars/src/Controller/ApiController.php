@@ -13,7 +13,17 @@ class ApiController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow('getMap');
+        $this->Auth->allow(array('getMap', 'postAction'));
+    }
+    
+    public function postAction()
+    {
+      $this->viewBuilder()->layout('ajax');
+      
+      $postVal = $_POST['new'];
+      
+      $this->set('result', 'test values');
+      $this->render();
     }
     
     //Ajax action
