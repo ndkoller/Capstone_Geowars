@@ -159,7 +159,7 @@ canvas.addEventListener('click', function(event) {
     //Print to log click location on canvas
     console.log(x + ' ' + y);
 
-	//Calcualte shortest distance for all shapes/objects on the screen
+	//Calculate shortest distance for all shapes/objects on the screen
 	for(var i = 0; i < shapes.length; i++) {
 		tempDistance = Math.sqrt(Math.pow((x - shapes[i].center.x), 2) + Math.pow((y - shapes[i].center.y), 2));
 		
