@@ -130,7 +130,7 @@ function drawBoard(board) {
 			ctx.beginPath();
     		ctx.moveTo(board[i].points[0].x, board[i].points[0].y);
     		
-    		//Loop through rest of points for boardeer
+    		//Loop through rest of points for boarder
 			for(j = 1; j < board[i].points.length; j++) {
 				ctx.lineTo(board[i].points[j].x, board[i].points[j].y);
 			}
@@ -141,11 +141,10 @@ function drawBoard(board) {
 			//Set boarder width
 			ctx.lineWidth = 3;
 			
-			//Draw boareder to canvas
+			//Draw boarder to canvas
 			ctx.stroke();
-		
-		//ctx.font = '12px serif';
-		//ctx.strokeText('Hello world', 10, 50);
+			ctx.font = '16px serif';
+			ctx.strokeText(board[i].troops, board[i].center.x-7, board[i].center.y);
 		
 		//ctx.closePath();
     		//ctx.stroke();
@@ -211,6 +210,8 @@ canvas.addEventListener('click', function(event) {
 					var owner = document.getElementById("buy_phase_owner_name");
 					owner.innerHTML = shapes[bestObject].color;
 					// updating Troop Numbers
+					var troops = document.getElementById("buy_phase_troop_numbers");
+					troops.innerHTML = shapes[bestObject].troops
 					var x = document.getElementsByClassName("buy_phase_menu");
 					x[0].style.display = "block";
     			}else {
@@ -218,6 +219,10 @@ canvas.addEventListener('click', function(event) {
 					var owner = document.getElementById("attack_phase_owner_name");
 					owner.innerHTML = shapes[bestObject].color;
 					// updating Troop Numbers
+					// ensure that this is communicating with other gameplay functionality
+					var troops = document.getElementById("attack_phase_troop_numbers");
+					troops.innerHTML = shapes[bestObject].troops
+
 					var x = document.getElementsByClassName("attack_phase_menu");
 					x[0].style.display = "block";
     			}
@@ -282,7 +287,7 @@ document.getElementById("attack_phase_move_button").addEventListener("click", fu
 
 document.getElementById("attack_phase_attack_button").addEventListener("click", function(){
 
-	// fill in with buy functionality 
+	// fill in with Attack functionality 
 
 });
 
