@@ -6,12 +6,12 @@
         <div class="form-group">
             <label>Username</label>
             <input id="username" class="form-control">
-            <p class="help-block">This username will be what other users see< p>
+            <p class="help-block">This username will be what other users see</p>
         </div>
         <div class="form-group">
             <label>Email</label>
             <input id="email" class="form-control">
-            <p class="help-block">Your email will be use if Geo Wars needsto contact you.</p>
+            <p class="help-block">Your email will be use if Geo Wars needs to contact you.</p>
         </div>  
         <div class="form-group">
             <label>Password</label>
@@ -46,7 +46,7 @@ function register() {
     var ajaxreq = new XMLHttpRequest();
     ajaxreq.onload = function() {
           if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
-            responseObject = JSON.parse(ajaxreq.responseText);
+            var responseObject = JSON.parse(ajaxreq.responseText);
             if (responseObject.success == true) {
               //Todo
             } else {
