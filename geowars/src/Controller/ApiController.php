@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 use App\Controller\AppController;
+use App\Model\Entity\User;
 use Cake\Event\Event;
 class ApiController extends AppController
 {
@@ -13,17 +14,35 @@ class ApiController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('getMap', 'postAction'));
+        $this->Auth->allow(array('getMap', 'postAction', 'getPhase'));
+    }
+    
+    public function getPhase() {
+        $this->viewBuilder()->layout('ajax');
+        $phase = 'buy';
+        if($this->request->query('owner') != null){
+              $owner = $this->request->query('owner');
+              if($owner == 'red'){
+                  $phase = 'attack';
+              }
+        }
+        $this->set('phase', $phase);
     }
     
     public function postAction()
     {
       $this->viewBuilder()->layout('ajax');
       
-      $postVal = $_POST['new'];
+      $color = 'red';
+      if ($this->request->is('post')) {
+          if($this->request->query('color') != null){
+              $color = $this->request->query('color');
+          }
+      }
+      $this->loadModel('Games');
+      $result = $this->Games->find();
       
-      $this->set('result', 'test values');
-      $this->render();
+      $this->set('result', $result);
     }
     
     //Ajax action
