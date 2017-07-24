@@ -12,6 +12,14 @@
     top: 350px;
     left: 550px;
 }
+.attack_phase_menu{
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    top: 350px;
+    left: 550px;
+}
 </style>
 <div id="map">
 	<canvas id="canvas" width="700" height="700"></canvas>
@@ -34,6 +42,28 @@
 			<p>
 				<input type="submit">
 				<input id="buy_phase_cancel" type="button" value="Cancel">
+			</p>
+		</fieldset>
+	</form>
+	
+	<form class="attack_phase_menu" method="POST" >
+		<fieldset>
+			<legend>Attack Phase</legend>
+			<div>
+			  <label>Owner:</label>
+			  <text id="attack_phase_owner_name"></text>
+			</div>
+			<div>
+			  <label>Troops:</label>
+			  <text id="attack_phase_troop_numbers"></text>
+			</div>   
+			<p>
+				<input type="button" value="Attack" id="attack_phase_attack_button">
+				<input type="button" value="Move" id="attack_phase_move_button">  
+			</p>
+			<p>
+				<input type="submit">
+				<input id="attack_phase_cancel" type="button" value="Cancel">
 			</p>
 		</fieldset>
 	</form>
@@ -168,12 +198,37 @@ canvas.addEventListener('click', function(event) {
 		//Print to console the object location in the array and the color of that object
 		console.log("Object:" + bestObject + " Color:" + shapes[bestObject].color);
 	
-		// updating owner information
-		var owner = document.getElementById("buy_phase_owner_name");
-		owner.innerHTML = shapes[bestObject].color;
-		// updating Troop Numbers
-		var x = document.getElementsByClassName("buy_phase_menu");
-		x[0].style.display = "block";
+		var xhttp = new XMLHttpRequest();
+
+		//The function that will be run on state change
+		xhttp.onreadystatechange = function() {
+    		if (this.readyState == 4 && this.status == 200) {
+    			//Parse the JSON response
+    			var response = JSON.parse(this.responseText);
+    			console.log(response);
+    			if(response.phase == 'buy'){
+    				// updating owner information
+					var owner = document.getElementById("buy_phase_owner_name");
+					owner.innerHTML = shapes[bestObject].color;
+					// updating Troop Numbers
+					var x = document.getElementsByClassName("buy_phase_menu");
+					x[0].style.display = "block";
+    			}else {
+    				// updating owner information
+					var owner = document.getElementById("attack_phase_owner_name");
+					owner.innerHTML = shapes[bestObject].color;
+					// updating Troop Numbers
+					var x = document.getElementsByClassName("attack_phase_menu");
+					x[0].style.display = "block";
+    			}
+    			
+
+    		}
+		};
+		xhttp.open("GET", "/api/getphase?owner=" + shapes[bestObject].color, true);
+		xhttp.send();
+		
+		
 			
 	}
 	
@@ -183,7 +238,7 @@ canvas.addEventListener('click', function(event) {
 
 }, false);
 
-// The following are the button listeners for the menu.
+// The following are the button listeners for the Buy menu.
 // They should be invisible until a territory click occurs
 // Buy Phase Menu's Cancel button listener
 document.getElementById("buy_phase_cancel").addEventListener("click", function(){
@@ -202,6 +257,30 @@ document.getElementById("buy_phase_move_button").addEventListener("click", funct
 });
 
 document.getElementById("buy_phase_buy_button").addEventListener("click", function(){
+
+	// fill in with buy functionality 
+
+});
+
+// The following are the button listeners for the Attack menu.
+// They should be invisible until a territory click occurs
+// Attack Phase Menu's Cancel button listener
+document.getElementById("attack_phase_cancel").addEventListener("click", function(){
+    
+    //Add: Clear any data fields that haven't been submitted
+	
+	var x = document.getElementsByClassName("attack_phase_menu");
+    x[0].style.display = "none";
+	
+});
+
+document.getElementById("attack_phase_move_button").addEventListener("click", function(){
+
+	// fill in with move functionality
+
+});
+
+document.getElementById("attack_phase_attack_button").addEventListener("click", function(){
 
 	// fill in with buy functionality 
 
