@@ -15,8 +15,8 @@
         
         <button  type="submit" class="btn btn-default">Submit Button</button>
     </form>
-    <button  onclick="register()" class="btn btn-default">Dont Submit Button</button>
-        <button type="reset" class="btn btn-default">Reset Button</button>
+    <p>Going to change to use ajax on submit and once login is sucessfull use a redirect.
+    If login fails either use alert, of change page to show error</p>
 
 </div>
 
