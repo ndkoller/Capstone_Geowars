@@ -92,7 +92,7 @@ class GamesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['last_completed_turn_id'], 'LastCompletedTurns'));
+        //$rules->add($rules->existsIn(['last_completed_turn_id'], 'LastCompletedTurns'));
 
         return $rules;
     }

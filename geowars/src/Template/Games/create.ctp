@@ -1,5 +1,9 @@
 <p>Create a new game.</p>
+<?php
 
+//$this->Flash->info(sprintf('<b>%s</b> %s', h($highlight), h($message)), ['escape' => false]);
+
+?>
 <form class="form-horizontal">
   <div class="form-group">
     <label for="map" class="col-sm-2 control-label">Map</label>
@@ -16,14 +20,14 @@
   <div class="form-group">
     <label for="planningPhase" class="col-sm-2 control-label">Planning Phase (minutes)</label>
     <div class="col-sm-6">
-      <input type="number" class="form-control" id="planningPhase">
+      <input type="number" min="1" class="form-control" id="planningPhase">
     </div>
   </div>
   
   <div class="form-group">
     <label for="attackPhase" class="col-sm-2 control-label">Attack Phase (minutes)</label>
     <div class="col-sm-6">
-      <input type="number" class="form-control" id="attackPhase">
+      <input type="number" min="1" class="form-control" id="attackPhase">
     </div>
   </div>
   
@@ -68,7 +72,7 @@
   <div class="form-group">
   <label for="atStart" class="col-sm-2 control-label">At start time</label>
   <div class="col-sm-6">
-      <select class="form-control" id="maxPlayers">
+      <select class="form-control" id="atStart">
           <option value="1">Cancel Game</option>
           <option value="2">Add Bots to reach minimum players</option>
           <option value="3">Add Bots to reach maximum players</option>
@@ -88,15 +92,67 @@
     <label  class="col-sm-2 control-label"></label>
     <div class="col-sm-6 checkbox">
       <label>
-        <input type="checkbox" value="">
+        <input id="join" type="checkbox">
         Join Game on creation
       </label>
     </div>
   </div>
   
   <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Make Game</button>
-    </div>
+    
   </div>
 </form>
+
+<div class="col-sm-offset-2 col-sm-10">
+      <button onclick="makeGame()" class="btn btn-default">Make Game</button>
+    </div>
+
+<script type="text/javascript">
+
+function makeGame() {
+
+    var map = document.getElementById('map').value;
+    var planningPhase = document.getElementById('planningPhase').value;
+    var attackPhase = document.getElementById('attackPhase').value;
+    var minPlayers = document.getElementById('minPlayers').value;
+    var maxPlayers = document.getElementById('maxPlayers').value;
+    var startDate = document.getElementById('date').value;
+    var startTime = document.getElementById('time').value;
+    var atStart = document.getElementById('atStart').value;
+    var join = document.getElementById('join').value;
+    
+    //Convert entered time to unix time to sent to server
+    var unixTime = new Date(startDate + " " + startTime);
+        
+    //Check here for empty fields - All fields should need a value
+    /*if (password1.localeCompare(password2) || ! password1.localeCompare("") || ! password2.localeCompare("")) {
+        alert("Passwords do not match");
+        return; 
+    }*/
+    
+    
+    
+    var ajaxreq = new XMLHttpRequest();
+    ajaxreq.onload = function() {
+          if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
+            var responseObject = JSON.parse(ajaxreq.responseText);
+            if (responseObject.success == true) {
+              //Todo
+            } else {
+              //Todo
+            }
+          }
+    };
+    
+    //Values to post
+    var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
+        + '&minPlayers' + minPlayers + '&maxPlayers' + maxPlayers + '&startUNIXTime' + unixTime.getTime()  
+        +  "&atStart" + atStart + '&join' + join;
+    ajaxreq.open('POST', '/games/create', true);
+    ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    ajaxreq.send(postString);
+
+}
+
+
+</script>
