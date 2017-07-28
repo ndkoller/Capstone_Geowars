@@ -2,6 +2,8 @@
 namespace App\Controller;
 use App\Controller\AppController;
 use Cake\Event\Event;
+//use App\Model\Entity\Games;
+use Cake\ORM\TableRegistry;
 class GamesController extends AppController
 {
 	
@@ -37,7 +39,37 @@ class GamesController extends AppController
     //Allows a user to create a new game
     public function create()
     {
-        
+        //If request is post then create new game.      
+        if ($this->request->is('post')) {
+        echo "in post statement";
+           // $this->loadModel('Games');
+           
+           $Games = TableRegistry::get('Games');
+            
+          //Values from create form post
+          /* var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
+              + '&minPlayers' + minPlayers + '&maxPlayers' + maxPlayers + '&startUNIXTime' + unixTime.getTime()  
+              +  "&atStart" + atStart + '&join' + join; */     
+      
+          $newGame = $Games->newEntity();
+          $newGame->created_by = $this->Auth->User('id');
+				  $newGame->completed = false;
+				  $newGame->map = $this->request->data['map'];
+				  $newGame->phase_one_duration = $this->request->data['planningPhase'];
+				  $newGame->phase_two_duration = $this->request->data['attackPhase'];
+				  $newGame->turn_end_time = $this->request->data['planningPhase'] + $this->request->data['attackPhase'];
+				  //$newGame->username = $this->request->data['username'];
+				  //$newGame->address1 = $this->request->data['address1'];
+
+				  if ($Games->save($newGame)) {
+                echo "success";
+                $this->Flash->success(__('The game has been created.'));
+                //return $this->redirect(['action' => 'add']);
+            }
+            else{
+               $this->Flash->error(__('Unable to add the user.'));    
+            }
+        }
     }
     
     
