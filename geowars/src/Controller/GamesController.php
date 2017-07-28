@@ -39,8 +39,18 @@ class GamesController extends AppController
     //Allows a user to create a new game
     public function create()
     {
+        
+    }
+    
+    //Allows a user to create a new game
+    public function createProcess()
+    {
         //If request is post then create new game.      
         if ($this->request->is('post')) {
+            
+            //For Ajax requests
+            $this->viewBuilder()->layout('ajax');
+        
         echo "in post statement";
            // $this->loadModel('Games');
            
@@ -58,17 +68,19 @@ class GamesController extends AppController
 				  $newGame->phase_one_duration = $this->request->data['planningPhase'];
 				  $newGame->phase_two_duration = $this->request->data['attackPhase'];
 				  $newGame->turn_end_time = $this->request->data['planningPhase'] + $this->request->data['attackPhase'];
-				  //$newGame->username = $this->request->data['username'];
+				  //$newGame->start_time = $this->request->data['startUNIXTime'];
 				  //$newGame->address1 = $this->request->data['address1'];
 
 				  if ($Games->save($newGame)) {
-                echo "success";
-                $this->Flash->success(__('The game has been created.'));
+				    $results = 1;
+                        //echo "success";
+                        //$this->Flash->success(__('The game has been created.'));
                 //return $this->redirect(['action' => 'add']);
+                    }  else {
+                        $results = 1;
+                        //$this->Flash->error(__('Unable to add the user.'));    
             }
-            else{
-               $this->Flash->error(__('Unable to add the user.'));    
-            }
+            $this->set('results', $results);
         }
     }
     
