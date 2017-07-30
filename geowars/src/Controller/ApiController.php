@@ -3,6 +3,7 @@ namespace App\Controller;
 use App\Controller\AppController;
 use App\Model\Entity\User;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
 class ApiController extends AppController
 {
 	
@@ -276,5 +277,39 @@ class ApiController extends AppController
         $this->set('map', $map);
     }
     
+    
+    //List games that have not filled up with users yet that are open to join
+    public function calculate()
+    {
+        //For Ajax requests
+        $this->viewBuilder()->layout('ajax');
+        
+        $Games = TableRegistry::get('Games');
+        $Territories = TableRegistry::get('Territories');
+        $GamesUsers = TableRegistry::get('GamesUsers');
+        $Users = TableRegistry::get('Users');
+        
+        
+        $gameResults = $Games->find()->
+            where(["start_time <" => time() * 1000])->
+            where(["started = 0" ]);
+        //echo time();
+        foreach ($gameResults as $game) {
+            //echo $game;
+            $gameUsers = $GamesUsers->find()->
+                where(["game_id =" => $game->id]);
+                //echo $gameUsers;
+            foreach ($gameUsers as $gameUser) {
+                $userInfo = $Users->find()->
+                where(["id =" => $gameUser->user_id]);
+                
+                foreach ($userInfo as $user) {
+                    echo $user->username;
+                }
+            }
+            
+            
+        }
+    }
 }
 ?>
