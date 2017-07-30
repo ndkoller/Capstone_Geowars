@@ -147,7 +147,7 @@ function makeGame() {
     //Values to post
     //The start day and time have been combined and posted as startUNIXTime
     var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
-        + '&minPlayers' + minPlayers + '&maxPlayers' + maxPlayers + '&startUNIXTime' + unixTime.getTime()  
+        + '&minPlayers' + minPlayers + '&maxPlayers' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
         +  "&atStart" + atStart + '&join' + join;
     ajaxreq.open('POST', '/games/createprocess', true);
     ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
