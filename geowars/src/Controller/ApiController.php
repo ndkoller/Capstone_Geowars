@@ -57,6 +57,21 @@ class ApiController extends AppController
         //For Ajax requests
         $this->viewBuilder()->layout('ajax');
         
+        $this->loadModel('Territories');
+        $territories = $this->Territories
+                            ->find()
+                            ->where(['game_id' => 1, 'turn_id' => 1])
+                            ->order(['tile_id' => 'ASC'])
+                            ->all()->toArray();
+        
+        // Build array by tile ID type
+        $territoryById = array();
+        for ($i = 0; $i < 20; $i++) {
+            $territoryById[$territories[$i]->tile_id] = $territories[$i];
+        }
+        
+        //$this->set('testing',$territories[0]->num_troops);
+        
       //Template to hold map data
       $map = array(
     
@@ -73,7 +88,7 @@ class ApiController extends AppController
                         array( 'x'=> 100, 'y' => 116.666667)),
 	        "color" => "red",
 	        "center" => array( 'x' => 200, 'y' => 116.666667),
-	        "troops" => 20 
+	        "troops" => $territoryById[0]->num_troops
         ),
         //Top upper trapizoid
         array(
@@ -83,7 +98,7 @@ class ApiController extends AppController
                         array( 'x' => 300, 'y' => 116.666666667)),
 	        "color" => "orange",
 	        "center" => array( 'x' => 350, 'y' => 58.33334),
-	        "troops" => 19
+	        "troops" => $territoryById[1]->num_troops
         ),
         //Top hexagon 2nd
         array(
@@ -95,7 +110,7 @@ class ApiController extends AppController
                         array( 'x'=> 400, 'y' => 116.666667)),
 	        "color" => "red",
 	        "center" => array( 'x' => 500, 'y' => 116.6666667),
-	        "troops" => 18
+	        "troops" => $territoryById[2]->num_troops
         ),
         //top lower triangle 1st
         array(
@@ -104,7 +119,7 @@ class ApiController extends AppController
                         array( 'x' => 150, 'y' => 233.333334)),
 	        "color" => "yellow",
 	        "center" => array( 'x' => 100, 'y' => 194),
-	        "troops" => 17
+	        "troops" => $territoryById[3]->num_troops
         ),
         //top lower Trapizoid
         array(
@@ -114,7 +129,7 @@ class ApiController extends AppController
                         array( 'x'=> 250, 'y' => 233.33334)),
 	        "color" => "orange",
 	        "center" => array( 'x' => 350, 'y' => 175),
-	        "troops" => 16
+	        "troops" => $territoryById[4]->num_troops
         ),
         //top lower triangle 2nd
         array(
@@ -123,7 +138,7 @@ class ApiController extends AppController
                         array( 'x' => 650, 'y' => 233.333334)),
 	        "color" => "yellow",
 	        "center" => array( 'x' => 600, 'y' => 194),
-	        "troops" => 15
+	        "troops" => $territoryById[5]->num_troops
         ),
         //middle hexagon 1
         array(
@@ -135,7 +150,7 @@ class ApiController extends AppController
                         array( 'x'=> 0, 'y' => 350)),
 	        "color" => "red",
 	        "center" => array( 'x' => 100, 'y' => 350),
-	        "troops" => 14
+	        "troops" => $territoryById[6]->num_troops
         ),
         //middle upper Rhombus 1
         array(
@@ -145,7 +160,7 @@ class ApiController extends AppController
                         array( 'x'=> 200, 'y' => 350)),
 	        "color" => "blue",
 	        "center" => array( 'x' => 225, 'y' => 291.666667),
-	        "troops" => 13
+	        "troops" => $territoryById[7]->num_troops
         ),
          //middle upper trapizoid
         array(
@@ -155,7 +170,7 @@ class ApiController extends AppController
                         array( 'x'=> 300, 'y' => 350)),
 	        "color" => "orange",
 	        "center" => array( 'x' => 350, 'y' => 291.666667),
-	        "troops" => 12
+	        "troops" => $territoryById[8]->num_troops
         ),
         //middle upper Rhombus 2
         array(
@@ -165,7 +180,7 @@ class ApiController extends AppController
                         array( 'x'=> 400, 'y' => 350)),
 	        "color" => "blue",
 	        "center" => array( 'x' => 475, 'y' => 291.666667),
-	        "troops" => 11
+	        "troops" => $territoryById[9]->num_troops
         ),
         //middle lower trapizoid
         array(
@@ -175,7 +190,7 @@ class ApiController extends AppController
                         array( 'x'=> 250, 'y' => 466.66667)),
 	        "color" => "orange",
 	        "center" => array( 'x' => 350, 'y' => 408.333334),
-	        "troops" => 10
+	        "troops" => $territoryById[10]->num_troops
         ),
         //middle lower Rhombus 1
         array(
@@ -185,7 +200,7 @@ class ApiController extends AppController
                         array( 'x'=> 150, 'y' => 466.66667)),
 	        "color" => "blue",
 	        "center" => array( 'x' => 225, 'y' => 408.33334),
-	        "troops" => 9
+	        "troops" => $territoryById[11]->num_troops
         ),
         //middle lower Rhombus 2
         array(
@@ -195,7 +210,7 @@ class ApiController extends AppController
                         array( 'x'=> 450, 'y' => 466.66667)),
 	        "color" => "blue",
 	        "center" => array( 'x' => 475, 'y' => 408.33334),
-	        "troops" => 8
+	        "troops" => $territoryById[12]->num_troops
         ),
         //middle hexagon 2
         array(
@@ -207,7 +222,7 @@ class ApiController extends AppController
                         array( 'x'=> 500, 'y' => 350)),
 	        "color" => "red",
 	        "center" => array( 'x' => 600, 'y' => 350),
-	        "troops" => 7
+	        "troops" => $territoryById[13]->num_troops
         ),
         // Bottom Upper Triangle 2
         array(
@@ -216,7 +231,7 @@ class ApiController extends AppController
                       array('x' => 100, 'y' => 583.333334)),
           "color" => "yellow",
           "center" => array('x' => 100, 'y' => 505.5555556),
-	      "troops" => 6
+	      "troops" => $territoryById[14]->num_troops
           ),
           // Bottom Upper Triangle 2
           array(
@@ -225,7 +240,7 @@ class ApiController extends AppController
                        array('x' => 600, 'y' => 583.333334)),
             "color" => "yellow",
             "center" => array('x' => 600, 'y' => 505.5555556),
-	        "troops" => 5
+	        "troops" => $territoryById[15]->num_troops
           ),
           // Bottom Hexagon 1 
           array(
@@ -237,7 +252,7 @@ class ApiController extends AppController
                         array('x' => 100, 'y' => 583.3333334)),
               "color" => "red",
               "center" => array('x' => 200, 'y' => 583.3333334),
-	        "troops" => 4
+	        "troops" => $territoryById[16]->num_troops
             ), 
             // Bottom Upper Trapizoid
             array(
@@ -247,7 +262,7 @@ class ApiController extends AppController
                           array('x' => 300, 'y' => 583.3333334)),
               "color" => "orange",
               "center" => array('x' => 350, 'y' => 525),
-	        "troops" => 3
+	        "troops" => $territoryById[17]->num_troops
               ),
           // Bottom Lower Trapizoid
           array(
@@ -257,7 +272,7 @@ class ApiController extends AppController
                         array('x' => 250, 'y' => 700)),
             "color" => "orange",
             "center" => array('x' => 350, 'y' => 641.6666667),
-	        "troops" => 2
+	        "troops" => $territoryById[18]->num_troops
             ),
           // Bottom Hexagon 2
           array(
@@ -269,7 +284,7 @@ class ApiController extends AppController
                         array('x' => 400, 'y' => 583.3333334)),
             "color" => "red",
             "center" => array('x' => 500, 'y' => 583.3333334),
-	        "troops" => 1
+	        "troops" => $territoryById[19]->num_troops
           )
       );
         
