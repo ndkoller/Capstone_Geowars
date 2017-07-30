@@ -51,7 +51,7 @@ class GamesController extends AppController
             //For Ajax requests
             $this->viewBuilder()->layout('ajax');
         
-        echo "in post statement";
+        //echo "in post statement";
            // $this->loadModel('Games');
            
            $Games = TableRegistry::get('Games');
@@ -68,7 +68,7 @@ class GamesController extends AppController
 				  $newGame->phase_one_duration = $this->request->data['planningPhase'];
 				  $newGame->phase_two_duration = $this->request->data['attackPhase'];
 				  $newGame->turn_end_time = $this->request->data['planningPhase'] + $this->request->data['attackPhase'];
-				  //$newGame->start_time = $this->request->data['startUNIXTime'];
+				  $newGame->start_time = $this->request->data['startUNIXTime'];
 				  //$newGame->address1 = $this->request->data['address1'];
 
 				  if ($Games->save($newGame)) {
