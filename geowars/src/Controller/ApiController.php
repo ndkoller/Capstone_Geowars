@@ -295,6 +295,8 @@ class ApiController extends AppController
             where(["started = 0" ]);
         //echo time();
         foreach ($gameResults as $game) {
+            //$game->started = 1;
+            //$Games->save($game);
             //echo $game;
             $gameUsers = $GamesUsers->find()->
                 where(["game_id =" => $game->id]);
