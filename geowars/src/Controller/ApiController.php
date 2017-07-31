@@ -70,226 +70,170 @@ class ApiController extends AppController
             $territoryById[$territories[$i]->tile_id] = $territories[$i];
         }
         
-        //$this->set('testing',$territories[0]->num_troops);
+        $mapInfo = $this->getMapPoints();
         
-      //Template to hold map data
-      $map = array(
+        $colors = array(
+            0 => "red",
+            1 => "blue",
+            2 => "green"
+            );
+        
+        
+        $map = array();
+        
+        for($i = 0; $i < 20; $i++) {
+            $map[$i] = array(
+                "points" => $mapInfo['points'][$i],
+                "color" => $colors[$territoryById[$i]->user_id],
+                "center" => $mapInfo['centers'][$i],
+                "troops" => $territoryById[$i]->num_troops
+                );
+        }
+        
+        
+        //Set the map array to be available in the view with name of map
+        $this->set('map', $map);
+    }
     
-        //Points: an array to hold all the corners of the shape, does not close the shape
-        //color: the color of the shape to be drawn
-        //Center: hold the points averaged center for determining which shape was clicked on
-        //Top hexagon 1st
-        array(
-            "points" => array( array('x' => 150, 'y' => 0), 
+    // This function will build an array of map points. To begin we will have
+    // one map but with potential to add more
+    public function getMapPoints() {
+        $mapPoints = array();
+        $mapPointCenters = array();
+        
+        $mapPoints[0] = array( array('x' => 150, 'y' => 0), 
                         array( 'x' => 250, 'y' => 0),
                         array( 'x' => 300, 'y' => 116.666666667),
                         array( 'x' => 250, 'y' => 233.3333333334),
                         array( 'x' => 150, 'y' => 233.3333333334),
-                        array( 'x'=> 100, 'y' => 116.666667)),
-	        "color" => "red",
-	        "center" => array( 'x' => 200, 'y' => 116.666667),
-	        "troops" => $territoryById[0]->num_troops
-        ),
-        //Top upper trapizoid
-        array(
-            "points" => array( array('x' => 250, 'y' => 0), 
+                        array( 'x'=> 100, 'y' => 116.666667));
+        $mapPointCenters[0] = array( 'x' => 200, 'y' => 116.666667);
+        
+        $mapPoints[1] = array( array('x' => 250, 'y' => 0), 
                         array( 'x' => 450, 'y' => 0),
                         array( 'x' => 400, 'y' => 116.666666667),
-                        array( 'x' => 300, 'y' => 116.666666667)),
-	        "color" => "orange",
-	        "center" => array( 'x' => 350, 'y' => 58.33334),
-	        "troops" => $territoryById[1]->num_troops
-        ),
-        //Top hexagon 2nd
-        array(
-            "points" => array( array('x' => 450, 'y' => 0), 
+                        array( 'x' => 300, 'y' => 116.666666667));
+        $mapPointCenters[1] = array( 'x' => 350, 'y' => 58.33334);                
+        
+        $mapPoints[2] = array( array('x' => 450, 'y' => 0), 
                         array( 'x' => 550, 'y' => 0),
                         array( 'x' => 600, 'y' => 116.666666667),
                         array( 'x' => 550, 'y' => 233.3333333334),
                         array( 'x' => 450, 'y' => 233.3333333334),
-                        array( 'x'=> 400, 'y' => 116.666667)),
-	        "color" => "red",
-	        "center" => array( 'x' => 500, 'y' => 116.6666667),
-	        "troops" => $territoryById[2]->num_troops
-        ),
-        //top lower triangle 1st
-        array(
-            "points" => array( array('x' => 100, 'y' => 116.666667), 
+                        array( 'x'=> 400, 'y' => 116.666667));
+        $mapPointCenters[2] = array( 'x' => 500, 'y' => 116.6666667);
+        
+        $mapPoints[3] = array( array('x' => 100, 'y' => 116.666667), 
                         array( 'x' => 50, 'y' => 233.33334),
-                        array( 'x' => 150, 'y' => 233.333334)),
-	        "color" => "yellow",
-	        "center" => array( 'x' => 100, 'y' => 194),
-	        "troops" => $territoryById[3]->num_troops
-        ),
-        //top lower Trapizoid
-        array(
-            "points" => array( array('x' => 300, 'y' => 116.66667), 
+                        array( 'x' => 150, 'y' => 233.333334));
+        $mapPointCenters[3] = array( 'x' => 100, 'y' => 194);
+        
+        $mapPoints[4] = array( array('x' => 300, 'y' => 116.66667), 
                         array( 'x' => 400, 'y' => 116.666667),
                         array( 'x' => 450, 'y' => 233.3333334),
-                        array( 'x'=> 250, 'y' => 233.33334)),
-	        "color" => "orange",
-	        "center" => array( 'x' => 350, 'y' => 175),
-	        "troops" => $territoryById[4]->num_troops
-        ),
-        //top lower triangle 2nd
-        array(
-            "points" => array( array('x' => 600, 'y' => 116.666667), 
+                        array( 'x'=> 250, 'y' => 233.33334));
+        $mapPointCenters[4] = array( 'x' => 350, 'y' => 175);
+        
+        $mapPoints[5] = array( array('x' => 600, 'y' => 116.666667), 
                         array( 'x' => 550, 'y' => 233.33334),
-                        array( 'x' => 650, 'y' => 233.333334)),
-	        "color" => "yellow",
-	        "center" => array( 'x' => 600, 'y' => 194),
-	        "troops" => $territoryById[5]->num_troops
-        ),
-        //middle hexagon 1
-        array(
-            "points" => array( array('x' => 50, 'y' => 233.333334), 
+                        array( 'x' => 650, 'y' => 233.333334));
+        $mapPointCenters[5] = array( 'x' => 600, 'y' => 194);
+        
+        $mapPoints[6] = array( array('x' => 50, 'y' => 233.333334), 
                         array( 'x' => 150, 'y' => 233.333334),
                         array( 'x' => 200, 'y' => 350),
                         array( 'x' => 150, 'y' => 466.6666667),
                         array( 'x' => 50, 'y' => 466.6666667),
-                        array( 'x'=> 0, 'y' => 350)),
-	        "color" => "red",
-	        "center" => array( 'x' => 100, 'y' => 350),
-	        "troops" => $territoryById[6]->num_troops
-        ),
-        //middle upper Rhombus 1
-        array(
-            "points" => array( array('x' => 150, 'y' => 233.333334), 
+                        array( 'x'=> 0, 'y' => 350));
+        $mapPointCenters[6] = array( 'x' => 100, 'y' => 350);
+        
+        $mapPoints[7] = array( array('x' => 150, 'y' => 233.333334), 
                         array( 'x' => 250, 'y' => 233.33334),
                         array( 'x' => 300, 'y' => 350),
-                        array( 'x'=> 200, 'y' => 350)),
-	        "color" => "blue",
-	        "center" => array( 'x' => 225, 'y' => 291.666667),
-	        "troops" => $territoryById[7]->num_troops
-        ),
-         //middle upper trapizoid
-        array(
-            "points" => array( array('x' => 250, 'y' => 233.333334), 
+                        array( 'x'=> 200, 'y' => 350));
+        $mapPointCenters[7] =array( 'x' => 225, 'y' => 291.666667);
+        
+        $mapPoints[8] = array( array('x' => 250, 'y' => 233.333334), 
                         array( 'x' => 450, 'y' => 233.33334),
                         array( 'x' => 400, 'y' => 350),
-                        array( 'x'=> 300, 'y' => 350)),
-	        "color" => "orange",
-	        "center" => array( 'x' => 350, 'y' => 291.666667),
-	        "troops" => $territoryById[8]->num_troops
-        ),
-        //middle upper Rhombus 2
-        array(
-            "points" => array( array('x' => 450, 'y' => 233.333334), 
+                        array( 'x'=> 300, 'y' => 350));
+        $mapPointCenters[8] = array( 'x' => 350, 'y' => 291.666667);
+        
+        $mapPoints[9] = array( array('x' => 450, 'y' => 233.333334), 
                         array( 'x' => 550, 'y' => 233.3333334),
                         array( 'x' => 500, 'y' => 350),
-                        array( 'x'=> 400, 'y' => 350)),
-	        "color" => "blue",
-	        "center" => array( 'x' => 475, 'y' => 291.666667),
-	        "troops" => $territoryById[9]->num_troops
-        ),
-        //middle lower trapizoid
-        array(
-            "points" => array( array('x' => 300, 'y' => 350), 
+                        array( 'x'=> 400, 'y' => 350));
+        $mapPointCenters[9] = array( 'x' => 475, 'y' => 291.666667);
+        
+        $mapPoints[10] = array( array('x' => 300, 'y' => 350), 
                         array( 'x' => 400, 'y' => 350),
                         array( 'x' => 450, 'y' => 466.666667),
-                        array( 'x'=> 250, 'y' => 466.66667)),
-	        "color" => "orange",
-	        "center" => array( 'x' => 350, 'y' => 408.333334),
-	        "troops" => $territoryById[10]->num_troops
-        ),
-        //middle lower Rhombus 1
-        array(
-            "points" => array( array('x' => 200, 'y' => 350), 
+                        array( 'x'=> 250, 'y' => 466.66667));
+        $mapPointCenters[10] = array( 'x' => 350, 'y' => 408.333334);
+        
+        $mapPoints[11] = array( array('x' => 200, 'y' => 350), 
                         array( 'x' => 300, 'y' => 350),
                         array( 'x' => 250, 'y' => 466.666667),
-                        array( 'x'=> 150, 'y' => 466.66667)),
-	        "color" => "blue",
-	        "center" => array( 'x' => 225, 'y' => 408.33334),
-	        "troops" => $territoryById[11]->num_troops
-        ),
-        //middle lower Rhombus 2
-        array(
-            "points" => array( array('x' => 400, 'y' => 350), 
+                        array( 'x'=> 150, 'y' => 466.66667));
+        $mapPointCenters[11] = array( 'x' => 225, 'y' => 408.33334);
+        
+        $mapPoints[12] = array( array('x' => 400, 'y' => 350), 
                         array( 'x' => 500, 'y' => 350),
                         array( 'x' => 550, 'y' => 466.66667),
-                        array( 'x'=> 450, 'y' => 466.66667)),
-	        "color" => "blue",
-	        "center" => array( 'x' => 475, 'y' => 408.33334),
-	        "troops" => $territoryById[12]->num_troops
-        ),
-        //middle hexagon 2
-        array(
-            "points" => array( array('x' => 550, 'y' => 233.333334), 
+                        array( 'x'=> 450, 'y' => 466.66667));
+        $mapPointCenters[12] = array( 'x' => 475, 'y' => 408.33334);
+        
+        $mapPoints[13] = array( array('x' => 550, 'y' => 233.333334), 
                         array( 'x' => 650, 'y' => 233.333334),
                         array( 'x' => 700, 'y' => 350),
                         array( 'x' => 650, 'y' => 466.6666667),
                         array( 'x' => 550, 'y' => 466.6666667),
-                        array( 'x'=> 500, 'y' => 350)),
-	        "color" => "red",
-	        "center" => array( 'x' => 600, 'y' => 350),
-	        "troops" => $territoryById[13]->num_troops
-        ),
-        // Bottom Upper Triangle 2
-        array(
-          "points" => array( array('x' => 150, 'y' => 466.6666667),
+                        array( 'x'=> 500, 'y' => 350));
+        $mapPointCenters[13] = array( 'x' => 600, 'y' => 350);
+        
+        $mapPoints[14] = array( array('x' => 150, 'y' => 466.6666667),
                       array('x' => 50, 'y' =>  466.6666667),
-                      array('x' => 100, 'y' => 583.333334)),
-          "color" => "yellow",
-          "center" => array('x' => 100, 'y' => 505.5555556),
-	      "troops" => $territoryById[14]->num_troops
-          ),
-          // Bottom Upper Triangle 2
-          array(
-            "points" => array( array('x' => 550, 'y' => 466.6666667),
+                      array('x' => 100, 'y' => 583.333334));
+        $mapPointCenters[14] = array('x' => 100, 'y' => 505.5555556);
+        
+        $mapPoints[15] = array( array('x' => 550, 'y' => 466.6666667),
                        array('x' => 650, 'y' => 466.6666667),
-                       array('x' => 600, 'y' => 583.333334)),
-            "color" => "yellow",
-            "center" => array('x' => 600, 'y' => 505.5555556),
-	        "troops" => $territoryById[15]->num_troops
-          ),
-          // Bottom Hexagon 1 
-          array(
-            "points" => array(array('x' => 150, 'y' => 466.6666667),
+                       array('x' => 600, 'y' => 583.333334));
+        $mapPointCenters[15] = array('x' => 600, 'y' => 505.5555556);
+        
+        $mapPoints[16] = array(array('x' => 150, 'y' => 466.6666667),
                         array('x' => 250, 'y' => 466.6666667),
                         array('x' => 300, 'y' => 583.3333334),
                         array('x' => 250, 'y' => 700),
                         array('x' => 150, 'y' => 700),
-                        array('x' => 100, 'y' => 583.3333334)),
-              "color" => "red",
-              "center" => array('x' => 200, 'y' => 583.3333334),
-	        "troops" => $territoryById[16]->num_troops
-            ), 
-            // Bottom Upper Trapizoid
-            array(
-              "points" => array( array('x' => 250, 'y' => 466.6666667),
+                        array('x' => 100, 'y' => 583.3333334));
+        $mapPointCenters[16] = array('x' => 200, 'y' => 583.3333334);
+        
+        $mapPoints[17] = array( array('x' => 250, 'y' => 466.6666667),
                           array('x' => 450, 'y' => 466.6666667),
                           array('x' => 400, 'y' => 583.3333334),
-                          array('x' => 300, 'y' => 583.3333334)),
-              "color" => "orange",
-              "center" => array('x' => 350, 'y' => 525),
-	        "troops" => $territoryById[17]->num_troops
-              ),
-          // Bottom Lower Trapizoid
-          array(
-            "points" => array( array('x' => 300, 'y' => 583.3333334),
+                          array('x' => 300, 'y' => 583.3333334));
+        $mapPointCenters[17] = array('x' => 350, 'y' => 525);
+        
+        $mapPoints[18] = array( array('x' => 300, 'y' => 583.3333334),
                         array('x' => 400, 'y' => 583.3333334),
                         array('x' => 450, 'y' => 700),
-                        array('x' => 250, 'y' => 700)),
-            "color" => "orange",
-            "center" => array('x' => 350, 'y' => 641.6666667),
-	        "troops" => $territoryById[18]->num_troops
-            ),
-          // Bottom Hexagon 2
-          array(
-            "points" => array(array('x' => 450, 'y' => 466.6666667),
+                        array('x' => 250, 'y' => 700));
+        $mapPointCenters[18] = array('x' => 350, 'y' => 641.6666667);
+        
+        $mapPoints[19] = array(array('x' => 450, 'y' => 466.6666667),
                         array('x' => 550, 'y' => 466.6666667),
                         array('x' => 600, 'y' => 583.3333334),
                         array('x' => 550, 'y' => 700),
                         array('x' => 450, 'y' => 700),
-                        array('x' => 400, 'y' => 583.3333334)),
-            "color" => "red",
-            "center" => array('x' => 500, 'y' => 583.3333334),
-	        "troops" => $territoryById[19]->num_troops
-          )
-      );
+                        array('x' => 400, 'y' => 583.3333334));
+        $mapPointCenters[19] = array('x' => 500, 'y' => 583.3333334);
         
-        //Set the map array to be available in the view with name of map
-        $this->set('map', $map);
+        $mapInfo = array();
+        $mapInfo['points'] = $mapPoints;
+        $mapInfo['centers'] = $mapPointCenters;
+        
+        return $mapInfo;
     }
     
     
