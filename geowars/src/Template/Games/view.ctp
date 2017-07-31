@@ -22,7 +22,7 @@
 }
 </style>
 <div id="map">
-	<canvas id="canvas" width="700" height="700"></canvas>
+	<canvas id="canvas" width="800" height="700"></canvas>
 
 	<form class="buy_phase_menu" method="POST" >
 		<fieldset>
@@ -73,22 +73,22 @@
 
 </body>
 </html>
- <script>
 
- //Establish the Canvas variable
-   var canvas = document.getElementById('canvas');
-   var ctx = canvas.getContext('2d');
+<script>
 
-// Shapes vairable used for the functions
-// intialized with ajax call
-	 var shapes;
+//Establish the Canvas variable
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+// gameInfo holds all information about map that is sent from server in ajax call
+var gameInfo;
 
 //This cycles through and draws each shape but looping through the list of points
-function drawBoard(board) {
-
+function drawBoard() {
+	var board = gameInfo.map;
+	console.log(board);
 	//Get context	
 	if (canvas.getContext) {
-    	//var ctx = canvas.getContext('2d');
     	
     	//Loop through ever shape in array passed into board function
 		for(var i = 0; i < board.length; i++) {
@@ -118,7 +118,7 @@ function drawBoard(board) {
 			ySum = ySum + board[i].points[0].y;
 
 			//Print center location
-			console.log("center: { x: " + xSum/board[i].points.length + ", y: " + ySum/board[i].points.length + "}");
+			//console.log("center: { x: " + xSum/board[i].points.length + ", y: " + ySum/board[i].points.length + "}");
 		
 			//Fill shape with color 
 			ctx.fillStyle = board[i].color;
@@ -145,11 +145,13 @@ function drawBoard(board) {
 			ctx.stroke();
 			ctx.font = '16px serif';
 			ctx.strokeText(board[i].troops, board[i].center.x-7, board[i].center.y);
+
+		}
 		
-		//ctx.closePath();
-    		//ctx.stroke();
+		ctx.font = 'normal 16px/1 "Segoe UI",Arial';
+		ctx.fillStyle = '#888888';
+		ctx.strokeText('Current Phase: ' + gameInfo.phase, 650, 50 );
 	}
-  }
 }
 
 
@@ -159,7 +161,7 @@ canvas.addEventListener('click', function(event) {
 	var x = document.getElementsByClassName("buy_phase_menu"),
     style = window.getComputedStyle(x[0]),
     display = style.getPropertyValue('display');
-    
+    var map = gameInfo.map;
 	if(display === "none"){
 		
 		// moved the location determining point inside the code for the menu because we don't care where clicks originate from if the menu is visible.
@@ -182,8 +184,8 @@ canvas.addEventListener('click', function(event) {
 	    console.log(x + ' ' + y);
 	
 		//Calculate shortest distance for all shapes/objects on the screen
-		for(var i = 0; i < shapes.length; i++) {
-			tempDistance = Math.sqrt(Math.pow((x - shapes[i].center.x), 2) + Math.pow((y - shapes[i].center.y), 2));
+		for(var i = 0; i < map.length; i++) {
+			tempDistance = Math.sqrt(Math.pow((x - map[i].center.x), 2) + Math.pow((y - map[i].center.y), 2));
 			
 			//Update the shape with the shortest distance as required
 			if(bestDistance > tempDistance) {
@@ -195,7 +197,7 @@ canvas.addEventListener('click', function(event) {
 		}
 	
 		//Print to console the object location in the array and the color of that object
-		console.log("Object:" + bestObject + " Color:" + shapes[bestObject].color);
+		console.log("Object:" + bestObject + " Color:" + map[bestObject].color);
 	
 		var xhttp = new XMLHttpRequest();
 
@@ -208,20 +210,20 @@ canvas.addEventListener('click', function(event) {
     			if(response.phase == 'buy'){
     				// updating owner information
 					var owner = document.getElementById("buy_phase_owner_name");
-					owner.innerHTML = shapes[bestObject].color;
+					owner.innerHTML = map[bestObject].color;
 					// updating Troop Numbers
 					var troops = document.getElementById("buy_phase_troop_numbers");
-					troops.innerHTML = shapes[bestObject].troops
+					troops.innerHTML = map[bestObject].troops
 					var x = document.getElementsByClassName("buy_phase_menu");
 					x[0].style.display = "block";
     			}else {
     				// updating owner information
 					var owner = document.getElementById("attack_phase_owner_name");
-					owner.innerHTML = shapes[bestObject].color;
+					owner.innerHTML = map[bestObject].color;
 					// updating Troop Numbers
 					// ensure that this is communicating with other gameplay functionality
 					var troops = document.getElementById("attack_phase_troop_numbers");
-					troops.innerHTML = shapes[bestObject].troops
+					troops.innerHTML = map[bestObject].troops
 
 					var x = document.getElementsByClassName("attack_phase_menu");
 					x[0].style.display = "block";
@@ -230,16 +232,12 @@ canvas.addEventListener('click', function(event) {
 
     		}
 		};
-		xhttp.open("GET", "/api/getphase?owner=" + shapes[bestObject].color, true);
+		xhttp.open("GET", "/api/getphase?owner=" + map[bestObject].color, true);
 		xhttp.send();
 		
 		
 			
 	}
-	
-	
-	//ctx.fillStyle = shapes[bestObject].color;
-	//ctx.fillRect(100,100,150,75);
 
 }, false);
 
@@ -304,16 +302,14 @@ var xhttp = new XMLHttpRequest();
      var response = JSON.parse(this.responseText);
      
      //Call the drawboard function and send the map array in the response
-    shapes = response.map;
-    drawBoard(shapes);
+    gameInfo = response.game;
+    
+    drawBoard();
 
     }
   };
   xhttp.open("GET", "/api/getmap", true);
   xhttp.send();
 
-
-//Call the draw funtion
-//drawBoard(shapes);
 
 </script>

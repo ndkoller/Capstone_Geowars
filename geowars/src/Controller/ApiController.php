@@ -78,7 +78,7 @@ class ApiController extends AppController
             2 => "green"
             );
         
-        
+        $game = array();
         $map = array();
         
         for($i = 0; $i < 20; $i++) {
@@ -89,10 +89,11 @@ class ApiController extends AppController
                 "troops" => $territoryById[$i]->num_troops
                 );
         }
-        
+        $game["map"] = $map;
+        $game["phase"] = "buy";
         
         //Set the map array to be available in the view with name of map
-        $this->set('map', $map);
+        $this->set('game', $game);
     }
     
     // This function will build an array of map points. To begin we will have

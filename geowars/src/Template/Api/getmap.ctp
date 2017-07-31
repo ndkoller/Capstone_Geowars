@@ -1,3 +1,3 @@
 <?php 
-echo json_encode(compact('map')); 
+echo json_encode(compact('game')); 
 ?>
