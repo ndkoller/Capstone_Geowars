@@ -20,14 +20,14 @@
   <div class="form-group">
     <label for="planningPhase" class="col-sm-2 control-label">Planning Phase (minutes)</label>
     <div class="col-sm-6">
-      <input type="number" min="1" class="form-control" id="planningPhase">
+      <input type="number" min="1" class="form-control" id="planningPhase" placeholder="1" required="true">
     </div>
   </div>
   
   <div class="form-group">
     <label for="attackPhase" class="col-sm-2 control-label">Attack Phase (minutes)</label>
     <div class="col-sm-6">
-      <input type="number" min="1" class="form-control" id="attackPhase">
+      <input type="number" min="1" class="form-control" id="attackPhase" placeholder="1" required="true">
     </div>
   </div>
   
@@ -39,6 +39,8 @@
           <option value="2">2</option>
           <option value="3">3</option>
           <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
       </select>
     </div>
   </div>
@@ -51,6 +53,8 @@
           <option value="2">2</option>
           <option value="3">3</option>
           <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
       </select>
     </div>
   </div>
@@ -58,14 +62,14 @@
   <div class="form-group">
     <label for="date" class="col-sm-2 control-label">Start Date</label>
     <div class="col-sm-6">
-      <input type="date" class="form-control" id="date">
+      <input type="date" class="form-control" id="date" required="true">
     </div>
   </div>
   
   <div class="form-group">
     <label for="time" class="col-sm-2 control-label">Start Time</label>
     <div class="col-sm-6">
-      <input type="time" class="form-control" id="time">
+      <input type="time" class="form-control" id="time" required="true">
     </div>
   </div>
   
@@ -130,7 +134,18 @@ function makeGame() {
         return; 
     }*/
     
-    
+    /*Data Validation*/
+    if (!startDate || !startTime){
+      unixTime = new Date();
+    }
+    if(!planningPhase){
+      // required Planning Time
+      planningPhase = 1; // Default 1 minute
+    }
+    if(!attackPhase){
+      // Required Attack Time 
+      attackPhase = 1; // Default 1 minute
+    }
     
     var ajaxreq = new XMLHttpRequest();
     ajaxreq.onload = function() {
@@ -147,8 +162,8 @@ function makeGame() {
     //Values to post
     //The start day and time have been combined and posted as startUNIXTime
     var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
-        + '&minPlayers' + minPlayers + '&maxPlayers' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
-        +  "&atStart" + atStart + '&join' + join;
+        + '&minPlayers=' + minPlayers + '&maxPlayers=' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
+        +  "&atStart=" + atStart + '&join=' + join;
     ajaxreq.open('POST', '/games/createprocess', true);
     ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     ajaxreq.send(postString);
