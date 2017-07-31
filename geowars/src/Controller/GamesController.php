@@ -57,9 +57,9 @@ class GamesController extends AppController
            $Games = TableRegistry::get('Games');
             
           //Values from create form post
-          /* var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
-              + '&minPlayers' + minPlayers + '&maxPlayers' + maxPlayers + '&startUNIXTime' + unixTime.getTime()  
-              +  "&atStart" + atStart + '&join' + join; */     
+          /*    var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
+        + '&minPlayers=' + minPlayers + '&maxPlayers=' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
+        +  "&atStart=" + atStart + '&join=' + join; */     
       
           $newGame = $Games->newEntity();
           $newGame->created_by = $this->Auth->User('id');
@@ -69,13 +69,16 @@ class GamesController extends AppController
 				  $newGame->phase_two_duration = $this->request->data['attackPhase'];
 				  $newGame->turn_end_time = $this->request->data['planningPhase'] + $this->request->data['attackPhase'];
 				  $newGame->start_time = $this->request->data['startUNIXTime'];
-				  //$newGame->address1 = $this->request->data['address1'];
-
+				  $newGame->min_users = $this->request->data['minPlayers'];
+  				  $newGame->max_users = $this->request->data['maxPlayers'];
+  				  $newGame->atStart_opt = $this->request->data['atStart'];
+                  $newGame->join_opt = $this->request->data['join'];
+                  				  
 				  if ($Games->save($newGame)) {
 				    $results = 1;
                         //echo "success";
                         //$this->Flash->success(__('The game has been created.'));
-                //return $this->redirect(['action' => 'add']);
+                        //return $this->redirect(['action' => 'add']);
                     }  else {
                         $results = 1;
                         //$this->Flash->error(__('Unable to add the user.'));    
