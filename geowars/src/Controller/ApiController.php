@@ -299,32 +299,104 @@ class ApiController extends AppController
         //For Ajax requests
         $this->viewBuilder()->layout('ajax');
         
+        //Set up connections to all requred tables
         $Games = TableRegistry::get('Games');
         $Territories = TableRegistry::get('Territories');
         $GamesUsers = TableRegistry::get('GamesUsers');
         $Users = TableRegistry::get('Users');
         
         
+        //Find list of games that have not started but are part the set start time
         $gameResults = $Games->find()->
             where(["start_time <" => time() * 1000])->
             where(["started = 0" ]);
-        //echo time();
+            
+        
+        $players = array();
+        
+        //Iterate through each game that needs to start
         foreach ($gameResults as $game) {
-            //$game->started = 1;
-            //$Games->save($game);
+            
+            echo "Game Found";
+            
+            //Uncomment below to see list of unstarted games that will be started
             //echo $game;
+            
+            //Array that will hold list of players for game
+            $players = array();
+            
+            //Gets a list of users that are going to play current game
             $gameUsers = $GamesUsers->find()->
                 where(["game_id =" => $game->id]);
-                //echo $gameUsers;
+            
+            //Iterate through players and push to players array
             foreach ($gameUsers as $gameUser) {
-                $userInfo = $Users->find()->
-                where(["id =" => $gameUser->user_id]);
                 
-                foreach ($userInfo as $user) {
-                    echo $user->username;
-                }
+                
+                
+                array_push($players, $gameUser->user_id);
+                
             }
             
+            
+            echo " with " . count($players) . " players";
+            
+            //Hexagon locations for game start- 0, 2, 6, 13, 16, 19
+            
+            //Create 20 territores for our game
+            for ($x = 0; $x < 20; $x++) {
+                $newTerritory = $Territories->newEntity();
+                
+                $newTerritory->game_id = $game->id;
+                $newTerritory->turn_id = 1;
+                $newTerritory->tile_id = $x;
+                
+                if($x == 0 && count($players) > 0) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $players[0];
+                    $newTerritory->num_troops = 20;
+                } elseif ($x == 2 && count($players) > 1) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $players[1];
+                    $newTerritory->num_troops = 20;
+                } elseif ($x == 6 && count($players) > 2) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $players[2];
+                    $newTerritory->num_troops = 20;
+                } elseif ($x == 13 && count($players) > 3) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $players[3];
+                    $newTerritory->num_troops = 20;
+                } elseif ($x == 16 && count($players) > 4) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $players[4];
+                    $newTerritory->num_troops = 20;
+                } elseif ($x == 19 && count($players) > 5) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $players[5];
+                    $newTerritory->num_troops = 20;
+                } else {
+                    $newTerritory->is_occupied = 0;
+                    $newTerritory->user_id = 1;
+                    $newTerritory->num_troops = 0;
+                }
+                
+                echo ". Creating territory";  
+                if(!$Territories->save($newTerritory)) {
+                    //echo ".  Territory Created";
+                    debug($this->validationErrors); die();
+                }
+                
+               // $newTerritory->is_occupied =
+                //$newTerritory->user_id =
+                //$newTerritory->num_troops =
+            }
+            
+            //Mark game as started
+            $game->started = 1;
+            
+            //Save game state
+            $Games->save($game);
             
         }
     }

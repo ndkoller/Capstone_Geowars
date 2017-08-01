@@ -53,10 +53,10 @@ class TurnsTable extends Table
         ]);
         $this->hasMany('DeploymentActions', [
             'foreignKey' => 'turn_id'
-        ]);
+        ]); 
         $this->hasMany('Territories', [
             'foreignKey' => 'turn_id'
-        ]);
+        ]); 
     }
 
     /**
