@@ -83,10 +83,13 @@ var ctx = canvas.getContext('2d');
 // gameInfo holds all information about map that is sent from server in ajax call
 var gameInfo;
 
+// Global variable to store what tile ID was clicked. Set to -1 inbetween 
+// phases
+var tileClicked = -1;
+
 //This cycles through and draws each shape but looping through the list of points
 function drawBoard() {
 	var board = gameInfo.map;
-	console.log(board);
 	//Get context	
 	if (canvas.getContext) {
     	
@@ -151,6 +154,7 @@ function drawBoard() {
 		ctx.font = 'normal 16px/1 "Segoe UI",Arial';
 		ctx.fillStyle = '#888888';
 		ctx.strokeText('Current Phase: ' + gameInfo.phase, 650, 50 );
+		ctx.strokeText('Current Turn: ' + gameInfo.currentTurn, 650, 70 );
 	}
 }
 
@@ -199,6 +203,7 @@ canvas.addEventListener('click', function(event) {
 		//Print to console the object location in the array and the color of that object
 		console.log("Object:" + bestObject + " Color:" + map[bestObject].color);
 	
+		tileClicked = bestObject;
 		var xhttp = new XMLHttpRequest();
 
 		//The function that will be run on state change
@@ -206,7 +211,6 @@ canvas.addEventListener('click', function(event) {
     		if (this.readyState == 4 && this.status == 200) {
     			//Parse the JSON response
     			var response = JSON.parse(this.responseText);
-    			console.log(response);
     			if(response.phase == 'buy'){
     				// updating owner information
 					var owner = document.getElementById("buy_phase_owner_name");
@@ -260,8 +264,28 @@ document.getElementById("buy_phase_move_button").addEventListener("click", funct
 });
 
 document.getElementById("buy_phase_buy_button").addEventListener("click", function(){
+	if(tileClicked!=-1){
+		var xhttp = new XMLHttpRequest();
 
-	// fill in with buy functionality 
+		//The function that will be run on state change
+		xhttp.onreadystatechange = function() {
+  	
+  			//What will happen once return is succesful
+    		if (this.readyState == 4 && this.status == 200) {
+    			//Parse the JSON response
+    			var response = this.responseText;
+				console.log(response);
+				if(response === 'success'){
+					drawBoard();
+				}
+				var x = document.getElementsByClassName("buy_phase_menu");
+    			x[0].style.display = "none";
+    		}
+		};
+		xhttp.open("POST", "/api/postaction?action=buy&tile_id=" + tileClicked, true);
+		xhttp.send();	
+	}
+
 
 });
 
@@ -290,26 +314,29 @@ document.getElementById("attack_phase_attack_button").addEventListener("click", 
 });
 
 //Ajax request to get map data
-var xhttp = new XMLHttpRequest();
+function refreshBoard(){
+	var xhttp = new XMLHttpRequest();
 
-  //The function that will be run on state change
-  xhttp.onreadystatechange = function() {
+	//The function that will be run on state change
+	xhttp.onreadystatechange = function() {
   	
-  	//What will happen once return is succesful
-    if (this.readyState == 4 && this.status == 200) {
+  		//What will happen once return is succesful
+    	if (this.readyState == 4 && this.status == 200) {
     
-    //Parse the JSON response
-     var response = JSON.parse(this.responseText);
+    	//Parse the JSON response
+    	var response = JSON.parse(this.responseText);
      
-     //Call the drawboard function and send the map array in the response
-    gameInfo = response.game;
+    	//Call the drawboard function and send the map array in the response
+    	gameInfo = response.game;
     
-    drawBoard();
+    	drawBoard();
 
-    }
-  };
-  xhttp.open("GET", "/api/getmap", true);
-  xhttp.send();
+    	}
+	};
+	xhttp.open("GET", "/api/getmap", true);
+	xhttp.send();
+}
 
+refreshBoard();
 
 </script>

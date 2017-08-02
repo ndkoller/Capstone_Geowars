@@ -33,15 +33,22 @@ class ApiController extends AppController
     public function postAction()
     {
       $this->viewBuilder()->layout('ajax');
-      
-      $color = 'red';
+      $result = array("result" => "failed");
+      $tileId = -1;
+      $action = '';
       if ($this->request->is('post')) {
-          if($this->request->query('color') != null){
-              $color = $this->request->query('color');
-          }
+            if($this->request->query('action') != null){
+                $action = $this->request->query('action');
+            }
+            if($this->request->query('tile_id') != null){
+                $tileId = $this->request->query('tile_id');
+            }
+            if($action == "buy" && $tileId != -1){
+                $result["result"] = "success";
+                // Add code to update db record
+            }
+          
       }
-      $this->loadModel('Games');
-      $result = $this->Games->find();
       
       $this->set('result', $result);
     }
@@ -53,6 +60,8 @@ class ApiController extends AppController
     //make it an option to have mulitple maps.
     public function getMap()
     {
+        // Static ID for testing. we will pull this as a parameter
+        $game_id = 1;
         
         //For Ajax requests
         $this->viewBuilder()->layout('ajax');
@@ -60,7 +69,7 @@ class ApiController extends AppController
         $this->loadModel('Territories');
         $territories = $this->Territories
                             ->find()
-                            ->where(['game_id' => 1, 'turn_id' => 1])
+                            ->where(['game_id' => $game_id, 'turn_id' => 1])
                             ->order(['tile_id' => 'ASC'])
                             ->all()->toArray();
         
@@ -90,7 +99,17 @@ class ApiController extends AppController
                 );
         }
         $game["map"] = $map;
-        $game["phase"] = "buy";
+        
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $game_id])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        
+        $game["phase"] = $gameInfo->current_phase;
+        $game["currentTurn"] = $gameInfo->last_completed_turn_id + 1;
         
         //Set the map array to be available in the view with name of map
         $this->set('game', $game);

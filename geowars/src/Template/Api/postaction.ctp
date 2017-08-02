@@ -1,6 +1,6 @@
 <?php 
 
-echo $result;
+echo json_encode(compact('result'));
 
 
 ?>
