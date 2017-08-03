@@ -468,3 +468,42 @@
 [30-Jul-2017 06:20:48 UTC] PHP  14. Cake\Controller\Controller->invokeAction() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:121
 [30-Jul-2017 06:20:48 UTC] PHP  15. call_user_func_array:{/home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435}() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
 [30-Jul-2017 06:20:48 UTC] PHP  16. App\Controller\ApiController->calculate() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[31-Jul-2017 16:54:18 UTC] PHP Fatal error:  Call to undefined function App\Controller\set() in /home/ubuntu/workspace/geowars/src/Controller/GamesController.php on line 54
+[31-Jul-2017 16:54:18 UTC] PHP Stack trace:
+[31-Jul-2017 16:54:18 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[31-Jul-2017 16:54:18 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[31-Jul-2017 16:54:18 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[31-Jul-2017 16:54:18 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[31-Jul-2017 16:54:18 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[31-Jul-2017 16:54:18 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[31-Jul-2017 16:54:18 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[31-Jul-2017 16:54:18 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[31-Jul-2017 16:54:18 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[31-Jul-2017 16:54:18 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[31-Jul-2017 16:54:18 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[31-Jul-2017 16:54:18 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[31-Jul-2017 16:54:18 UTC] PHP  13. Cake\Http\ActionDispatcher->_invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:95
+[31-Jul-2017 16:54:18 UTC] PHP  14. Cake\Controller\Controller->invokeAction() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:121
+[31-Jul-2017 16:54:18 UTC] PHP  15. call_user_func_array:{/home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435}() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[31-Jul-2017 16:54:18 UTC] PHP  16. App\Controller\GamesController->find() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Controller/Controller.php:435
+[02-Aug-2017 21:04:30 UTC] PHP Parse error:  syntax error, unexpected '=' in /home/ubuntu/workspace/geowars/src/Controller/GamesController.php on line 63
+[02-Aug-2017 21:04:30 UTC] PHP Stack trace:
+[02-Aug-2017 21:04:30 UTC] PHP   1. {main}() /home/ubuntu/workspace/geowars/webroot/index.php:0
+[02-Aug-2017 21:04:30 UTC] PHP   2. Cake\Http\Server->run() /home/ubuntu/workspace/geowars/webroot/index.php:37
+[02-Aug-2017 21:04:30 UTC] PHP   3. Cake\Http\Runner->run() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Server.php:90
+[02-Aug-2017 21:04:30 UTC] PHP   4. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:51
+[02-Aug-2017 21:04:30 UTC] PHP   5. Cake\Error\Middleware\ErrorHandlerMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[02-Aug-2017 21:04:30 UTC] PHP   6. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Error/Middleware/ErrorHandlerMiddleware.php:81
+[02-Aug-2017 21:04:30 UTC] PHP   7. Cake\Routing\Middleware\AssetMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[02-Aug-2017 21:04:30 UTC] PHP   8. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/AssetMiddleware.php:88
+[02-Aug-2017 21:04:30 UTC] PHP   9. Cake\Routing\Middleware\RoutingMiddleware->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[02-Aug-2017 21:04:30 UTC] PHP  10. Cake\Http\Runner->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Routing/Middleware/RoutingMiddleware.php:62
+[02-Aug-2017 21:04:30 UTC] PHP  11. Cake\Http\BaseApplication->__invoke() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/Runner.php:65
+[02-Aug-2017 21:04:30 UTC] PHP  12. Cake\Http\ActionDispatcher->dispatch() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/BaseApplication.php:83
+[02-Aug-2017 21:04:30 UTC] PHP  13. Cake\Http\ControllerFactory->create() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ActionDispatcher.php:92
+[02-Aug-2017 21:04:30 UTC] PHP  14. Cake\Core\App::className() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Http/ControllerFactory.php:70
+[02-Aug-2017 21:04:30 UTC] PHP  15. Cake\Core\App::_classExistsInBase() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:64
+[02-Aug-2017 21:04:30 UTC] PHP  16. class_exists() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[02-Aug-2017 21:04:30 UTC] PHP  17. spl_autoload_call() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[02-Aug-2017 21:04:30 UTC] PHP  18. Composer\Autoload\ClassLoader->loadClass() /home/ubuntu/workspace/geowars/vendor/cakephp/cakephp/src/Core/App.php:152
+[02-Aug-2017 21:04:30 UTC] PHP  19. Composer\Autoload\includeFile() /home/ubuntu/workspace/geowars/vendor/composer/ClassLoader.php:322
