@@ -15,12 +15,13 @@ class GamesController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow('add');
+        $this->Auth->allow(array('add','findAll','createProcess'));
     }
     
     //Will eventualy take one vairable for the games ID
     public function view()
     {
+        
         
     }
     
@@ -30,10 +31,26 @@ class GamesController extends AppController
         
     }
     
-    //List games that have not filled up with users yet that are open to join
     public function find()
     {
         
+    }
+    
+    
+    //List games that have not filled up with users yet that are open to join
+    public function findAll()
+    {
+            //For Ajax requests
+        $this->viewBuilder()->layout('ajax');
+        
+        $this->loadModel('Games');
+        $games = $this->Games
+                      ->find()
+                      ->where(['started' => 0]) // add max player calculations
+                      ->order(['start_time' => 'ASC'])
+                      ->all()->toArray();
+        
+        $this->set('games', $games);
     }
     
     //Allows a user to create a new game
@@ -73,6 +90,7 @@ class GamesController extends AppController
   				  $newGame->max_users = $this->request->data['maxPlayers'];
   				  $newGame->atStart_opt = $this->request->data['atStart'];
                   $newGame->join_opt = $this->request->data['join'];
+                  $newGame->current_phase = 'buy';
                   				  
 				  if ($Games->save($newGame)) {
 				    $results = 1;
