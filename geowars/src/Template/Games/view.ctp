@@ -110,7 +110,13 @@ function drawBorders(territories, phase) {
 			ctx.lineWidth = 3;
 			
 			//Set Color
-			ctx.strokeStyle = "red";
+			if(phase == 1) {
+				ctx.strokeStyle = "red";
+			} else if(phase == 2) {
+				ctx.strokeStyle = "green";
+			} else if(phase == 3) {
+				ctx.strokeStyle = "black";
+			}
 			
 			//Draw boarder to canvas
 			ctx.stroke();
@@ -234,6 +240,7 @@ canvas.addEventListener('click', function(event) {
 		console.log("Object:" + bestObject + " Color:" + map[bestObject].color);
 	
 		tileClicked = bestObject;
+		
 		//Use Funtion to draw new boarders
 		drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 1);
 		
@@ -287,6 +294,7 @@ document.getElementById("buy_phase_cancel").addEventListener("click", function()
 	
 	var x = document.getElementsByClassName("buy_phase_menu");
     x[0].style.display = "none";
+    drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 3);
 	
 });
 
@@ -331,6 +339,7 @@ document.getElementById("attack_phase_cancel").addEventListener("click", functio
 	
 	var x = document.getElementsByClassName("attack_phase_menu");
     x[0].style.display = "none";
+    drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 3);
 	
 });
 
