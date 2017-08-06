@@ -87,6 +87,42 @@ var gameInfo;
 // phases
 var tileClicked = -1;
 
+//Function to draw board for showing where to attack and where a use can
+//move troops
+function drawBorders(territories, phase) {
+	var board = gameInfo.map;
+	
+	//Create new path to draw shape boarder
+			
+		for(var b = 0; b < territories.length; b++) {
+			ctx.beginPath();
+    		ctx.moveTo(board[territories[b]].points[0].x, board[territories[b]].points[0].y);
+    		
+    		//Loop through rest of points for boarder
+			for(var a = 1; a < board[territories[b]].points.length; a++) {
+				ctx.lineTo(board[territories[b]].points[a].x, board[territories[b]].points[a].y);
+			}
+
+			//Close shape border
+			ctx.lineTo(board[territories[b]].points[0].x, board[territories[b]].points[0].y);
+			
+			//Set boarder width
+			ctx.lineWidth = 3;
+			
+			//Set Color
+			if(phase == 1) {
+				ctx.strokeStyle = "red";
+			} else if(phase == 2) {
+				ctx.strokeStyle = "green";
+			} else if(phase == 3) {
+				ctx.strokeStyle = "black";
+			}
+			
+			//Draw boarder to canvas
+			ctx.stroke();
+		}
+}
+
 //This cycles through and draws each shape but looping through the list of points
 function drawBoard() {
 	var board = gameInfo.map;
@@ -204,6 +240,10 @@ canvas.addEventListener('click', function(event) {
 		console.log("Object:" + bestObject + " Color:" + map[bestObject].color);
 	
 		tileClicked = bestObject;
+		
+		//Use Funtion to draw new boarders
+		drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 1);
+		
 		var xhttp = new XMLHttpRequest();
 
 		//The function that will be run on state change
@@ -254,6 +294,7 @@ document.getElementById("buy_phase_cancel").addEventListener("click", function()
 	
 	var x = document.getElementsByClassName("buy_phase_menu");
     x[0].style.display = "none";
+    drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 3);
 	
 });
 
@@ -298,6 +339,7 @@ document.getElementById("attack_phase_cancel").addEventListener("click", functio
 	
 	var x = document.getElementsByClassName("attack_phase_menu");
     x[0].style.display = "none";
+    drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 3);
 	
 });
 
@@ -338,5 +380,6 @@ function refreshBoard(){
 }
 
 refreshBoard();
+
 
 </script>
