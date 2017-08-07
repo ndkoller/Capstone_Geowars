@@ -15,7 +15,7 @@ class GamesController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('add','findAll','createProcess'));
+        $this->Auth->allow(array('add','findAll','createProcess','join'));
     }
     
     //Will eventualy take one vairable for the games ID
@@ -30,10 +30,56 @@ class GamesController extends AppController
     {
         
     }
-    
     public function find()
     {
         
+    }
+    
+    public function join()
+    {
+                //If request is post then create new game.      
+        if ($this->request->is('post')) {
+            
+            //For Ajax requests
+            $this->viewBuilder()->layout('ajax');
+        
+      
+            $this->loadModel('GamesUsers');
+           
+            $joinedPlayers = $this->GamesUsers
+                                 ->find()
+                                 ->where(['game_id' => $this->request->data['game_id']])
+                                 ->all()->toArray();
+           $alreadyJoined = false;
+           for($i = 0; $i < count($joinedPlayers); $i++){
+           
+               if ($joinedPlayers[$i]->user_id == $this->Auth->User('id')) {    
+                    $alreadyJoined = true;
+               }
+           }
+           
+           if(!$alreadyJoined){
+              $Gameusers = TableRegistry::get('GamesUsers');
+              $newPlayer = $Gameusers->newEntity();
+              $newPlayer->user_id = $this->Auth->User('id');
+    				  $newPlayer->is_bot = 0; // alter logic here for when bots are implemented 0 = false 1 = true
+    				  $newPlayer->game_id = $this->request->data['game_id'];
+    				  $newPlayer->coins = 0;
+    				  $newPlayer->troops = 0;
+                      				  
+    				  if ($Gameusers->save($newPlayer)) {
+    				    $results = 1;
+                            
+                        }  else {
+                            $results = 0;
+                                
+                            }
+           }  else {
+                $results = 0;
+           }
+        $this->set('results', $results);
+        
+        }
     }
     
     
@@ -44,11 +90,28 @@ class GamesController extends AppController
         $this->viewBuilder()->layout('ajax');
         
         $this->loadModel('Games');
+        
         $games = $this->Games
                       ->find()
                       ->where(['started' => 0]) // add max player calculations
                       ->order(['start_time' => 'ASC'])
                       ->all()->toArray();
+                    
+        for($i = 0; $i < count($games); $i++ ){
+            $this->loadModel('GamesUsers');
+            $joinedPlayers = $this->GamesUsers
+                                 ->find()
+                                 ->where(['game_id' => $games[$i]->id])
+                                 ->all()->toArray();
+            $games[$i]->currentPlayers = count($joinedPlayers);
+            $this->loadModel('Users');
+            $playerName = $this->Users
+                               ->find()
+                               ->where(['id' => $games[$i]->created_by])
+                               ->all()
+                               ->toArray();
+            $games[$i]->created_by = $playerName[0]->username;
+        }
         
         $this->set('games', $games);
     }

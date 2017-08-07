@@ -17,11 +17,27 @@
                 <th>Join</th>
             </tr>
         </thead>
-
+    <tbody id="find_table_body">
+        
+    </tbody>
     </table>
 </div>
 
 <script type="text/javascript">
+//https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+function timeConverter(UNIX_timestamp){
+  var a = new Date(UNIX_timestamp * 1000);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var year = a.getFullYear();
+  var month = months[a.getMonth()];
+  var date = a.getDate();
+  var hour = a.getHours();
+  var min = a.getMinutes();
+  var sec = a.getSeconds();
+  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+  return time;
+}
+
 var gameList;
 //Ajax request to get Find Data
 var xhttp = new XMLHttpRequest();
@@ -38,20 +54,93 @@ var xhttp = new XMLHttpRequest();
          //Call the drawboard function and send the map array in the response
         gameList = response.games;
         console.log(gameList);
-        
-        var tableBody = document.createElement('TBODY')
-            for (var gameA in gameList) {
-                var tr = document.createElement('TR');
-                
-                for (var data in gameA) {
-                    var td = document.createElement('TD')
-                    td.appendChild(document.createTextNode(data));
-                    tr.appendChild(td);
-                }
-                tableBody.appendChild(tr);
+        var gameA;
+        var i;
+        var tableBody = document.getElementById('find_table_body');
+        for (i = 0; i < gameList.length; i++) {
+            var tr = document.createElement('TR');
+            
+            var gameID = document.createElement('TD');
+            var CreatedBy = document.createElement('TD');
+            var JoinedPlayers = document.createElement('TD');
+            var MinPlayers = document.createElement('TD');
+            var MaxPlayers = document.createElement('TD');
+            var PlanningPhase = document.createElement('TD');
+            var AttackPhase = document.createElement('TD');
+            var StartTime = document.createElement('TD');
+            var Bots = document.createElement('TD');
+            var Map = document.createElement('TD');
+            var joinButton = document.createElement('TD');
+
+            gameID.appendChild(document.createTextNode(gameList[i].id));
+            tr.appendChild(gameID);
+            
+            CreatedBy.appendChild(document.createTextNode(gameList[i].created_by)); // Change to pull actual username not just it's number
+            tr.appendChild(CreatedBy);
+            
+            JoinedPlayers.appendChild(document.createTextNode(gameList[i].currentPlayers)); // replace with the count of the userID's from the query 'JOIN game_users with game on gameID'
+            tr.appendChild(JoinedPlayers);
+            
+            MinPlayers.appendChild(document.createTextNode(gameList[i].min_users));
+            tr.appendChild(MinPlayers);
+            
+            MaxPlayers.appendChild(document.createTextNode(gameList[i].max_users));
+            tr.appendChild(MaxPlayers);
+            
+            PlanningPhase.appendChild(document.createTextNode(gameList[i].phase_one_duration));
+            tr.appendChild(PlanningPhase);
+            
+            AttackPhase.appendChild(document.createTextNode(gameList[i].phase_two_duration));
+            tr.appendChild(AttackPhase);
+            
+            var formattedTime = timeConverter(gameList[i].start_time);
+            StartTime.appendChild(document.createTextNode(formattedTime));
+            tr.appendChild(StartTime);
+            
+            // Bots Conversion logic
+            if(gameList[i].atStart_opt === 2 || gameList[i].atStart_opt === 3){
+                Bots.appendChild(document.createTextNode('Yes'));
             }
-            var tableHead = document.getElementById("find_table_head");
-            tableHead.appendChild(tableBody);
+            else
+            {
+                Bots.appendChild(document.createTextNode('No'));
+            }
+            tr.appendChild(Bots);
+            
+            Map.appendChild(document.createTextNode(gameList[i].map));
+            tr.appendChild(Map);
+
+            var btn = document.createElement("BUTTON");        // Create a <button> element
+            var t = document.createTextNode("Join");       // Create a text node
+            btn.appendChild(t);                                // Append the text to <button>
+            btn.addEventListener("click",function(){ join(this);}, false);
+            joinButton.appendChild(btn);
+            tr.appendChild(joinButton);
+
+            tableBody.appendChild(tr);
+        }
+    }
+    function join(joinID){
+        var ID = joinID.parentNode.parentNode.cells[0].innerHTML;
+        console.log(ID);
+        var ajaxreq = new XMLHttpRequest();
+        ajaxreq.onload = function() {
+              if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
+                var responseObject = JSON.parse(ajaxreq.responseText);
+                if (responseObject.results == 1) {
+                  //Todo
+                  
+                } else {
+                  //Todo
+                }
+              }
+        };
+        
+        //Values to post
+        var postString = 'game_id=' + ID;
+        ajaxreq.open('POST', '/games/join', true);
+        ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        ajaxreq.send(postString);
     }
   };
   xhttp.open("GET", "/games/findall", true);
