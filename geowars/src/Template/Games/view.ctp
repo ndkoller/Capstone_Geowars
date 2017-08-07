@@ -160,6 +160,7 @@ function drawBoard() {
 			
 			//Start new path at the first points location for shape
     		ctx.beginPath();
+    		ctx.strokeStyle = "black";
     		ctx.moveTo(board[i].points[0].x, board[i].points[0].y);
     		
 			for(var j = 1; j < board[i].points.length; j++) {
@@ -340,15 +341,12 @@ document.getElementById("buy_phase_buy_button").addEventListener("click", functi
     		if (this.readyState == 4 && this.status == 200) {
     			//Parse the JSON response
     			var response = this.responseText;
-				console.log(response);
-				if(response === 'success'){
-					drawBoard();
-				}
+				refreshBoard();
 				var x = document.getElementsByClassName("buy_phase_menu");
     			x[0].style.display = "none";
     		}
 		};
-		xhttp.open("POST", "/api/postaction?action=buy&tile_id=" + tileClicked, true);
+		xhttp.open("POST", "/api/postaction/buy/" + gameInfo.gameID + "/" + tileClicked, true);
 		xhttp.send();	
 	}
 
