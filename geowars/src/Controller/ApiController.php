@@ -30,24 +30,24 @@ class ApiController extends AppController
         $this->set('phase', $phase);
     }
     
-    public function postAction()
+    public function postAction($phase,$game_id,$tileId)
     {
       $this->viewBuilder()->layout('ajax');
       $result = array("result" => "failed");
-      $tileId = -1;
-      $action = '';
       if ($this->request->is('post')) {
-            if($this->request->query('action') != null){
-                $action = $this->request->query('action');
+            if($phase == "buy" && $tileId != -1){
+                $this->loadModel('Territories');
+                $territories = $this->Territories
+                                    ->find()
+                                    ->where(['game_id' => $game_id, 'tile_id' => $tileId])
+                                    ->all()->toArray();
+                
+                $territory = $this->Territories->get($territories[0]->id);
+                $territory->num_troops = $territories[0]->num_troops + 5;
+                if($this->Territories->save($territory)){
+                    $result["result"] = "success";
+                }
             }
-            if($this->request->query('tile_id') != null){
-                $tileId = $this->request->query('tile_id');
-            }
-            if($action == "buy" && $tileId != -1){
-                $result["result"] = "success";
-                // Add code to update db record
-            }
-          
       }
       
       $this->set('result', $result);
