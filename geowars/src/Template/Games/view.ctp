@@ -80,12 +80,33 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
+//Get game id from string
+var stringURL = window.location.href;
+var gameID = "";
+
+//Loop to check chars and build gameID string
+for(var c = stringURL.length - 1; c > 0; c--) {
+	
+	//Check is current char is a /
+	if(!stringURL[c].localeCompare("/")) {
+		
+		//Get the Id out of the string with slice
+		gameID = stringURL.slice(c + 1, stringURL.length);
+		break;
+	}
+}
+
+
 // gameInfo holds all information about map that is sent from server in ajax call
 var gameInfo;
 
 // Global variable to store what tile ID was clicked. Set to -1 inbetween 
 // phases
 var tileClicked = -1;
+
+//Array to hold list of territories a user owns popluated on getmap() request
+var ownedTerritories = [];
+
 
 //Function to draw board for showing where to attack and where a use can
 //move troops
@@ -113,7 +134,7 @@ function drawBorders(territories, phase) {
 			if(phase == 1) {
 				ctx.strokeStyle = "red";
 			} else if(phase == 2) {
-				ctx.strokeStyle = "green";
+				ctx.strokeStyle = "lime";
 			} else if(phase == 3) {
 				ctx.strokeStyle = "black";
 			}
@@ -242,7 +263,11 @@ canvas.addEventListener('click', function(event) {
 		tileClicked = bestObject;
 		
 		//Use Funtion to draw new boarders
+		//Draw different borders depending on game phase
 		drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 1);
+		
+		drawBorders(ownedTerritories, 2);
+		
 		
 		var xhttp = new XMLHttpRequest();
 
@@ -370,12 +395,20 @@ function refreshBoard(){
      
     	//Call the drawboard function and send the map array in the response
     	gameInfo = response.game;
+    	
+    	
+		//Create a list of territories a player owns
+		for(var i = 0; i < gameInfo.map.length; i++){
+			if(gameInfo.map[i].owner == gameInfo.userID){
+				ownedTerritories.push(i);
+			}
+		}
     
     	drawBoard();
 
     	}
 	};
-	xhttp.open("GET", "/api/getmap", true);
+	xhttp.open("GET", "/api/getmap/" + gameID, true);
 	xhttp.send();
 }
 
