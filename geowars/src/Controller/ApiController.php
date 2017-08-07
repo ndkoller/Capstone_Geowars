@@ -58,10 +58,10 @@ class ApiController extends AppController
     //
     //Currently holds all data for one map. Plan to move data to new location and
     //make it an option to have mulitple maps.
-    public function getMap()
+    public function getMap($game_id)
     {
         // Static ID for testing. we will pull this as a parameter
-        $game_id = 1;
+        //$game_id = 1;
         
         //For Ajax requests
         $this->viewBuilder()->layout('ajax');
@@ -84,7 +84,8 @@ class ApiController extends AppController
         $colors = array(
             0 => "red",
             1 => "blue",
-            2 => "green"
+            2 => "green",
+            7 => "yellow"
             );
         
         $game = array();
@@ -96,7 +97,8 @@ class ApiController extends AppController
                 "color" => $colors[$territoryById[$i]->user_id],
                 "center" => $mapInfo['centers'][$i],
                 "troops" => $territoryById[$i]->num_troops,
-                "adjacentTerritories" => $mapInfo['$adjacentTerritories'][$i]
+                "adjacentTerritories" => $mapInfo['$adjacentTerritories'][$i],
+                "owner" => $territoryById[$i]->user_id
                 );
         }
         $game["map"] = $map;
@@ -111,6 +113,8 @@ class ApiController extends AppController
         
         $game["phase"] = $gameInfo->current_phase;
         $game["currentTurn"] = $gameInfo->last_completed_turn_id + 1;
+        $game["userID"] = $this->Auth->User('id');
+        $game["gameID"] = $game_id;
         
         //Set the map array to be available in the view with name of map
         $this->set('game', $game);

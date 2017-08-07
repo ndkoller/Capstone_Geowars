@@ -80,6 +80,23 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
+//Get game id from string
+var stringURL = window.location.href;
+var gameID = "";
+
+//Loop to check chars and build gameID string
+for(var c = stringURL.length - 1; c > 0; c--) {
+	
+	//Check is current char is a /
+	if(!stringURL[c].localeCompare("/")) {
+		
+		//Get the Id out of the string with slice
+		gameID = stringURL.slice(c + 1, stringURL.length);
+		break;
+	}
+}
+
+
 // gameInfo holds all information about map that is sent from server in ajax call
 var gameInfo;
 
@@ -375,7 +392,7 @@ function refreshBoard(){
 
     	}
 	};
-	xhttp.open("GET", "/api/getmap", true);
+	xhttp.open("GET", "/api/getmap/" + gameID, true);
 	xhttp.send();
 }
 
