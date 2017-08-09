@@ -6,10 +6,14 @@ use Cake\ORM\Entity;
 /**
  * DeploymentAction Entity
  *
+ * @property int $deployment_action_id
+ * @property int $game_id
+ * @property int $game_user_id
  * @property int $turn_id
- * @property int $coins_added
- * @property int $territory_id_attached
  * @property int $num_troops
+ * @property int $from_territory_id
+ * @property int $to_territory_id
+ * @property int $new_troops
  *
  * @property \App\Model\Entity\Turn $turn
  */
@@ -28,6 +32,6 @@ class DeploymentAction extends Entity
     protected $_accessible = [
         '*' => true,
         'turn_id' => false,
-        'territory_id_attached' => false
+        'to_territory_id' => false
     ];
 }

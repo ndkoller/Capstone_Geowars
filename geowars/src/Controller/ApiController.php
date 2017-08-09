@@ -27,6 +27,7 @@ class ApiController extends AppController
                   $phase = 'attack';
               }
         }
+        
         $this->set('phase', $phase);
     }
     
@@ -48,6 +49,15 @@ class ApiController extends AppController
                     $result["result"] = "success";
                 }
             }
+      }
+      
+      // Test code to verify update to deployment actions table still works
+      if ($this->request->is('get')) {
+            $this->loadModel('DeploymentActions');
+            $actions = $this->DeploymentActions
+                            ->find()
+                            ->all()->toArray();
+            $result["deployment_actions"] = $actions[0]->num_troops;
       }
       
       $this->set('result', $result);
