@@ -61,11 +61,6 @@ class GamesUsersTable extends Table
             ->notEmpty('is_bot');
 
         $validator
-            ->integer('coins')
-            ->requirePresence('coins', 'create')
-            ->notEmpty('coins');
-
-        $validator
             ->integer('troops')
             ->requirePresence('troops', 'create')
             ->notEmpty('troops');

@@ -213,6 +213,7 @@ function drawBoard() {
 		ctx.fillStyle = '#888888';
 		ctx.strokeText('Current Phase: ' + gameInfo.phase, 650, 50 );
 		ctx.strokeText('Current Turn: ' + gameInfo.currentTurn, 650, 70 );
+		ctx.strokeText('Available Troops: ' + gameInfo.troopsAvailable, 650, 90 );
 	}
 }
 
