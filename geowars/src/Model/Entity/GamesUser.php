@@ -9,7 +9,6 @@ use Cake\ORM\Entity;
  * @property int $game_id
  * @property int $user_id
  * @property bool $is_bot
- * @property int $coins
  * @property int $troops
  *
  * @property \App\Model\Entity\Game $game

@@ -54,13 +54,28 @@ class ApiController extends AppController
       // Test code to verify update to deployment actions table still works
       if ($this->request->is('get')) {
             $this->loadModel('DeploymentActions');
-            $actions = $this->DeploymentActions
-                            ->find()
-                            ->all()->toArray();
-            $result["deployment_actions"] = $actions[0]->num_troops;
+            // $actions = $this->DeploymentActions
+            //                 ->find()
+            //                 ->all()->toArray();
+            // $result["deployment_actions"] = $actions[0]->num_troops;
+            $newDeploymentAction = $this->DeploymentActions->newEntity();
+            $newDeploymentAction->game_id = 1;
+            $newDeploymentAction->game_user_id = 2;
+            $newDeploymentAction->turn_id = 1;
+            $newDeploymentAction->num_troops = 4;
+            $newDeploymentAction->to_territory_id = 6;
+            $newDeploymentAction->new_troops = 1;
+            
+            if($this->DeploymentActions->save($newDeploymentAction)){
+                $result["result"] = "great success";
+            }
       }
       
       $this->set('result', $result);
+    }
+    
+    public function updateTerritoryAfterDeployment($turnId, $gameId) {
+        
     }
     
     //Ajax action
@@ -123,11 +138,36 @@ class ApiController extends AppController
         
         $game["phase"] = $gameInfo->current_phase;
         $game["currentTurn"] = $gameInfo->last_completed_turn_id + 1;
-        $game["userID"] = $this->Auth->User('id');
+        
+        $currentUserId = $this->Auth->User('id');
+        $troopsAvailable = $this->getTroopsAvailableForUser($game_id, $currentUserId);
+        $game["troopsAvailable"] = $troopsAvailable;
+        $game["userID"] = $currentUserId;
         $game["gameID"] = $game_id;
         
         //Set the map array to be available in the view with name of map
         $this->set('game', $game);
+    }
+    
+    public function getTroopsAvailableForUser($gameId, $userId) {
+        $this->loadModel('GamesUsers');
+        $users = $this->GamesUsers->find()
+                                ->where(['game_id' => $gameId, 'user_id' => $userId])
+                                ->all()->toArray();
+        $user = $users[0];
+        
+        $this->loadModel('Territories');
+        $territories = $this->Territories
+                            ->find()
+                            ->where(['game_id' => $gameId, 'user_id' => $userId])
+                            ->all()->toArray();
+        $numTroopsAvailable = $user->troops;
+        
+        foreach($territories as $territory) {
+            $numTroopsAvailable = $numTroopsAvailable - $territory->num_troops;
+        }
+        
+        return $numTroopsAvailable;
     }
     
     // This function will build an array of map points. To begin we will have
