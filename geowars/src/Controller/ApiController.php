@@ -15,7 +15,7 @@ class ApiController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('getMap', 'postAction', 'getPhase'));
+        $this->Auth->allow(array('getMap', 'postAction', 'postDeployNew' 'getPhase'));
     }
     
     public function getPhase() {
@@ -72,6 +72,38 @@ class ApiController extends AppController
       }
       
       $this->set('result', $result);
+    }
+    
+    public function postDeployNew($gameId, $userId,$tileId, $numTroops){
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $gameId])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        
+        $this->loadModel('Territories');
+        $territories = $this->Territories
+                            ->find()
+                            ->where(['game_id' => $gameId, 'tile_id' => $tileId])
+                            ->all()->toArray();
+        $territory = $territories[0];
+        
+        $this->loadModel('DeploymentActions');
+        $newDeploymentAction = $this->DeploymentActions->newEntity();
+        $newDeploymentAction->game_id = $gameId;
+        $newDeploymentAction->game_user_id = $userId;
+        $newDeploymentAction->turn_id = $gameInfo->last_completed_turn_id + 1;
+        $newDeploymentAction->num_troops = $numTroops;
+        $newDeploymentAction->to_territory_id = $territory->id;
+        $newDeploymentAction->new_troops = 1;
+            
+        if($this->DeploymentActions->save($newDeploymentAction)){
+            $this->set('result', "success");
+        }else{
+            $this->set('result', "failure");
+        }
     }
     
     public function updateTerritoryAfterDeployment($turnId, $gameId) {
