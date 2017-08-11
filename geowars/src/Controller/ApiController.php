@@ -15,12 +15,12 @@ class ApiController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('getMap', 'postAction', 'postDeployNew' 'getPhase'));
+        $this->Auth->allow(array('getMap', 'postAttack', 'postDeployNew','postDeployMove', 'getPhase'));
     }
     
     public function getPhase() {
         $this->viewBuilder()->layout('ajax');
-        $phase = 'buy';
+        $phase = 'deploy';
         if($this->request->query('owner') != null){
               $owner = $this->request->query('owner');
               if($owner == 'red'){
@@ -33,48 +33,56 @@ class ApiController extends AppController
     
     public function postAction($phase,$game_id,$tileId)
     {
-      $this->viewBuilder()->layout('ajax');
-      $result = array("result" => "failed");
-      if ($this->request->is('post')) {
-            if($phase == "buy" && $tileId != -1){
-                $this->loadModel('Territories');
-                $territories = $this->Territories
-                                    ->find()
-                                    ->where(['game_id' => $game_id, 'tile_id' => $tileId])
-                                    ->all()->toArray();
+    //   $this->viewBuilder()->layout('ajax');
+    //   $result = array("result" => "failed");
+    //   if ($this->request->is('post')) {
+    //         if($phase == "deploy" && $tileId != -1){
+    //             $this->loadModel('Territories');
+    //             $territories = $this->Territories
+    //                                 ->find()
+    //                                 ->where(['game_id' => $game_id, 'tile_id' => $tileId])
+    //                                 ->all()->toArray();
                 
-                $territory = $this->Territories->get($territories[0]->id);
-                $territory->num_troops = $territories[0]->num_troops + 5;
-                if($this->Territories->save($territory)){
-                    $result["result"] = "success";
-                }
-            }
-      }
+    //             $territory = $this->Territories->get($territories[0]->id);
+    //             $territory->num_troops = $territories[0]->num_troops + 5;
+    //             if($this->Territories->save($territory)){
+    //                 $result["result"] = "success";
+    //             }
+    //         }
+    //   }
       
-      // Test code to verify update to deployment actions table still works
-      if ($this->request->is('get')) {
-            $this->loadModel('DeploymentActions');
-            // $actions = $this->DeploymentActions
-            //                 ->find()
-            //                 ->all()->toArray();
-            // $result["deployment_actions"] = $actions[0]->num_troops;
-            $newDeploymentAction = $this->DeploymentActions->newEntity();
-            $newDeploymentAction->game_id = 1;
-            $newDeploymentAction->game_user_id = 2;
-            $newDeploymentAction->turn_id = 1;
-            $newDeploymentAction->num_troops = 4;
-            $newDeploymentAction->to_territory_id = 6;
-            $newDeploymentAction->new_troops = 1;
+    //   // Test code to verify update to deployment actions table still works
+    //   if ($this->request->is('get')) {
+    //         $this->loadModel('DeploymentActions');
+    //         // $actions = $this->DeploymentActions
+    //         //                 ->find()
+    //         //                 ->all()->toArray();
+    //         // $result["deployment_actions"] = $actions[0]->num_troops;
+    //         $newDeploymentAction = $this->DeploymentActions->newEntity();
+    //         $newDeploymentAction->game_id = 1;
+    //         $newDeploymentAction->game_user_id = 2;
+    //         $newDeploymentAction->turn_id = 1;
+    //         $newDeploymentAction->num_troops = 4;
+    //         $newDeploymentAction->to_territory_id = 6;
+    //         $newDeploymentAction->new_troops = 1;
             
-            if($this->DeploymentActions->save($newDeploymentAction)){
-                $result["result"] = "great success";
-            }
-      }
+    //         if($this->DeploymentActions->save($newDeploymentAction)){
+    //             $result["result"] = "great success";
+    //         }
+    //   }
       
-      $this->set('result', $result);
+    //   $this->set('result', $result);
     }
     
     public function postDeployNew($gameId, $userId,$tileId, $numTroops){
+        $this->postDeploy($gameId, $userId, $tileId, 0, $numTroops, false);
+    }
+    
+    public function postDeployMove($gameId, $userId,$fromTileId, $toTileId, $numTroops){
+        $this->postDeploy($gameId, $userId, $fromTileId, $toTileId, $numTroops, true);
+    }
+    
+    public function postDeploy($gameId, $userId, $fromTileId, $toTileId, $numTroops, $isMove) {
         $this->loadModel('Games');
         $gamesInfo = $this->Games
                     ->find()
@@ -83,21 +91,32 @@ class ApiController extends AppController
                     
         $gameInfo = $gamesInfo[0];
         
-        $this->loadModel('Territories');
-        $territories = $this->Territories
-                            ->find()
-                            ->where(['game_id' => $gameId, 'tile_id' => $tileId])
-                            ->all()->toArray();
-        $territory = $territories[0];
-        
         $this->loadModel('DeploymentActions');
         $newDeploymentAction = $this->DeploymentActions->newEntity();
         $newDeploymentAction->game_id = $gameId;
         $newDeploymentAction->game_user_id = $userId;
         $newDeploymentAction->turn_id = $gameInfo->last_completed_turn_id + 1;
         $newDeploymentAction->num_troops = $numTroops;
+        
+        $this->loadModel('Territories');
+        if($isMove){
+            $territories = $this->Territories
+                            ->find()
+                            ->where(['game_id' => $gameId, 'tile_id' => $fromTileId])
+                            ->all()->toArray();
+            $territory = $territories[0];
+            
+            $newDeploymentAction->from_territory_id = $territory->id;
+        }
+        
+        $territories = $this->Territories
+                            ->find()
+                            ->where(['game_id' => $gameId, 'tile_id' => $toTileId])
+                            ->all()->toArray();
+        $territory = $territories[0];
+            
         $newDeploymentAction->to_territory_id = $territory->id;
-        $newDeploymentAction->new_troops = 1;
+        $newDeploymentAction->new_troops = ($isMove ? 0 : 1);
             
         if($this->DeploymentActions->save($newDeploymentAction)){
             $this->set('result', "success");
@@ -106,7 +125,36 @@ class ApiController extends AppController
         }
     }
     
-    public function updateTerritoryAfterDeployment($turnId, $gameId) {
+    public function postAttack($gameId, $fromTileId, $toTileId, $numTroops) {
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $gameId])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        
+        $this->loadModel('Turns');
+        $turns = $this->Turns->find()
+                            ->where(['game_id' => $gameId, 'turn_number' => ($gameInfo->last_completed_turn_id + 1)])
+                            ->all()->toArray();
+        $turn = $turns[0];
+        
+        $this->loadModel('AttackActions');
+        $newAttack = $this->AttackActions->newEntity();
+        $newAttack->turn_id = $turn->id;
+        $newAttack->attack_from = $fromTileId;
+        $newAttack->attack_target = $toTileId;
+        $newAttack->num_troops = $numTroops;
+        
+        if($this->AttackActions->save($newAttack)){
+            $this->set('result', "success");
+        }else{
+            $this->set('result', "failure");
+        }
+    }
+    
+    public function updateTerritoryAfterDeployment($gameId) {
         
     }
     
