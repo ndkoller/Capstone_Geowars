@@ -10,7 +10,6 @@ use Cake\Validation\Validator;
  * Territories Model
  *
  * @property \Cake\ORM\Association\BelongsTo $Games
- * @property \Cake\ORM\Association\BelongsTo $Turns
  * @property \Cake\ORM\Association\BelongsTo $Users
  *
  * @method \App\Model\Entity\Territory get($primaryKey, $options = [])
@@ -40,10 +39,6 @@ class TerritoriesTable extends Table
 
         $this->belongsTo('Games', [
             'foreignKey' => 'game_id',
-            'joinType' => 'INNER'
-        ]);
-        $this->belongsTo('Turns', [
-            'foreignKey' => 'turn_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Users', [
@@ -87,7 +82,6 @@ class TerritoriesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['game_id'], 'Games'));
-        $rules->add($rules->existsIn(['turn_id'], 'Turns'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;

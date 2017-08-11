@@ -4,18 +4,18 @@ namespace App\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Territory Entity
+ * MoveAction Entity
  *
- * @property int $id
  * @property int $game_id
- * @property bool $is_occupied
- * @property int $user_id
+ * @property int $game_user_id
+ * @property int $turn_number
+ * @property int $from_territory_id
+ * @property int $to_territory_id
  * @property int $num_troops
  *
  * @property \App\Model\Entity\Game $game
- * @property \App\Model\Entity\User $user
  */
-class Territory extends Entity
+class MoveAction extends Entity
 {
 
     /**
@@ -29,6 +29,8 @@ class Territory extends Entity
      */
     protected $_accessible = [
         '*' => true,
-        'id' => false
+        'game_id' => false,
+        'game_user_id' => false,
+        'turn_number' => false
     ];
 }

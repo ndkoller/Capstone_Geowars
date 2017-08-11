@@ -4,7 +4,7 @@
 #map{
 	/*position: relative;*/
 }
-.buy_phase_menu{
+.deploy_phase_menu{
     display: none;
     position: absolute;
     background-color: white;
@@ -24,24 +24,24 @@
 <div id="map">
 	<canvas id="canvas" width="800" height="700"></canvas>
 
-	<form class="buy_phase_menu" method="POST" >
+	<form class="deploy_phase_menu" method="POST" >
 		<fieldset>
-			<legend>Buy Phase</legend>
+			<legend>Deploy Phase</legend>
 			<div>
 			  <label>Owner:</label>
-			  <text id="buy_phase_owner_name"></text>
+			  <text id="deploy_phase_owner_name"></text>
 			</div>
 			<div>
 			  <label>Troops:</label>
-			  <text id="buy_phase_troop_numbers"></text>
+			  <text id="deploy_phase_troop_numbers"></text>
 			</div>   
 			<p>
-				<input type="button" value="Buy" id="buy_phase_buy_button">
-				<input type="button" value="Move" id="buy_phase_move_button">  
+				<input type="button" value="Deploy" id="deploy_phase_deploy_button">
+				<input type="button" value="Move" id="deploy_phase_move_button">  
 			</p>
 			<p>
 				<input type="submit">
-				<input id="buy_phase_cancel" type="button" value="Cancel">
+				<input id="deploy_phase_cancel" type="button" value="Cancel">
 			</p>
 		</fieldset>
 	</form>
@@ -221,7 +221,7 @@ function drawBoard() {
 //Handle clicks on board
 canvas.addEventListener('click', function(event) {
 	
-	var x = document.getElementsByClassName("buy_phase_menu"),
+	var x = document.getElementsByClassName("deploy_phase_menu"),
     style = window.getComputedStyle(x[0]),
     display = style.getPropertyValue('display');
     var map = gameInfo.map;
@@ -278,14 +278,14 @@ canvas.addEventListener('click', function(event) {
     		if (this.readyState == 4 && this.status == 200) {
     			//Parse the JSON response
     			var response = JSON.parse(this.responseText);
-    			if(response.phase == 'buy'){
+    			if(response.phase == 'deploy'){
     				// updating owner information
-					var owner = document.getElementById("buy_phase_owner_name");
+					var owner = document.getElementById("deploy_phase_owner_name");
 					owner.innerHTML = map[bestObject].color;
 					// updating Troop Numbers
-					var troops = document.getElementById("buy_phase_troop_numbers");
+					var troops = document.getElementById("deploy_phase_troop_numbers");
 					troops.innerHTML = map[bestObject].troops
-					var x = document.getElementsByClassName("buy_phase_menu");
+					var x = document.getElementsByClassName("deploy_phase_menu");
 					x[0].style.display = "block";
     			}else {
     				// updating owner information
@@ -312,26 +312,26 @@ canvas.addEventListener('click', function(event) {
 
 }, false);
 
-// The following are the button listeners for the Buy menu.
+// The following are the button listeners for the Deploy menu.
 // They should be invisible until a territory click occurs
-// Buy Phase Menu's Cancel button listener
-document.getElementById("buy_phase_cancel").addEventListener("click", function(){
+// Deploy Phase Menu's Cancel button listener
+document.getElementById("deploy_phase_cancel").addEventListener("click", function(){
     
     //Add: Clear any data fields that haven't been submitted
 	
-	var x = document.getElementsByClassName("buy_phase_menu");
+	var x = document.getElementsByClassName("deploy_phase_menu");
     x[0].style.display = "none";
     drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 3);
 	
 });
 
-document.getElementById("buy_phase_move_button").addEventListener("click", function(){
+document.getElementById("deploy_phase_move_button").addEventListener("click", function(){
 
 	// fill in with move functionality
 
 });
 
-document.getElementById("buy_phase_buy_button").addEventListener("click", function(){
+document.getElementById("deploy_phase_deploy_button").addEventListener("click", function(){
 	if(tileClicked!=-1){
 		var xhttp = new XMLHttpRequest();
 
@@ -343,11 +343,13 @@ document.getElementById("buy_phase_buy_button").addEventListener("click", functi
     			//Parse the JSON response
     			var response = this.responseText;
 				refreshBoard();
-				var x = document.getElementsByClassName("buy_phase_menu");
+				var x = document.getElementsByClassName("deploy_phase_menu");
     			x[0].style.display = "none";
     		}
 		};
-		xhttp.open("POST", "/api/postaction/buy/" + gameInfo.gameID + "/" + tileClicked, true);
+		var urlString = "/api/postdeploynew/" + gameInfo.gameID + "/";
+		urlString += gameInfo.userID + "/" + tileClicked + "/5";
+		xhttp.open("POST",  urlString , true);
 		xhttp.send();	
 	}
 

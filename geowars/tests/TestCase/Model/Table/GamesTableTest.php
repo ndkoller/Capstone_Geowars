@@ -27,8 +27,12 @@ class GamesTableTest extends TestCase
         'app.games',
         'app.last_completed_turns',
         'app.territories',
-        'app.turns',
         'app.users',
+        'app.turns',
+        'app.attack_actions',
+        'app.game_users',
+        'app.deployment_actions',
+        'app.to_territories',
         'app.games_users'
     ];
 
