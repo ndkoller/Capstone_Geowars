@@ -9,7 +9,7 @@ use Cake\Validation\Validator;
 /**
  * AttackActions Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Turns
+ * @property \Cake\ORM\Association\BelongsTo $Games
  *
  * @method \App\Model\Entity\AttackAction get($primaryKey, $options = [])
  * @method \App\Model\Entity\AttackAction newEntity($data = null, array $options = [])
@@ -34,12 +34,13 @@ class AttackActionsTable extends Table
 
         $this->table('attack_actions');
         $this->displayField('turn_id');
-        $this->primaryKey(['turn_id', 'attack_target', 'attack_from']);
+        $this->primaryKey(['attack_target', 'attack_from']);
 
-        $this->belongsTo('Turns', [
-            'foreignKey' => 'turn_id',
+        $this->belongsTo('Games', [
+            'foreignKey' => 'game_id',
             'joinType' => 'INNER'
         ]);
+
     }
 
     /**
@@ -50,6 +51,10 @@ class AttackActionsTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
+        $validator
+            ->integer('turn_number')
+            ->allowEmpty('turn_number', 'create');
+
         $validator
             ->integer('attack_target')
             ->allowEmpty('attack_target', 'create');
@@ -75,7 +80,7 @@ class AttackActionsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['turn_id'], 'Turns'));
+        $rules->add($rules->existsIn(['game_id'], 'Games'));
 
         return $rules;
     }

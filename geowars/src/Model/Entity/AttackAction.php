@@ -6,7 +6,9 @@ use Cake\ORM\Entity;
 /**
  * AttackAction Entity
  *
- * @property int $turn_id
+ * @property int $game_id
+ * @property int $game_user_id
+ * @property int $turn_number
  * @property int $attack_target
  * @property int $attack_from
  * @property int $num_troops

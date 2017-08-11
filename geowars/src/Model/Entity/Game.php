@@ -7,10 +7,20 @@ use Cake\ORM\Entity;
  * Game Entity
  *
  * @property int $id
+ * @property int $started
  * @property bool $completed
  * @property int $last_completed_turn_id
+ * @property string $current_phase
  * @property int $turn_end_time
  * @property int $map
+ * @property int $created_by
+ * @property int $phase_one_duration
+ * @property int $phase_two_duration
+ * @property int $start_time
+ * @property int $min_users
+ * @property int $max_users
+ * @property int $join_opt
+ * @property int $atStart_opt
  *
  * @property \App\Model\Entity\LastCompletedTurn $last_completed_turn
  * @property \App\Model\Entity\Territory[] $territories

@@ -7,21 +7,22 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * DeploymentActions Model
+ * MoveActions Model
  *
- * @property \Cake\ORM\Association\BelongsTo $DeploymentActions
  * @property \Cake\ORM\Association\BelongsTo $Games
+ * @property \Cake\ORM\Association\BelongsTo $GameUsers
+ * @property \Cake\ORM\Association\BelongsTo $FromTerritories
  * @property \Cake\ORM\Association\BelongsTo $ToTerritories
  *
- * @method \App\Model\Entity\DeploymentAction get($primaryKey, $options = [])
- * @method \App\Model\Entity\DeploymentAction newEntity($data = null, array $options = [])
- * @method \App\Model\Entity\DeploymentAction[] newEntities(array $data, array $options = [])
- * @method \App\Model\Entity\DeploymentAction|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \App\Model\Entity\DeploymentAction patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \App\Model\Entity\DeploymentAction[] patchEntities($entities, array $data, array $options = [])
- * @method \App\Model\Entity\DeploymentAction findOrCreate($search, callable $callback = null, $options = [])
+ * @method \App\Model\Entity\MoveAction get($primaryKey, $options = [])
+ * @method \App\Model\Entity\MoveAction newEntity($data = null, array $options = [])
+ * @method \App\Model\Entity\MoveAction[] newEntities(array $data, array $options = [])
+ * @method \App\Model\Entity\MoveAction|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \App\Model\Entity\MoveAction patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \App\Model\Entity\MoveAction[] patchEntities($entities, array $data, array $options = [])
+ * @method \App\Model\Entity\MoveAction findOrCreate($search, callable $callback = null, $options = [])
  */
-class DeploymentActionsTable extends Table
+class MoveActionsTable extends Table
 {
 
     /**
@@ -34,14 +35,10 @@ class DeploymentActionsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('deployment_actions');
-        $this->displayField('deployment_action_id');
-        $this->primaryKey('deployment_action_id');
+        $this->table('move_actions');
+        $this->displayField('game_id');
+        $this->primaryKey(['game_id', 'game_user_id', 'turn_number']);
 
-        $this->belongsTo('DeploymentActions', [
-            'foreignKey' => 'deployment_action_id',
-            'joinType' => 'INNER'
-        ]);
         $this->belongsTo('Games', [
             'foreignKey' => 'game_id',
             'joinType' => 'INNER'
@@ -59,8 +56,7 @@ class DeploymentActionsTable extends Table
     {
         $validator
             ->integer('turn_number')
-            ->requirePresence('turn_number', 'create')
-            ->notEmpty('turn_number');
+            ->allowEmpty('turn_number', 'create');
 
         $validator
             ->integer('num_troops')
@@ -79,7 +75,6 @@ class DeploymentActionsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['deployment_action_id'], 'DeploymentActions'));
         $rules->add($rules->existsIn(['game_id'], 'Games'));
 
         return $rules;

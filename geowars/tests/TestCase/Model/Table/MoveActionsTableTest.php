@@ -1,22 +1,22 @@
 <?php
 namespace App\Test\TestCase\Model\Table;
 
-use App\Model\Table\DeploymentActionsTable;
+use App\Model\Table\MoveActionsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * App\Model\Table\DeploymentActionsTable Test Case
+ * App\Model\Table\MoveActionsTable Test Case
  */
-class DeploymentActionsTableTest extends TestCase
+class MoveActionsTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \App\Model\Table\DeploymentActionsTable
+     * @var \App\Model\Table\MoveActionsTable
      */
-    public $DeploymentActions;
+    public $MoveActions;
 
     /**
      * Fixtures
@@ -24,15 +24,14 @@ class DeploymentActionsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'app.deployment_actions',
-        'app.turns',
+        'app.move_actions',
         'app.games',
         'app.last_completed_turns',
+        'app.attack_actions',
+        'app.deployment_actions',
         'app.territories',
         'app.users',
-        'app.games_users',
-        'app.attack_actions',
-        'app.game_users'
+        'app.games_users'
     ];
 
     /**
@@ -43,8 +42,8 @@ class DeploymentActionsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('DeploymentActions') ? [] : ['className' => 'App\Model\Table\DeploymentActionsTable'];
-        $this->DeploymentActions = TableRegistry::get('DeploymentActions', $config);
+        $config = TableRegistry::exists('MoveActions') ? [] : ['className' => 'App\Model\Table\MoveActionsTable'];
+        $this->MoveActions = TableRegistry::get('MoveActions', $config);
     }
 
     /**
@@ -54,7 +53,7 @@ class DeploymentActionsTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->DeploymentActions);
+        unset($this->MoveActions);
 
         parent::tearDown();
     }
