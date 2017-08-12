@@ -34,11 +34,8 @@ class ApiController extends AppController
     // test endpoint to just test whatever.
     public function test(){
         $this->viewBuilder()->layout('ajax');
-        $result = $this->activePlayersCompletedPhase(1, 'move');
-        $output = 'false';
-        if($result){
-            $output = 'True';
-        }
+        $mapInfo = $this->getMapPoints();
+        $output = count($mapInfo['adjacentTerritories'][0]);
         $this->set('result', $output);
     }
     
@@ -372,7 +369,7 @@ class ApiController extends AppController
                     break;
                 }
                 
-                $territoryToAttack = $this->getAdjacentTerritoryToAttack($gameId, $fromId);
+                $territoryToAttack = $this->getAdjacentTerritoryToAttack($gameId, $aiUser->user_id, $fromId);
                 if ($territoryToAttack != NULL) {
                     $toId = $territoryToAttack->tile_id;
                     $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
@@ -385,12 +382,34 @@ class ApiController extends AppController
     }
     
     public function getNeutralAdjacentTerritory($gameId, $tileId) {
-        // TODO
+        $this->loadModel('Territories');
+        
+        $mapInfo = $this->getMapPoints();
+        foreach($mapInfo['adjacentTerritories'][0] as $tileId){
+            $territories = $this->Territories
+                                ->find()
+                                ->where(['game_id' => $gameId, 'is_occupied' => 0, 'tile_id' => $tileId])
+                                ->all()->toArray();
+            if($territories != NULL) {
+                return $territories[0];
+            }
+        }
         return NULL;
     }
     
-    public function getAdjacentTerritoryToAttack($gameId, $tileId) {
-        // TODO
+    public function getAdjacentTerritoryToAttack($gameId, $userId, $tileId) {
+        $this->loadModel('Territories');
+        
+        $mapInfo = $this->getMapPoints();
+        foreach($mapInfo['adjacentTerritories'][0] as $tileId){
+            $territories = $this->Territories
+                                ->find()
+                                ->where(['game_id' => $gameId, 'is_occupied' => 1, 'tile_id' => $tileId])
+                                ->all()->toArray();
+            if($territories != NULL && $territories[0]->user_id != $userId) {
+                return $territories[0];
+            }
+        }
         return NULL;
     }
     
@@ -690,7 +709,7 @@ class ApiController extends AppController
         $mapInfo = array();
         $mapInfo['points'] = $mapPoints;
         $mapInfo['centers'] = $mapPointCenters;
-        $mapInfo['$adjacentTerritories'] = $adjacentTerritories;
+        $mapInfo['adjacentTerritories'] = $adjacentTerritories;
         $mapInfo['shape'] = $shape;
         
         return $mapInfo;
