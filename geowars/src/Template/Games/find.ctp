@@ -75,7 +75,7 @@ var xhttp = new XMLHttpRequest();
             gameID.appendChild(document.createTextNode(gameList[i].id));
             tr.appendChild(gameID);
             
-            CreatedBy.appendChild(document.createTextNode(gameList[i].created_by)); // Change to pull actual username not just it's number
+            CreatedBy.appendChild(document.createTextNode(gameList[i].created_by));
             tr.appendChild(CreatedBy);
             
             JoinedPlayers.appendChild(document.createTextNode(gameList[i].currentPlayers)); // replace with the count of the userID's from the query 'JOIN game_users with game on gameID'
@@ -129,7 +129,6 @@ var xhttp = new XMLHttpRequest();
                 var responseObject = JSON.parse(ajaxreq.responseText);
                 if (responseObject.results == 1) {
                   //Todo
-                  
                 } else {
                   //Todo
                 }
