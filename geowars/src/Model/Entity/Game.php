@@ -9,7 +9,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property int $started
  * @property bool $completed
- * @property int $last_completed_turn_id
+ * @property int $last_completed_turn
  * @property string $current_phase
  * @property int $turn_end_time
  * @property int $map

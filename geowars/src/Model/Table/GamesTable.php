@@ -9,7 +9,6 @@ use Cake\Validation\Validator;
 /**
  * Games Model
  *
- * @property \Cake\ORM\Association\BelongsTo $LastCompletedTurns
  * @property \Cake\ORM\Association\HasMany $AttackActions
  * @property \Cake\ORM\Association\HasMany $DeploymentActions
  * @property \Cake\ORM\Association\HasMany $MoveActions
@@ -41,9 +40,6 @@ class GamesTable extends Table
         $this->displayField('id');
         $this->primaryKey('id');
 
-        $this->belongsTo('LastCompletedTurns', [
-            'foreignKey' => 'last_completed_turn_id'
-        ]);
         $this->hasMany('AttackActions', [
             'foreignKey' => 'game_id'
         ]);
@@ -143,7 +139,7 @@ class GamesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['last_completed_turn_id'], 'LastCompletedTurns'));
+        
 
         return $rules;
     }
