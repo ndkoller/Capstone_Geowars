@@ -84,6 +84,9 @@ var ctx = canvas.getContext('2d');
 var stringURL = window.location.href;
 var gameID = "";
 
+//Will hold to request the page will make
+var apiRequest = "";
+
 //Loop to check chars and build gameID string
 for(var c = stringURL.length - 1; c > 0; c--) {
 	
@@ -214,6 +217,17 @@ function drawBoard() {
 		ctx.strokeText('Current Phase: ' + gameInfo.phase, 650, 50 );
 		ctx.strokeText('Current Turn: ' + gameInfo.currentTurn, 650, 70 );
 		ctx.strokeText('Available Troops: ' + gameInfo.troopsAvailable, 650, 90 );
+		
+		//Give user instrucitons on what to do after board is drawn
+		if(!gameInfo.phase.localeCompare("deploy")) {
+			//Alert to let user know what to do
+			alert("This is the deployment phase, select a territory to deploy " +
+			 "your troops. You have " + gameInfo.troopsAvailable + " troops available " +
+			 "to deply");
+			
+			//Indicate which territores the user can deploy to
+			drawBorders(ownedTerritories, 2);
+		}
 	}
 }
 
@@ -262,14 +276,35 @@ canvas.addEventListener('click', function(event) {
 		//Print to console the object location in the array and the color of that object
 		console.log("Object:" + bestObject + " Color:" + map[bestObject].color);
 	
+		//Set tileclicked (global var for page) to the best object clicked
 		tileClicked = bestObject;
+		
+		//////////////////Deploy Phase///////////////////////
+		if(!gameInfo.phase.localeCompare('deploy')) {
+			
+			//User does not own this territory
+			if(map[tileClicked].owner != gameInfo.userID) {
+				alert("You do not own this " + map[tileClicked].shape +
+				", please select another territory.");
+				return;
+			}
+		
+			if (confirm("You want to delpoy your troops to " + map[tileClicked].shape
+				+ ".") == true) {
+    			apiRequest = "/api/postdeploynew/" + gameInfo.gameID + "/" +
+    			gameInfo.userID + "/" + tileClicked + "/" + gameInfo.troopsAvailable;
+			} else {
+    			return;
+			}
+		}
 		
 		//Use Funtion to draw new boarders
 		//Draw different borders depending on game phase
-		drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 1);
 		
-		drawBorders(ownedTerritories, 2);
+		//drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 1);
 		
+		
+		//Removing this for now
 		
 		var xhttp = new XMLHttpRequest();
 
@@ -277,8 +312,11 @@ canvas.addEventListener('click', function(event) {
 		xhttp.onreadystatechange = function() {
     		if (this.readyState == 4 && this.status == 200) {
     			//Parse the JSON response
-    			var response = JSON.parse(this.responseText);
+    			//var response = JSON.parse(this.responseText);
+    			
+    			/*
     			if(response.phase == 'deploy'){
+    			
     				// updating owner information
 					var owner = document.getElementById("deploy_phase_owner_name");
 					owner.innerHTML = map[bestObject].color;
@@ -298,13 +336,13 @@ canvas.addEventListener('click', function(event) {
 
 					var x = document.getElementsByClassName("attack_phase_menu");
 					x[0].style.display = "block";
-    			}
+    			} */
     			
 
     		}
 		};
-		xhttp.open("GET", "/api/getphase?owner=" + map[bestObject].color, true);
-		xhttp.send();
+		xhttp.open("GET", apiRequest, true);
+		xhttp.send(); 
 		
 		
 			
