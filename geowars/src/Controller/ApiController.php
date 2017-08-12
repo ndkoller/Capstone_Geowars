@@ -15,7 +15,7 @@ class ApiController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('test', 'getMap', 'postAttack', 'postDeployNew','postDeployMove', 'getPhase'));
+        $this->Auth->allow(array('test', 'getMap', 'postAttack', 'postDeploy','postMove', 'getPhase'));
     }
     
     public function getPhase($gameId) {
@@ -43,7 +43,25 @@ class ApiController extends AppController
     }
     
     
-    public function postDeployNew($gameId, $userId,$tileId, $numTroops){
+    public function postDeploy($gameId, $userId,$tileId, $numTroops){
+        $this->viewBuilder()->layout('ajax');
+        $saved = $this->saveNewDeploy($gameId, $userId, $tileId, $numTroops);
+            
+        if($saved){
+            if ($this->activePlayersCompletedPhase($gameId, 'deploy')){
+                // Everything is done with real players. Process AI deploys,
+                // modify territories and update the phase
+                $this->processAiDeployment($gameId);
+                $this->updateTerritoryAfterDeployment($gameId);
+                $this->updateGamePhase($gameId);
+                $this->set('result', "success");
+            }
+        }else{
+            $this->set('result', "failure");
+        }
+    }
+    
+    public function saveNewDeploy($gameId,$userId,$tileId,$numTroops){
         $this->loadModel('Games');
         $gamesInfo = $this->Games
                     ->find()
@@ -59,21 +77,26 @@ class ApiController extends AppController
         $newDeploymentAction->turn_number = $gameInfo->last_completed_turn + 1;
         $newDeploymentAction->num_troops = $numTroops;
         $newDeploymentAction->to_territory_id = $tileId;
+        return $this->DeploymentActions->save($newDeploymentAction);
+    }
+    
+    public function postMove($gameId, $userId,$fromTileId, $toTileId, $numTroops){
+        $this->viewBuilder()->layout('ajax');
+        $saved = $this->saveNewMove($gameId, $userId, $fromTileId, $toTileId, $numTroops);
             
-        if($this->DeploymentActions->save($newDeploymentAction)){
-            if ($this->activePlayersCompletedPhase($gameId, 'deploy')){
-                $this->set('result', "success1");
-                $this->updateTerritoryAfterDeployment($gameId);
-            }else{
-                $this->set('result', "success2");
+        if($saved){
+            if ($this->activePlayersCompletedPhase($gameId, 'move')){
+                $this->processAiMove($gameId);
+                $this->updateTerritoryAfterMove($gameId);
+                $this->updateGamePhase($gameId);
+                $this->set('result', "success");
             }
-            
         }else{
             $this->set('result', "failure");
         }
     }
-    
-    public function postDeployMove($gameId, $userId,$fromTileId, $toTileId, $numTroops){
+
+    public function saveNewMove($gameId, $userId, $fromTileId, $toTileId, $numTroops) {
         $this->loadModel('Games');
         $gamesInfo = $this->Games
                     ->find()
@@ -90,19 +113,21 @@ class ApiController extends AppController
         $newMove->num_troops = $numTroops;
         $newMove->from_territory_id = $fromTileId;
         $newMove->to_territory_id = $toTileId;
-            
-        if($this->MoveActions->save($newMove)){
-            if ($this->activePlayersCompletedPhase($gameId, 'move')){
-                $this->updateTerritoryAfterMove($gameId);
-            }
+        return $this->MoveActions->save($newMove);
+    }
+    
+    public function postAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops) {
+        $this->viewBuilder()->layout('ajax');
+        $saved = $this->saveNewAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops);
+        
+        if($saved){
             $this->set('result', "success");
         }else{
             $this->set('result', "failure");
         }
     }
-
     
-    public function postAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops) {
+    public function saveNewAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops) {
         $this->loadModel('Games');
         $gamesInfo = $this->Games
                     ->find()
@@ -119,12 +144,7 @@ class ApiController extends AppController
         $newAttack->num_troops = $numTroops;
         $newAttack->attack_from = $fromTileId;
         $newAttack->attack_to = $toTileId;
-        
-        if($this->AttackActions->save($newAttack)){
-            $this->set('result', "success");
-        }else{
-            $this->set('result', "failure");
-        }
+        return $this->AttackActions->save($newAttack);
     }
     
     public function activePlayersCompletedPhase($gameId, $phase) {
@@ -216,6 +236,11 @@ class ApiController extends AppController
                                     ->all()->toArray();
                                             
         foreach($moves as $move) {
+            // If place holder move for players with only 1 territory and surrounded
+            if ($move->from_territory_id == $move->to_territory_id){
+                continue;
+            }
+            
             // Add troops to the destination territory
             $this->loadModel('Territories');
             $territories = $this->Territories->find()
@@ -236,6 +261,84 @@ class ApiController extends AppController
             $territoryToUpdate->num_troops = $newTroopNum;
             $this->Territories->save($territoryToUpdate);
         }
+    }
+    
+    // This function will go through the Game Users that are bot accounts
+    // and submit deployment actions
+    public function processAiDeployment($gameId) {
+        $this->loadModel('GamesUsers');
+        $aiGameUsers = $this->GamesUsers->find()
+                                    ->where(['game_id' => $gameId, 'is_bot' => 1])
+                                    ->all()
+                                    ->toArray();
+        foreach($aiGameUsers as $aiUser){
+            $this->loadModel('Territories');
+            $territories = $this->Territories->find()
+                                            ->where(['game_id' => $gameId, 'user_id' => $aiUser->user_id])
+                                            ->order(['num_troops' => 'ASC'])
+                                            ->all()->toArray();
+            // Make sure user has territories. Otherwise they lost already
+            if($territories != NULL){
+                $territoryToDeploy = $territories[0];
+                $numToDeploy = $this->getTroopsAvailableForUser($gameId, $aiUser->user_id);
+                $this->saveNewDeploy($gameId,$aiUser->user_id,$territoryToDeploy->tile_id,$numToDeploy);
+            }
+        }
+    }
+    
+    // This function will go through the Game Users that are bot accounts
+    // and submit move actions
+    public function processAiMove($gameId) {
+        $this->loadModel('GamesUsers');
+        $aiGameUsers = $this->GamesUsers->find()
+                                    ->where(['game_id' => $gameId, 'is_bot' => 1])
+                                    ->all()
+                                    ->toArray();
+        foreach($aiGameUsers as $aiUser){
+            $this->loadModel('Territories');
+            $territories = $this->Territories->find()
+                                            ->where(['game_id' => $gameId, 'user_id' => $aiUser->user_id])
+                                            ->order(['num_troops' => 'DESC'])
+                                            ->all()->toArray();
+            // Make sure user has territories. Otherwise they lost already
+            if($territories != NULL){
+                if(count($territories) == 1) {
+                    // Bot only has 1 territory
+                    $tId = $territories[0]->tile_id;
+                    $this->saveNewAttack($gameId,$aiUser->user_id, $tId, $tId, 0);
+                } else {
+                    $territoryFromId = $territories[0]->tile_id;
+                    $territoryToId = $territories[1]->tile_id;
+                    $numToMove= $territoryFrom->num_troops / 2;
+                    $this->saveNewMove($gameId, $aiUser->user_id, $territoryFromId, $territoryToId, $numToMove);
+                    
+                }
+            }
+        }
+    }
+    
+    public function updateGamePhase($gameId){
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $game_id])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        
+        $currentPhase = $gameInfo->currentPhase;
+        
+        $gameToSave = $this->Games->get($gameInfo->id);
+        
+        if($currentPhase == 'deploy'){
+            $gameToSave->current_phase = 'move';
+        } else if ($currentPhase == 'move') {
+            $gameToSave->current_phase = 'attack';
+        } else {
+            $gameToSave->current_phase = 'deploy';
+            $gameToSave->last_completed_turn = $gameToSave->last_completed_turn + 1;
+        }
+        $this->Games->save($gameToSave);
     }
     
     //Ajax action

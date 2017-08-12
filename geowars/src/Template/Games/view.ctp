@@ -291,7 +291,7 @@ canvas.addEventListener('click', function(event) {
 		
 			if (confirm("You want to delpoy your troops to " + map[tileClicked].shape
 				+ ".") == true) {
-    			apiRequest = "/api/postdeploynew/" + gameInfo.gameID + "/" +
+    			apiRequest = "/api/postdeploy/" + gameInfo.gameID + "/" +
     			gameInfo.userID + "/" + tileClicked + "/" + gameInfo.troopsAvailable;
 			} else {
     			return;
@@ -385,7 +385,7 @@ document.getElementById("deploy_phase_deploy_button").addEventListener("click", 
     			x[0].style.display = "none";
     		}
 		};
-		var urlString = "/api/postdeploynew/" + gameInfo.gameID + "/";
+		var urlString = "/api/postdeploy/" + gameInfo.gameID + "/";
 		urlString += gameInfo.userID + "/" + tileClicked + "/5";
 		xhttp.open("POST",  urlString , true);
 		xhttp.send();	
