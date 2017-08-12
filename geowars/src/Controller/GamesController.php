@@ -25,11 +25,64 @@ class GamesController extends AppController
         
     }
     
+        public function mygames()
+    {
+        
+        
+    }
+    
     //Shows a list of games currently in
-    public function myGames()
+    public function ShowMyGames()
+    {
+        //For Ajax requests
+        $this->viewBuilder()->layout('ajax');
+
+        $this->loadModel('GamesUsers');
+       
+        $MyJoinedGames = $this->GamesUsers
+                             ->find()
+                             ->where(['user_id' => $this->Auth->User('id')])
+                             ->all()->toArray();
+        $gamesList;
+        for($i = 0; $i < count($MyJoinedGames); $i++){
+         
+            $this->loadModel('Games');
+            $games = $this->Games
+                          ->find()
+                          ->where(['id' => $MyJoinedGames[$i]->game_id]) // add max player calculations
+                          ->order(['start_time' => 'ASC'])
+                          ->all()->toArray();
+         
+            for($j = 0; $j < count($games); $j++ ){
+                $this->loadModel('GamesUsers');
+                $joinedPlayers = $this->GamesUsers
+                                     ->find()
+                                     ->where(['game_id' => $games[$j]->id])
+                                     ->all()->toArray();
+                $games[$j]->currentPlayers = count($joinedPlayers);
+
+                $this->loadModel('Users');
+                $playerName = $this->Users
+                                   ->find()
+                                   ->where(['id' => $games[$j]->created_by])
+                                   ->all()
+                                   ->toArray();
+                $games[$j]->created_by = $playerName[0]->username;
+            }
+            $gamesList[$i] = $games[0]; // should only ever be one game. Should remove for loop since it's unnecessary.
+                   
+        }
+        
+        $this->set('games', $gamesList);
+        
+    }
+    
+    public function open()
     {
         
     }
+    
+    
     public function find()
     {
         
