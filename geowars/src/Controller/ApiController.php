@@ -121,7 +121,12 @@ class ApiController extends AppController
         $saved = $this->saveNewAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops);
         
         if($saved){
-            $this->set('result', "success");
+            if ($this->activePlayersCompletedPhase($gameId, 'attack')){
+                $this->processAiAttack($gameId);
+                $this->updateTerritoryAfterAttack($gameId);
+                $this->updateGamePhase($gameId);
+                $this->set('result', "success");
+            }
         }else{
             $this->set('result', "failure");
         }
@@ -263,6 +268,24 @@ class ApiController extends AppController
         }
     }
     
+    public function updateTerritoryAfterAttack($gameId) {
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $gameId])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        
+        $this->loadModel('AttackActions');
+        $moves = $this->AttackActions->find()
+                                    ->where(['game_id' => $gameId, 'turn_number' => ($gameInfo->last_completed_turn + 1)])
+                                    ->all()->toArray();
+                          
+        // TODO: figure out how to handle Attacks     
+        
+    }
+    
     // This function will go through the Game Users that are bot accounts
     // and submit deployment actions
     public function processAiDeployment($gameId) {
@@ -309,12 +332,66 @@ class ApiController extends AppController
                 } else {
                     $territoryFromId = $territories[0]->tile_id;
                     $territoryToId = $territories[1]->tile_id;
-                    $numToMove= $territoryFrom->num_troops / 2;
+                    $numToMove= intdiv($territoryFrom->num_troops, 2);
                     $this->saveNewMove($gameId, $aiUser->user_id, $territoryFromId, $territoryToId, $numToMove);
                     
                 }
             }
         }
+    }
+    
+    // This function will go through the Game Users that are bot accounts
+    // and submit attack actions
+    public function processAiAttack($gameId) {
+        $this->loadModel('GamesUsers');
+        $aiGameUsers = $this->GamesUsers->find()
+                                    ->where(['game_id' => $gameId, 'is_bot' => 1])
+                                    ->all()
+                                    ->toArray();
+        foreach($aiGameUsers as $aiUser){
+            // Get owned territories ordered by number of troops
+            $this->loadModel('Territories');
+            $territories = $this->Territories->find()
+                                            ->where(['game_id' => $gameId, 'user_id' => $aiUser->user_id])
+                                            ->order(['num_troops' => 'DESC'])
+                                            ->all()->toArray();
+            if ($territories == NULL) {
+                // Player is out
+                continue;
+            }
+            // Go from most troops to least and see if there is an adjacent
+            // tile that can be attacked. Try to take over empty ones before
+            // Attacking owned territories
+            foreach($territories as $territory) {
+                $fromId = $territory->tile_id;
+                $numTroops = intdiv($territory->num_troops, 2);
+                $neutralTerritory = $this->getNeutralAdjacentTerritory($gameId, $fromId);
+                if ($neutralTerritory != NULL) {
+                    $toId = $neutralTerritory->tile_id;
+                    $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
+                    break;
+                }
+                
+                $territoryToAttack = $this->getAdjacentTerritoryToAttack($gameId, $fromId);
+                if ($territoryToAttack != NULL) {
+                    $toId = $territoryToAttack->tile_id;
+                    $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
+                    break;
+                }
+            }
+            
+            
+        }
+    }
+    
+    public function getNeutralAdjacentTerritory($gameId, $tileId) {
+        // TODO
+        return NULL;
+    }
+    
+    public function getAdjacentTerritoryToAttack($gameId, $tileId) {
+        // TODO
+        return NULL;
     }
     
     public function updateGamePhase($gameId){
