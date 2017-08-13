@@ -481,7 +481,7 @@ class ApiController extends AppController
                 "color" => $colors[$territoryById[$i]->user_id],
                 "center" => $mapInfo['centers'][$i],
                 "troops" => $territoryById[$i]->num_troops,
-                "adjacentTerritories" => $mapInfo['$adjacentTerritories'][$i],
+                "adjacentTerritories" => $mapInfo['adjacentTerritories'][$i],
                 "owner" => $territoryById[$i]->user_id,
                 "shape" => $mapInfo['shape'][$i]
                 );

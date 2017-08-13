@@ -12,6 +12,14 @@
     top: 350px;
     left: 550px;
 }
+#move_phase_menu{
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    top: 350px;
+    left: 550px;
+}
 .attack_phase_menu{
     display: none;
     position: absolute;
@@ -27,6 +35,28 @@
 	<form class="deploy_phase_menu" method="POST" >
 		<fieldset>
 			<legend>Deploy Phase</legend>
+			<div>
+			  <label>Owner:</label>
+			  <text id="deploy_phase_owner_name"></text>
+			</div>
+			<div>
+			  <label>Troops:</label>
+			  <text id="deploy_phase_troop_numbers"></text>
+			</div>   
+			<p>
+				<input type="button" value="Deploy" id="deploy_phase_deploy_button">
+				<input type="button" value="Move" id="deploy_phase_move_button">  
+			</p>
+			<p>
+				<input type="submit">
+				<input id="deploy_phase_cancel" type="button" value="Cancel">
+			</p>
+		</fieldset>
+	</form>
+	
+	<form id="move_phase_menu" method="POST" >
+		<fieldset>
+			<legend>Move Phase</legend>
 			<div>
 			  <label>Owner:</label>
 			  <text id="deploy_phase_owner_name"></text>
@@ -219,13 +249,32 @@ function drawBoard() {
 		ctx.strokeText('Available Troops: ' + gameInfo.troopsAvailable, 650, 90 );
 		
 		//Give user instrucitons on what to do after board is drawn
-		if(!gameInfo.phase.localeCompare("deploy")) {
+		
+/////////////Deploy Phase/////////////////
+		
+		//User has no troops to deploy
+		if(!gameInfo.phase.localeCompare('deploy') && gameInfo.troopsAvailable < 1) {
+			
+			alert("You have no troops to deploy, once all users have completed their" + 
+			" deployments the game will move on to the next phase.");
+		
+		//User has troops to deploy
+		} else if(!gameInfo.phase.localeCompare("deploy")) {
 			//Alert to let user know what to do
 			alert("This is the deployment phase, select a territory to deploy " +
 			 "your troops. You have " + gameInfo.troopsAvailable + " troops available " +
 			 "to deply");
 			
 			//Indicate which territores the user can deploy to
+			drawBorders(ownedTerritories, 2);
+		}
+		
+/////////////Move Phase/////////////////
+		if(!gameInfo.phase.localeCompare("move")) {
+			alert("This is the move phase, select a territory to move troops" + 
+			" from. Then you will choose how many troops to move and where to move them.");
+			
+			//Indicate which territores the user can move troops from
 			drawBorders(ownedTerritories, 2);
 		}
 	}
@@ -280,7 +329,9 @@ canvas.addEventListener('click', function(event) {
 		tileClicked = bestObject;
 		
 		//////////////////Deploy Phase///////////////////////
-		if(!gameInfo.phase.localeCompare('deploy')) {
+		if(!gameInfo.phase.localeCompare('deploy') && gameInfo.troopsAvailable < 1) {
+		
+		} else if(!gameInfo.phase.localeCompare('deploy')) {
 			
 			//User does not own this territory
 			if(map[tileClicked].owner != gameInfo.userID) {
@@ -296,6 +347,21 @@ canvas.addEventListener('click', function(event) {
 			} else {
     			return;
 			}
+		}
+		
+		//////////////////Move Phase///////////////////////
+		if(!gameInfo.phase.localeCompare('move')) {
+			
+			//User does not own this territory
+			if(map[tileClicked].owner != gameInfo.userID) {
+				alert("You do not own this " + map[tileClicked].shape +
+				", please select another territory.");
+				return;
+			}
+			
+			var moveWindow = document.getElementById("move_phase_menu")
+			moveWindow.style.display = "block";
+			
 		}
 		
 		//Use Funtion to draw new boarders
