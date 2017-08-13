@@ -1,5 +1,6 @@
 <html>
 <body>
+
 <style type="text/css">
 #map{
 	/*position: relative;*/
@@ -11,6 +12,15 @@
     padding: 10px;
     top: 350px;
     left: 550px;
+}
+#move_phase_menu{
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    top: 350px;
+    left: 475px;
+    width: 250px;
 }
 .attack_phase_menu{
     display: none;
@@ -46,6 +56,37 @@
 		</fieldset>
 	</form>
 	
+	<div id="move_phase_menu" >
+		<fieldset>
+			<legend>Move Phase</legend>
+			
+			
+			<div>
+			  <label>Move From:</label>
+			  <text id="move_from"></text>
+			</div>
+			<div>
+			  <label>Move To:</label>
+			  <text id="move_to"></text>
+			</div>
+			<div>
+			  <label>Troops to Move:</label>
+			  <input type="number" id="to_move">
+			</div>
+			<div>
+			  <label id=>*You can move x troops.</label>
+			</div>
+			<br>
+			<div>
+			
+				<button type="button" id="move_cancel">Cancel</button>
+				<button type="button" id="move_to_button">Move To</button>
+				<button type="button" id="move_submit">Submit</button>
+			</div>
+		</fieldset>
+		
+	</div>
+	
 	<form class="attack_phase_menu" method="POST" >
 		<fieldset>
 			<legend>Attack Phase</legend>
@@ -76,6 +117,7 @@
 
 <script>
 
+
 //Establish the Canvas variable
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -86,6 +128,12 @@ var gameID = "";
 
 //Will hold to request the page will make
 var apiRequest = "";
+
+//Assign id to vars
+var moveWindow = document.getElementById("move_phase_menu");
+var moveTroopsTo = document.getElementById("move_to");
+var moveTroopsFrom = document.getElementById("move_from");
+var moveTroopsNumber = document.getElementById("to_move");
 
 //Loop to check chars and build gameID string
 for(var c = stringURL.length - 1; c > 0; c--) {
@@ -109,6 +157,9 @@ var tileClicked = -1;
 
 //Array to hold list of territories a user owns popluated on getmap() request
 var ownedTerritories = [];
+
+var territoryFrom;
+var territoryTo;
 
 
 //Function to draw board for showing where to attack and where a use can
@@ -140,8 +191,9 @@ function drawBorders(territories, phase) {
 				ctx.strokeStyle = "lime";
 			} else if(phase == 3) {
 				ctx.strokeStyle = "black";
+			} else if(phase == 4) {
+				ctx.strokeStyle = "aqua";
 			}
-			
 			//Draw boarder to canvas
 			ctx.stroke();
 		}
@@ -219,13 +271,32 @@ function drawBoard() {
 		ctx.strokeText('Available Troops: ' + gameInfo.troopsAvailable, 650, 90 );
 		
 		//Give user instrucitons on what to do after board is drawn
-		if(!gameInfo.phase.localeCompare("deploy")) {
+		
+/////////////Deploy Phase/////////////////
+		
+		//User has no troops to deploy
+		if(!gameInfo.phase.localeCompare('deploy') && gameInfo.troopsAvailable < 1) {
+			
+			alert("You have no troops to deploy, once all users have completed their" + 
+			" deployments the game will move on to the next phase.");
+		
+		//User has troops to deploy
+		} else if(!gameInfo.phase.localeCompare("deploy")) {
 			//Alert to let user know what to do
 			alert("This is the deployment phase, select a territory to deploy " +
 			 "your troops. You have " + gameInfo.troopsAvailable + " troops available " +
 			 "to deply");
 			
 			//Indicate which territores the user can deploy to
+			drawBorders(ownedTerritories, 2);
+		}
+		
+/////////////Move Phase/////////////////
+		if(!gameInfo.phase.localeCompare("move")) {
+			alert("This is the move phase, select a territory to move troops" + 
+			" from. Then you will choose how many troops to move and where to move them.");
+			
+			//Indicate which territores the user can move troops from
 			drawBorders(ownedTerritories, 2);
 		}
 	}
@@ -280,7 +351,9 @@ canvas.addEventListener('click', function(event) {
 		tileClicked = bestObject;
 		
 		//////////////////Deploy Phase///////////////////////
-		if(!gameInfo.phase.localeCompare('deploy')) {
+		if(!gameInfo.phase.localeCompare('deploy') && gameInfo.troopsAvailable < 1) {
+		
+		} else if(!gameInfo.phase.localeCompare('deploy')) {
 			
 			//User does not own this territory
 			if(map[tileClicked].owner != gameInfo.userID) {
@@ -296,6 +369,30 @@ canvas.addEventListener('click', function(event) {
 			} else {
     			return;
 			}
+		}
+		
+		//////////////////Move Phase///////////////////////
+		if(!gameInfo.phase.localeCompare('move')) {
+			
+			if(territoryTo == -1) {
+				//User does not own this territory
+				if(map[tileClicked].owner != gameInfo.userID) {
+					alert("You do not own this " + map[tileClicked].shape +
+					", please select another territory.");
+					return;
+				}
+			
+				territoryFrom = tileClicked;
+				drawBorders([territoryFrom], 4)
+				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
+				moveWindow.style.display = "block";
+			} else {
+				territoryTo = tileClicked;
+				drawBorders([territoryFrom], 4)
+				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
+				moveWindow.style.display = "block";
+			}
+			
 		}
 		
 		//Use Funtion to draw new boarders
@@ -416,6 +513,13 @@ document.getElementById("attack_phase_move_button").addEventListener("click", fu
 document.getElementById("attack_phase_attack_button").addEventListener("click", function(){
 
 	// fill in with Attack functionality 
+
+});
+
+document.getElementById("move_cancel").addEventListener("click", function(){
+
+	var moveWindow = document.getElementById("move_phase_menu")
+			moveWindow.style.display = "none";
 
 });
 
