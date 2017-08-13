@@ -134,6 +134,9 @@ var moveWindow = document.getElementById("move_phase_menu");
 var moveTroopsTo = document.getElementById("move_to");
 var moveTroopsFrom = document.getElementById("move_from");
 var moveTroopsNumber = document.getElementById("to_move");
+var moveCancelButton = document.getElementById('move_cancel');
+var moveToButton = document.getElementById('move_to_button');
+var moveSubmitButton = document.getElementById('move_submit');
 
 //Loop to check chars and build gameID string
 for(var c = stringURL.length - 1; c > 0; c--) {
@@ -158,8 +161,8 @@ var tileClicked = -1;
 //Array to hold list of territories a user owns popluated on getmap() request
 var ownedTerritories = [];
 
-var territoryFrom;
-var territoryTo;
+var territoryFrom = -1;
+var territoryTo = -1;
 
 
 //Function to draw board for showing where to attack and where a use can
@@ -374,7 +377,7 @@ canvas.addEventListener('click', function(event) {
 		//////////////////Move Phase///////////////////////
 		if(!gameInfo.phase.localeCompare('move')) {
 			
-			if(territoryTo == -1) {
+			if(territoryFrom == -1) {
 				//User does not own this territory
 				if(map[tileClicked].owner != gameInfo.userID) {
 					alert("You do not own this " + map[tileClicked].shape +
@@ -385,11 +388,17 @@ canvas.addEventListener('click', function(event) {
 				territoryFrom = tileClicked;
 				drawBorders([territoryFrom], 4)
 				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
+				moveTroopsTo.textContent = "";
+				moveSubmitButton.disabled = true;
+				moveToButton.disabled = false;
 				moveWindow.style.display = "block";
 			} else {
 				territoryTo = tileClicked;
-				drawBorders([territoryFrom], 4)
+				drawBorders([territoryTo], 4)
 				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
+				moveTroopsTo.textContent = gameInfo.map[territoryTo].shape;
+				moveSubmitButton.disabled = false;
+				moveToButton.disabled = true;
 				moveWindow.style.display = "block";
 			}
 			
@@ -515,11 +524,34 @@ document.getElementById("attack_phase_attack_button").addEventListener("click", 
 	// fill in with Attack functionality 
 
 });
+////////////////Move Menu Buttons ///////////////////////
+moveCancelButton.addEventListener("click", function(){
 
-document.getElementById("move_cancel").addEventListener("click", function(){
+	if(territoryFrom > -1) {
+		drawBorders([territoryFrom], 2);
+		territoryFrom = -1;
+	}
+	
+	if(territoryTo > -1) {
+		drawBorders([territoryTo], 2);
+		territoryTo = -1;
+		
+	}		
+	
+	moveWindow.style.display = "none";
 
-	var moveWindow = document.getElementById("move_phase_menu")
-			moveWindow.style.display = "none";
+});
+
+moveToButton.addEventListener("click", function(){
+
+	moveWindow.style.display = "none";
+
+});
+
+moveSubmitButton.addEventListener("click", function(){
+	
+	//Todo Submit move to server
+	moveWindow.style.display = "none";
 
 });
 
