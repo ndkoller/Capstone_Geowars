@@ -68,7 +68,12 @@ class TerritoriesTable extends Table
             ->integer('num_troops')
             ->requirePresence('num_troops', 'create')
             ->notEmpty('num_troops');
-
+        
+        $validator
+            ->integer('tile_id')
+            ->requirePresence('tile_id', 'create')
+            ->notEmpty('tile_id');
+        
         return $validator;
     }
 

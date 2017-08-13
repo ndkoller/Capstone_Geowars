@@ -626,16 +626,21 @@ class ApiController extends AppController
         
         $mapInfo = $this->getMapPoints();
         
+        $this->loadModel('GamesUsers');
+        $players = $this->GamesUsers
+                        ->find()
+                        ->where(['game_id' => $game_id])
+                        ->all()->toArray();
+        //user_id = 1 is our neutral territory account.
         $colors = array(
-            0 => "grey",
-            1 => "blue",
-            2 => "green",
-            7 => "yellow"
+            1 => "Gray"
             );
-        
+        for($i = 0; $i < count($players); $i++){
+            $colors[$players[$i]->user_id] = $players[$i]->color;
+        }
         $game = array();
         $map = array();
-        
+         
         for($i = 0; $i < 20; $i++) {
             $userId = $territoryById[$i]->user_id;
             if($userId == NULL){
