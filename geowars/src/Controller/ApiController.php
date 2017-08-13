@@ -540,10 +540,36 @@ class ApiController extends AppController
         } else if ($currentPhase == 'move') {
             $gameToSave->current_phase = 'attack';
         } else {
+            $this->updatePlayersAvailableTroops($gameId);
             $gameToSave->current_phase = 'deploy';
             $gameToSave->last_completed_turn = $gameToSave->last_completed_turn + 1;
         }
         $this->Games->save($gameToSave);
+    }
+    
+    public function updatePlayersAvailableTroops($gameId) {
+        $this->loadModel('GamesUsers');
+        $gameUsers = $this->GamesUsers->find()
+                                    ->where(['game_id' => $gameId])
+                                    ->all()
+                                    ->toArray();
+                                    
+        for($gameUsers as $user){
+            $this->loadModel('Territories');
+            $territories = $this->Territories
+                                ->find()
+                                ->where(['game_id' => $game_id, 'user_id' => $user->user_id])
+                                ->all()->toArray();
+            if($territories != NULL) {
+                $numNewTroops = count($territories) * 2;
+            
+                $this->GameUsers->save(array(
+                        'game_id' => $gameId,
+                        'user_id' => $user->user_id,
+                        'troops' => $numNewTroops
+                ));
+            }                    
+        }
     }
     
     //Ajax action
