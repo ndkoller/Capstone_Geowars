@@ -15,7 +15,7 @@ class ApiController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('test', 'getMap', 'postAttack', 'postDeploy','postMove', 'getPhase'));
+        $this->Auth->allow(array('test', 'checkGameState', 'getMap', 'postAttack', 'postDeploy','postMove', 'getPhase'));
     }
     
     public function getPhase($gameId) {
@@ -37,6 +37,34 @@ class ApiController extends AppController
         $mapInfo = $this->getMapPoints();
         $output = count($mapInfo['adjacentTerritories'][0]);
         $this->set('result', $output);
+    }
+    
+    public function checkGameState($gameId, $lastReportedPhase, $currentTurn) {
+        $this->viewBuilder()->layout('ajax');
+        
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $gameId])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        
+        $shouldReload = false;
+        
+        if($gameInfo->current_phase != $lastReportedPhase) {
+            $shouldReload = true;
+        }
+        
+        if($currentTurn != $gameInfo->last_completed_turn + 1){
+            $shouldReload = true;
+        }
+        
+        if($shouldReload){
+            $this->set('result', 'reload');
+        } else {
+            $this->set('result', 'waiting');
+        }
     }
     
     
