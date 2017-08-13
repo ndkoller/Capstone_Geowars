@@ -1,5 +1,6 @@
 <html>
 <body>
+
 <style type="text/css">
 #map{
 	/*position: relative;*/
@@ -18,7 +19,8 @@
     background-color: white;
     padding: 10px;
     top: 350px;
-    left: 550px;
+    left: 475px;
+    width: 250px;
 }
 .attack_phase_menu{
     display: none;
@@ -54,27 +56,36 @@
 		</fieldset>
 	</form>
 	
-	<form id="move_phase_menu" method="POST" >
+	<div id="move_phase_menu" >
 		<fieldset>
 			<legend>Move Phase</legend>
+			
+			
 			<div>
-			  <label>Owner:</label>
-			  <text id="deploy_phase_owner_name"></text>
+			  <label>Move From:</label>
+			  <text id="move_from"></text>
 			</div>
 			<div>
-			  <label>Troops:</label>
-			  <text id="deploy_phase_troop_numbers"></text>
-			</div>   
-			<p>
-				<input type="button" value="Deploy" id="deploy_phase_deploy_button">
-				<input type="button" value="Move" id="deploy_phase_move_button">  
-			</p>
-			<p>
-				<input type="submit">
-				<input id="deploy_phase_cancel" type="button" value="Cancel">
-			</p>
+			  <label>Move To:</label>
+			  <text id="move_to"></text>
+			</div>
+			<div>
+			  <label>Troops to Move:</label>
+			  <input type="number" id="to_move">
+			</div>
+			<div>
+			  <label id=>*You can move x troops.</label>
+			</div>
+			<br>
+			<div>
+			
+				<button type="button" id="move_cancel">Cancel</button>
+				<button type="button" id="move_to_button">Move To</button>
+				<button type="button" id="move_submit">Submit</button>
+			</div>
 		</fieldset>
-	</form>
+		
+	</div>
 	
 	<form class="attack_phase_menu" method="POST" >
 		<fieldset>
@@ -106,6 +117,7 @@
 
 <script>
 
+
 //Establish the Canvas variable
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -116,6 +128,12 @@ var gameID = "";
 
 //Will hold to request the page will make
 var apiRequest = "";
+
+//Assign id to vars
+var moveWindow = document.getElementById("move_phase_menu");
+var moveTroopsTo = document.getElementById("move_to");
+var moveTroopsFrom = document.getElementById("move_from");
+var moveTroopsNumber = document.getElementById("to_move");
 
 //Loop to check chars and build gameID string
 for(var c = stringURL.length - 1; c > 0; c--) {
@@ -139,6 +157,9 @@ var tileClicked = -1;
 
 //Array to hold list of territories a user owns popluated on getmap() request
 var ownedTerritories = [];
+
+var territoryFrom;
+var territoryTo;
 
 
 //Function to draw board for showing where to attack and where a use can
@@ -170,8 +191,9 @@ function drawBorders(territories, phase) {
 				ctx.strokeStyle = "lime";
 			} else if(phase == 3) {
 				ctx.strokeStyle = "black";
+			} else if(phase == 4) {
+				ctx.strokeStyle = "aqua";
 			}
-			
 			//Draw boarder to canvas
 			ctx.stroke();
 		}
@@ -352,15 +374,24 @@ canvas.addEventListener('click', function(event) {
 		//////////////////Move Phase///////////////////////
 		if(!gameInfo.phase.localeCompare('move')) {
 			
-			//User does not own this territory
-			if(map[tileClicked].owner != gameInfo.userID) {
-				alert("You do not own this " + map[tileClicked].shape +
-				", please select another territory.");
-				return;
-			}
+			if(territoryTo == -1) {
+				//User does not own this territory
+				if(map[tileClicked].owner != gameInfo.userID) {
+					alert("You do not own this " + map[tileClicked].shape +
+					", please select another territory.");
+					return;
+				}
 			
-			var moveWindow = document.getElementById("move_phase_menu")
-			moveWindow.style.display = "block";
+				territoryFrom = tileClicked;
+				drawBorders([territoryFrom], 4)
+				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
+				moveWindow.style.display = "block";
+			} else {
+				territoryTo = tileClicked;
+				drawBorders([territoryFrom], 4)
+				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
+				moveWindow.style.display = "block";
+			}
 			
 		}
 		
@@ -482,6 +513,13 @@ document.getElementById("attack_phase_move_button").addEventListener("click", fu
 document.getElementById("attack_phase_attack_button").addEventListener("click", function(){
 
 	// fill in with Attack functionality 
+
+});
+
+document.getElementById("move_cancel").addEventListener("click", function(){
+
+	var moveWindow = document.getElementById("move_phase_menu")
+			moveWindow.style.display = "none";
 
 });
 
