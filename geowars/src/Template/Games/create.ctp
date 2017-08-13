@@ -151,7 +151,7 @@ function makeGame() {
     ajaxreq.onload = function() {
           if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
             var responseObject = JSON.parse(ajaxreq.responseText);
-            if (responseObject.success == true) {
+            if (responseObject.results == 1) {
               //Todo
             } else {
               //Todo

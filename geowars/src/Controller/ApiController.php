@@ -358,7 +358,7 @@ class ApiController extends AppController
             $territoryToUpdate->num_troops = $result;
             $territoryToUpdate->is_occupied = 1;
             $territoryToUpdate->user_id = $userId;
-            $this->Territories->save($territoryToUpdate)
+            $this->Territories->save($territoryToUpdate);
         }
         
     }
@@ -554,7 +554,7 @@ class ApiController extends AppController
                                     ->all()
                                     ->toArray();
                                     
-        for($gameUsers as $user){
+        foreach($gameUsers as $user){
             $this->loadModel('Territories');
             $territories = $this->Territories
                                 ->find()
@@ -600,16 +600,21 @@ class ApiController extends AppController
         
         $mapInfo = $this->getMapPoints();
         
+        $this->loadModel('GamesUsers');
+        $players = $this->GamesUsers
+                        ->find()
+                        ->where(['game_id' => $game_id])
+                        ->all()->toArray();
+        //user_id = 1 is our neutral territory account.
         $colors = array(
-            0 => "red",
-            1 => "blue",
-            2 => "green",
-            7 => "yellow"
+            1 => "Gray"
             );
-        
+        for($i = 0; $i < count($players); $i++){
+            $colors[$players[$i]->user_id] = $players[$i]->color;
+        }
         $game = array();
         $map = array();
-        
+         
         for($i = 0; $i < 20; $i++) {
             $map[$i] = array(
                 "points" => $mapInfo['points'][$i],
