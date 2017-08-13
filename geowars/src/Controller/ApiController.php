@@ -275,12 +275,121 @@ class ApiController extends AppController
         $gameInfo = $gamesInfo[0];
         
         $this->loadModel('AttackActions');
-        $moves = $this->AttackActions->find()
+        $attacks = $this->AttackActions->find()
                                     ->where(['game_id' => $gameId, 'turn_number' => ($gameInfo->last_completed_turn + 1)])
                                     ->all()->toArray();
                           
-        // TODO: figure out how to handle Attacks     
+        // Below was a first attempt at processing all moves fairly.
+        // Kinda hard, especially thinking about what to do if territory 1
+        // attacks territory 2, territory 2 attacks territory 3 and territory 3
+        // attacks territory 1
+        // $attackMap = array();
+        // $attackToTerritory = array();
+        // $attackMap['attackedTo'] = $attackToTerritory;
+        // $attackFromTerritory = array();
+        // $attackMap['attackedFrom'] = $attackToTerritory;
         
+        // foreach($attacks as $attack) {
+        //     array_push($attackMap['attackedTo'], $attack->attack_target);
+        //     array_push($attackMap['attackedFrom'], $attack->attack_from);
+        // }
+        
+        // foreach($attacks as $attack) {
+        //     // If no one else is attacking the same target 
+        //     if(!in_array($attack->attack_target,$attackMap['attackedTo'])) {
+        //         // If no one is attacking the from target, process
+        //         if(!in_array($attack->attack_from,$attackMap['attackedTo'])) {
+        //             $this->performAttackBattle($attack);
+        //         } else {
+        //             //
+        //         }
+        //     }
+        // }
+        
+        foreach($attacks as $attack) {
+            $numAttackingTroops = $attack->num_troops;
+            
+            $this->loadModel('Territories');
+            
+            // Troops are removed from the attack_from territory.
+            // troops either take over the target or die trying
+            $territories = $this->Territories
+                                ->find()
+                                ->where(['game_id' => $gameId, 'tile_id' => $attack->attack_from])
+                                ->all()->toArray();
+            
+            $territoryToUpdate = $this->Territories->get($territories[0]->id);
+            
+            // If user does not own territory anymore, continue on. They must have
+            // lost a battle already for this territory
+            if($attack->game_user_id != $territoryToUpdate->user_id) {
+                continue;
+            }
+        
+            // If the number of available troops in the territory is smaller than 
+            // those used to attack, update. They must have lost troops defending
+            // this territory already
+            if($numAttackingTroops > ($territoryToUpdate->num_troops - 1)) {
+                // Assume the player wants to use as many as they can
+                $numAttackingTroops = $territoryToUpdate->num_troops - 1;
+            }
+        
+            $newTroopNum = $territoryToUpdate->num_troops - $numAttackingTroops;
+            $territoryToUpdate->num_troops = $newTroopNum;
+            $this->Territories->save($territoryToUpdate);
+            
+            // Get the target territory
+            $territories = $this->Territories
+                                ->find()
+                                ->where(['game_id' => $gameId, 'tile_id' => $attack->attack_target])
+                                ->all()->toArray();
+            $territoryAttacked = $territories[0];
+            
+            $result = $this->performAttackBattle($attack->num_troops, $territoryAttacked->num_troops);
+            $userId = 0;
+            if($result > 0) {
+                $userId = $attack->game_user_id;
+            } else {
+                $userId = $territoryAttacked->user_id;
+                $result = abs($result);
+            }
+            
+            $territoryToUpdate = $this->Territories->get($territoryAttacked->id);
+            $territoryToUpdate->num_troops = $result;
+            $territoryToUpdate->is_occupied = 1;
+            $territoryToUpdate->user_id = $userId;
+            $this->Territories->save($territoryToUpdate)
+        }
+        
+    }
+    
+    // This function will perform the battle randomization between attacking
+    // and defending troops. It will return the number of surviving troops
+    // if the attack was successful. It will return a negative number if 
+    // the attack failed with the absolute value of that number being the
+    // number of troops remaining
+    public function performAttackBattle($numAttackTroops, $numDefendTroops) {
+        // If defending troops is 0, must be neutral territory
+        if ($numDefendTroops == 0) {
+            return $numAttackTroops;
+        }
+        
+        $numAttackRemain = rand(0, $numAttackTroops);
+        $numDefendRemain = rand(0, $numDefendTroops);
+        
+        if ($numAttackRemain > $numDefendRemain) {
+            return $numAttackRemain;
+        } else if ($numAttackRemain == 0 && $numDefendRemain == 0) {
+            // All troops died but we dont want a draw
+            // so randomly find the hidden last man standing
+            if(rand(1,2) == 1) {
+                return 1;
+            } else {
+                return -1;
+            }
+        } else {
+            return 0 - $numDefendRemain;
+        }
     }
     
     // This function will go through the Game Users that are bot accounts
