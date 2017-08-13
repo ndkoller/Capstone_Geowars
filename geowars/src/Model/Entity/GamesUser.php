@@ -6,6 +6,7 @@ use Cake\ORM\Entity;
 /**
  * GamesUser Entity
  *
+ * @property int $games_user_id
  * @property int $game_id
  * @property int $user_id
  * @property bool $is_bot

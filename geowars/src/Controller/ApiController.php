@@ -15,7 +15,7 @@ class ApiController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('test', 'getMap', 'postAttack', 'postDeploy','postMove', 'getPhase'));
+        $this->Auth->allow(array('test', 'checkGameState', 'getMap', 'postAttack', 'postDeploy','postMove', 'getPhase'));
     }
     
     public function getPhase($gameId) {
@@ -37,6 +37,34 @@ class ApiController extends AppController
         $mapInfo = $this->getMapPoints();
         $output = count($mapInfo['adjacentTerritories'][0]);
         $this->set('result', $output);
+    }
+    
+    public function checkGameState($gameId, $lastReportedPhase, $currentTurn) {
+        $this->viewBuilder()->layout('ajax');
+        
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $gameId])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        
+        $shouldReload = false;
+        
+        if($gameInfo->current_phase != $lastReportedPhase) {
+            $shouldReload = true;
+        }
+        
+        if($currentTurn != $gameInfo->last_completed_turn + 1){
+            $shouldReload = true;
+        }
+        
+        if($shouldReload){
+            $this->set('result', 'reload');
+        } else {
+            $this->set('result', 'waiting');
+        }
     }
     
     
@@ -145,7 +173,7 @@ class ApiController extends AppController
         $newAttack->turn_number = $gameInfo->last_completed_turn + 1;
         $newAttack->num_troops = $numTroops;
         $newAttack->attack_from = $fromTileId;
-        $newAttack->attack_to = $toTileId;
+        $newAttack->attack_target = $toTileId;
         return $this->AttackActions->save($newAttack);
     }
     
@@ -434,11 +462,11 @@ class ApiController extends AppController
                 if(count($territories) == 1) {
                     // Bot only has 1 territory
                     $tId = $territories[0]->tile_id;
-                    $this->saveNewAttack($gameId,$aiUser->user_id, $tId, $tId, 0);
+                    $this->saveNewMove($gameId,$aiUser->user_id, $tId, $tId, 0);
                 } else {
                     $territoryFromId = $territories[0]->tile_id;
                     $territoryToId = $territories[1]->tile_id;
-                    $numToMove= intdiv($territoryFrom->num_troops, 2);
+                    $numToMove= round($territoryFrom->num_troops / 2);
                     $this->saveNewMove($gameId, $aiUser->user_id, $territoryFromId, $territoryToId, $numToMove);
                     
                 }
@@ -470,7 +498,7 @@ class ApiController extends AppController
             // Attacking owned territories
             foreach($territories as $territory) {
                 $fromId = $territory->tile_id;
-                $numTroops = intdiv($territory->num_troops, 2);
+                $numTroops = round($territory->num_troops / 2);
                 $neutralTerritory = $this->getNeutralAdjacentTerritory($gameId, $fromId);
                 if ($neutralTerritory != NULL) {
                     $toId = $neutralTerritory->tile_id;
@@ -526,12 +554,12 @@ class ApiController extends AppController
         $this->loadModel('Games');
         $gamesInfo = $this->Games
                     ->find()
-                    ->where(['id' => $game_id])
+                    ->where(['id' => $gameId])
                     ->all()->toArray();
                     
         $gameInfo = $gamesInfo[0];
         
-        $currentPhase = $gameInfo->currentPhase;
+        $currentPhase = $gameInfo->current_phase;
         
         $gameToSave = $this->Games->get($gameInfo->id);
         
@@ -539,7 +567,7 @@ class ApiController extends AppController
             $gameToSave->current_phase = 'move';
         } else if ($currentPhase == 'move') {
             $gameToSave->current_phase = 'attack';
-        } else {
+        } else if ($currentPhase == 'attack') {
             $this->updatePlayersAvailableTroops($gameId);
             $gameToSave->current_phase = 'deploy';
             $gameToSave->last_completed_turn = $gameToSave->last_completed_turn + 1;
@@ -558,16 +586,14 @@ class ApiController extends AppController
             $this->loadModel('Territories');
             $territories = $this->Territories
                                 ->find()
-                                ->where(['game_id' => $game_id, 'user_id' => $user->user_id])
+                                ->where(['game_id' => $gameId, 'user_id' => $user->user_id])
                                 ->all()->toArray();
             if($territories != NULL) {
                 $numNewTroops = count($territories) * 2;
-            
-                $this->GameUsers->save(array(
-                        'game_id' => $gameId,
-                        'user_id' => $user->user_id,
-                        'troops' => $numNewTroops
-                ));
+                
+                $userToUpdate = $this->GamesUsers->get($user->id);
+                $userToUpdate->troops = $numNewTroops;
+                $this->GamesUsers->save($userToUpdate);
             }                    
         }
     }
@@ -616,13 +642,17 @@ class ApiController extends AppController
         $map = array();
          
         for($i = 0; $i < 20; $i++) {
+            $userId = $territoryById[$i]->user_id;
+            if($userId == NULL){
+                $userId = 0;
+            }
             $map[$i] = array(
                 "points" => $mapInfo['points'][$i],
-                "color" => $colors[$territoryById[$i]->user_id],
+                "color" => $colors[$userId],
                 "center" => $mapInfo['centers'][$i],
                 "troops" => $territoryById[$i]->num_troops,
                 "adjacentTerritories" => $mapInfo['adjacentTerritories'][$i],
-                "owner" => $territoryById[$i]->user_id,
+                "owner" => $userId,
                 "shape" => $mapInfo['shape'][$i]
                 );
         }
@@ -640,6 +670,9 @@ class ApiController extends AppController
         $game["currentTurn"] = $gameInfo->last_completed_turn + 1;
         
         $currentUserId = $this->Auth->User('id');
+        if($currentUserId == NULL) {
+            $currentUserId = 2;
+        }
         $troopsAvailable = $this->getTroopsAvailableForUser($game_id, $currentUserId);
         $game["troopsAvailable"] = $troopsAvailable;
         $game["userID"] = $currentUserId;
