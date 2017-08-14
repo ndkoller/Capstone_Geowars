@@ -34,8 +34,7 @@ class ApiController extends AppController
     // test endpoint to just test whatever.
     public function test(){
         $this->viewBuilder()->layout('ajax');
-        $this->updateGamePhase(26);
-        $output = 'stuff';
+        $output = $this->isGameOver(52);
         $this->set('result', $output);
     }
     
@@ -67,7 +66,7 @@ class ApiController extends AppController
         }
     }
     
-    
+    // API Endpoint to post a
     public function postDeploy($gameId, $userId,$tileId, $numTroops){
         $this->viewBuilder()->layout('ajax');
         $saved = $this->saveNewDeploy($gameId, $userId, $tileId, $numTroops);
@@ -86,6 +85,7 @@ class ApiController extends AppController
         }
     }
     
+    // 
     public function saveNewDeploy($gameId,$userId,$tileId,$numTroops){
         $this->loadModel('Games');
         $gamesInfo = $this->Games
@@ -105,6 +105,7 @@ class ApiController extends AppController
         return $this->DeploymentActions->save($newDeploymentAction);
     }
     
+    // API Endpoint to post a
     public function postMove($gameId, $userId,$fromTileId, $toTileId, $numTroops){
         $this->viewBuilder()->layout('ajax');
         $saved = $this->saveNewMove($gameId, $userId, $fromTileId, $toTileId, $numTroops);
@@ -141,6 +142,7 @@ class ApiController extends AppController
         return $this->MoveActions->save($newMove);
     }
     
+    // API Endpoint to post an attack phase move
     public function postAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops) {
         
         echo $gameId;
@@ -180,6 +182,36 @@ class ApiController extends AppController
         $newAttack->attack_from = $fromTileId;
         $newAttack->attack_target = $toTileId;
         return $this->AttackActions->save($newAttack);
+    }
+    
+    // Function to check if the game is over. Returns a positive number
+    // of the user's ID that won the game. Otherwise returns -1
+    public function isGameOver($gameId) {
+        $this->loadModel('Territories');
+        $territories = $this->Territories
+                            ->find()
+                            ->where(['game_id' => $gameId])
+                            ->all()->toArray();
+                            
+        $possibleWinnerUserId = -1;
+        foreach($territories as $territory) {
+            // Check if neutral territory
+            if ($territory->user_id == 1) {
+                continue;
+            }
+            if ($possibleWinnerUserId == -1) {
+                $possibleWinnerUserId = $territory->user_id;
+            } else if ($possibleWinnerUserId != $territory->user_id) {
+                // Two different players own territory. Game not over
+                return -1;
+            }
+        }
+        // Every territory is either neutral or owned by 1 player. Game over
+        $this->loadModel('Games');
+        $game = $this->Games->get($gameId);
+        $game->completed = 1;
+        $this->Games->save($game);
+        return $possibleWinnerUserId;
     }
     
     public function activePlayersCompletedPhase($gameId, $phase) {
@@ -311,33 +343,6 @@ class ApiController extends AppController
         $attacks = $this->AttackActions->find()
                                     ->where(['game_id' => $gameId, 'turn_number' => ($gameInfo->last_completed_turn + 1)])
                                     ->all()->toArray();
-                          
-        // Below was a first attempt at processing all moves fairly.
-        // Kinda hard, especially thinking about what to do if territory 1
-        // attacks territory 2, territory 2 attacks territory 3 and territory 3
-        // attacks territory 1
-        // $attackMap = array();
-        // $attackToTerritory = array();
-        // $attackMap['attackedTo'] = $attackToTerritory;
-        // $attackFromTerritory = array();
-        // $attackMap['attackedFrom'] = $attackToTerritory;
-        
-        // foreach($attacks as $attack) {
-        //     array_push($attackMap['attackedTo'], $attack->attack_target);
-        //     array_push($attackMap['attackedFrom'], $attack->attack_from);
-        // }
-        
-        // foreach($attacks as $attack) {
-        //     // If no one else is attacking the same target 
-        //     if(!in_array($attack->attack_target,$attackMap['attackedTo'])) {
-        //         // If no one is attacking the from target, process
-        //         if(!in_array($attack->attack_from,$attackMap['attackedTo'])) {
-        //             $this->performAttackBattle($attack);
-        //         } else {
-        //             //
-        //         }
-        //     }
-        // }
         
         foreach($attacks as $attack) {
             $numAttackingTroops = $attack->num_troops;
@@ -577,11 +582,7 @@ class ApiController extends AppController
                     
         $gameInfo = $gamesInfo[0];
         
-        echo $gameInfo;
-        
         $currentPhase = $gameInfo->current_phase;
-        
-        echo $currentPhase;
         
         $gameToSave = $this->Games->get($gameInfo->id);
         
@@ -726,6 +727,7 @@ class ApiController extends AppController
         $game["troopsAvailable"] = $troopsAvailable;
         $game["userID"] = $currentUserId;
         $game["gameID"] = $game_id;
+        $game["winner"] = $this->isGameOver($game_id);
         
         //Set the map array to be available in the view with name of map
         $this->set('game', $game);
