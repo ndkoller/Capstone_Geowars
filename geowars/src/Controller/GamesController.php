@@ -90,6 +90,145 @@ class GamesController extends AppController
     }
     
     public function botFill($gameId){
+            
+        //Set up connections to all requred tables
+        $Games = TableRegistry::get('Games');
+        $Territories = TableRegistry::get('Territories');
+        $GamesUsers = TableRegistry::get('GamesUsers');
+        $Users = TableRegistry::get('Users');
+        
+        //If request is post then create new game.      
+        $this->loadModel('GamesUsers');
+           
+        $GameJoin = $Games->find()
+                              ->where(['id' => $gameId])
+                              ->all()
+                              ->toArray();
+            
+        $players = $this->GamesUsers
+                        ->find()
+                        ->where(['game_id' => $this->request->data['game_id']])
+                        ->all()
+                        ->toArray();
+        $alreadyJoined = false;
+        $currentPlayers = count($players);
+        $maxPlayers = $GameJoin[0]->max_users;
+        $minPlayers = $GameJoin[0]->min_users;
+            
+            
+        $botID = 11; // starting test user account to be used for bot players
+        // ID's: 11-16 used for botID's available 
+        while($currentPlayers < $maxPlayers){
+            $Gameusers = TableRegistry::get('GamesUsers');
+            $newPlayer = $Gameusers->newEntity();
+            $newPlayer->user_id = $botID;
+    	    $newPlayer->is_bot = 1; 
+    	    $newPlayer->game_id = $gameId;
+    	    $newPlayer->troops = 5;
+            
+            // Hexagon locations for game start- 0, 2, 6, 13, 16, 19
+            // Starting position Colors
+            // Hexagon 0, Player 0 = FireBrick
+            // Hexagon 2, Player 1 = MediumBlue
+            // Hexagon 6, Player 2 = Gold
+            // Hexagon 13, Player 3 = DarkGreen
+            // Hexagon 16, Player 4 = DarkOrange
+            // Hexagon 19, Player 5 = Purple
+            
+            $PlayerTerritory = $Territories->find()
+                      ->where(['game_id' => $gameId])
+                      ->all()
+                      ->toArray();
+            for($j = 0; $j < count($PlayerTerritory); $j++){
+                $newTerritory = $PlayerTerritory[$j];
+                $x = $newTerritory->tile_id;
+                if($x == 0 && $newTerritory->is_occupied == 0) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->num_troops = 5;
+                    $newPlayer->color = 'FireBrick';
+                    if(!$Territories->save($newTerritory)) {
+                        //echo ".  Territory Created";
+                        debug($this->validationErrors); die();
+                    }
+                    break;
+                } elseif ($x == 2 && $newTerritory->is_occupied == 0) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->num_troops = 5;
+                    $newPlayer->color = 'MediumBlue';
+                    if(!$Territories->save($newTerritory)) {
+                        //echo ".  Territory Created";
+                        debug($this->validationErrors); die();
+                    }
+                    break;
+                } elseif ($x == 6 && $newTerritory->is_occupied == 0) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->num_troops = 5;
+                    $newPlayer->color = 'Gold';
+                    if(!$Territories->save($newTerritory)) {
+                        //echo ".  Territory Created";
+                        debug($this->validationErrors); die();
+                    }
+                    break;
+                } elseif ($x == 13 && $newTerritory->is_occupied == 0) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->num_troops = 5;
+                    $newPlayer->color = 'DarkGreen';
+                    if(!$Territories->save($newTerritory)) {
+                        //echo ".  Territory Created";
+                        debug($this->validationErrors); die();
+                    }
+                    break;
+                } elseif ($x == 16 && $newTerritory->is_occupied == 0) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->num_troops = 5;
+                    $newPlayer->color = 'DarkOrange';
+                    if(!$Territories->save($newTerritory)) {
+                        //echo ".  Territory Created";
+                        debug($this->validationErrors); die();
+                    }
+                    break;
+                } elseif ($x == 19 && $newTerritory->is_occupied == 0) {
+                    $newTerritory->is_occupied = 1;
+                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->num_troops = 5;
+                    $newPlayer->color = 'Purple';
+                    if(!$Territories->save($newTerritory)) {
+                        //echo ".  Territory Created";
+                        debug($this->validationErrors); die();
+                    }
+                    break;
+                } else {
+                    // failed to join because all starting territories were full.
+                    // Change because it is overwritten below.
+                    $results = 0; 
+                }
+    
+            }
+    
+    		if ($Gameusers->save($newPlayer)) {
+    		    $results = 1;
+                if($currentPlayers+1 == $maxPlayers){
+                    // if this most recent player addition hit Max then the game can start.
+
+                }
+            } else {
+                // failed GameUser save
+                $results = 0;
+            }  
+            // Progress the while loop
+            $currentPlayers += 1;
+            $botID += 1;
+            
+        }
+        // finished filling game to max characters w/ bots
+        // ready to start
+        $GameJoin[0]->started = 1; 
+        $Games->save($GameJoin);
         
     }
     
@@ -112,8 +251,9 @@ class GamesController extends AppController
             $this->loadModel('GamesUsers');
            
             $GameJoin = $Games->find()
-                              ->where(['game_id' => $this->request->data['game_id']])
-                              ->all();
+                              ->where(['id' => $this->request->data['game_id']])
+                              ->all()
+                              ->toArray();
             
             $players = $this->GamesUsers
                                  ->find()
@@ -122,9 +262,9 @@ class GamesController extends AppController
                                  ->toArray();
            $alreadyJoined = false;
            $currentPlayers = count($players);
-           $maxPlayers = $GameJoin->max_users;
-           $minPlayers = $GameJoin->min_users;
-           $botFill = $GameJoin->atStart_opt;
+           $maxPlayers = $GameJoin[0]->max_users;
+           $minPlayers = $GameJoin[0]->min_users;
+           $botFill = $GameJoin[0]->atStart_opt;
            // 1 cancel game when start time is reached -> time calculations to be added in a refactor.
            // 2 fill game to minimum characters with bots
            // 3 fill game to maximum characters with bots.
@@ -134,7 +274,7 @@ class GamesController extends AppController
                 // Checks if current user belongs to game
                 for($i = 0; $i < $currentPlayers; $i++){
                    
-                       if ($joinedPlayers[$i]->user_id == $this->Auth->User('id')) {    
+                       if ($players[$i]->user_id == $this->Auth->User('id')) {    
                             $alreadyJoined = true;
                        }
                    }
@@ -158,83 +298,122 @@ class GamesController extends AppController
                     
                     $PlayerTerritory = $Territories->find()
                               ->where(['game_id' => $this->request->data['game_id']])
-                              ->all();
-                    foreach($PlayerTerritory as $newTerritory){
-                        $x = $newTerritory->id;
+                              ->all()
+                              ->toArray();
+                    for($j = 0; $j < count($PlayerTerritory); $j++){
+                        $newTerritory = $PlayerTerritory[$j];
+                        $x = $newTerritory->tile_id;
                         if($x == 0 && $newTerritory->is_occupied == 0) {
                             $newTerritory->is_occupied = 1;
                             $newTerritory->user_id = $this->Auth->User('id');
                             $newTerritory->num_troops = 5;
                             $newPlayer->color = 'FireBrick';
+                            if(!$Territories->save($newTerritory)) {
+                                //echo ".  Territory Created";
+                                debug($this->validationErrors); die();
+                            }
+                            break;
                         } elseif ($x == 2 && $newTerritory->is_occupied == 0) {
                             $newTerritory->is_occupied = 1;
                             $newTerritory->user_id = $this->Auth->User('id');
                             $newTerritory->num_troops = 5;
                             $newPlayer->color = 'MediumBlue';
+                            if(!$Territories->save($newTerritory)) {
+                                //echo ".  Territory Created";
+                                debug($this->validationErrors); die();
+                            }
+                            break;
                         } elseif ($x == 6 && $newTerritory->is_occupied == 0) {
                             $newTerritory->is_occupied = 1;
                             $newTerritory->user_id = $this->Auth->User('id');
                             $newTerritory->num_troops = 5;
                             $newPlayer->color = 'Gold';
+                            if(!$Territories->save($newTerritory)) {
+                                //echo ".  Territory Created";
+                                debug($this->validationErrors); die();
+                            }
+                            break;
                         } elseif ($x == 13 && $newTerritory->is_occupied == 0) {
                             $newTerritory->is_occupied = 1;
                             $newTerritory->user_id = $this->Auth->User('id');
                             $newTerritory->num_troops = 5;
                             $newPlayer->color = 'DarkGreen';
+                            if(!$Territories->save($newTerritory)) {
+                                //echo ".  Territory Created";
+                                debug($this->validationErrors); die();
+                            }
+                            break;
                         } elseif ($x == 16 && $newTerritory->is_occupied == 0) {
                             $newTerritory->is_occupied = 1;
                             $newTerritory->user_id = $this->Auth->User('id');
                             $newTerritory->num_troops = 5;
                             $newPlayer->color = 'DarkOrange';
+                            if(!$Territories->save($newTerritory)) {
+                                //echo ".  Territory Created";
+                                debug($this->validationErrors); die();
+                            }
+                            break;
                         } elseif ($x == 19 && $newTerritory->is_occupied == 0) {
                             $newTerritory->is_occupied = 1;
                             $newTerritory->user_id = $this->Auth->User('id');
                             $newTerritory->num_troops = 5;
                             $newPlayer->color = 'Purple';
+                            if(!$Territories->save($newTerritory)) {
+                                //echo ".  Territory Created";
+                                debug($this->validationErrors); die();
+                            }
+                            break;
                         } else {
                             // failed to join because all starting territories were full.
+                            // Change because it is overwritten below.
                             $results = 0; 
                         }
-                        
-                        if(!$Territories->save($newTerritory)) {
-                            //echo ".  Territory Created";
-                            debug($this->validationErrors); die();
-                        }    
+
                     }
-                    
-                    
-                                          				  
+
             		if ($Gameusers->save($newPlayer)) {
             		    $results = 1;
+                        if($currentPlayers+1 == $maxPlayers){
+                            // if this most recent player addition hit Max then the game can start.
+                            $GameJoin[0]->started = 1; 
+                            $Games->save($GameJoin);
+                        }
                     } else {
+                        // failed GameUser save
                         $results = 0;
                     }
+                    
                 } else {
+                    // Failed Unique User Check
                     $results = 0;
                 }     
            }
            else{
                // failed to add player current players add = or exceed MaxPlayers
                $results = 0;
-               $GameJoin->started = 1; // Shouldn't be pulling into Join list so updating Started status
+               $GameJoin[0]->started = 1; // Shouldn't be pulling into Join list so updating Started status here as an error correct.
                $Games->save($GameJoin);
            }
 
            
            // Bot Fill Logic
-                
-                if($botFill == 2){
-                    if($currentPlayers < $minPlayers){
-                        
-                    }
-                }
-                elseif($botFill == 3){
-                    
-                }
-                else{
-                    // bot fill == 1 
-                    // game will be deleted on start to refactor logic branch to utilize start time instead.
-                }
+            
+        if($botFill == 2){
+            if($currentPlayers < $minPlayers){
+                // Fill to minimum with bots
+                // need to Refactor BotFill to take min fill or max fill
+            }
+        }
+        elseif($botFill == 3){
+            // Fill To Maximum Player with bots
+            $this->botFill($this->request->data['game_id']);
+            
+
+        }
+        else{
+            // bot fill == 1 
+            // game will be deleted on start to refactor logic branch to utilize start time instead.
+        }
 
            
         $this->set('results', $results);
