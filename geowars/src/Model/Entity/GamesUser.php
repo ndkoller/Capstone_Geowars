@@ -6,11 +6,12 @@ use Cake\ORM\Entity;
 /**
  * GamesUser Entity
  *
- * @property int $games_user_id
+ * @property int $id
  * @property int $game_id
  * @property int $user_id
  * @property bool $is_bot
  * @property int $troops
+ * @property string $color
  *
  * @property \App\Model\Entity\Game $game
  * @property \App\Model\Entity\User $user

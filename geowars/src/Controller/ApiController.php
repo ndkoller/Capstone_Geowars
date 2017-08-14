@@ -34,8 +34,8 @@ class ApiController extends AppController
     // test endpoint to just test whatever.
     public function test(){
         $this->viewBuilder()->layout('ajax');
-        $mapInfo = $this->getMapPoints();
-        $output = count($mapInfo['adjacentTerritories'][0]);
+        $this->updateGamePhase(26);
+        $output = 'stuff';
         $this->set('result', $output);
     }
     
@@ -590,9 +590,9 @@ class ApiController extends AppController
                                 ->all()->toArray();
             if($territories != NULL) {
                 $numNewTroops = count($territories) * 2;
-                
+                $numTroops = $numNewTroops + $user->troops;
                 $userToUpdate = $this->GamesUsers->get($user->id);
-                $userToUpdate->troops = $numNewTroops;
+                $userToUpdate->troops = $numTroops;
                 $this->GamesUsers->save($userToUpdate);
             }                    
         }

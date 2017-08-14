@@ -35,7 +35,7 @@ class GamesUsersTable extends Table
 
         $this->table('games_users');
         $this->displayField('game_id');
-        $this->primaryKey(['game_id', 'user_id']);
+        $this->primaryKey('id');
 
         $this->belongsTo('Games', [
             'foreignKey' => 'game_id',
@@ -56,6 +56,10 @@ class GamesUsersTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
+            ->integer('id')
+            ->allowEmpty('id', 'create');
+
+        $validator
             ->boolean('is_bot')
             ->requirePresence('is_bot', 'create')
             ->notEmpty('is_bot');
@@ -64,6 +68,9 @@ class GamesUsersTable extends Table
             ->integer('troops')
             ->requirePresence('troops', 'create')
             ->notEmpty('troops');
+
+        $validator
+            ->allowEmpty('color');
 
         return $validator;
     }
