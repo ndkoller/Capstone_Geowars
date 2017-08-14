@@ -567,7 +567,7 @@ attackSubmitButton.addEventListener("click", function(){
 	//Submit to API
 	var apiRequest = "/api/postattack/"  + gameInfo.gameID + "/" +
     			gameInfo.userID + "/" + territoryFrom + "/" + territoryTo
-    			+ "/" + parseInt(moveTroopsNumber.value);
+    			+ "/" + parseInt(attackTroopsNumber.value);
     			
     //AJAX Request
 	var xhttp = new XMLHttpRequest();
