@@ -142,8 +142,13 @@ class ApiController extends AppController
     }
     
     public function postAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops) {
+        
+        echo $gameId;
+        
         $this->viewBuilder()->layout('ajax');
         $saved = $this->saveNewAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops);
+        
+        echo $saved;
         
         if($saved){
             if ($this->activePlayersCompletedPhase($gameId, 'attack')){
@@ -559,7 +564,11 @@ class ApiController extends AppController
                     
         $gameInfo = $gamesInfo[0];
         
+        echo $gameInfo;
+        
         $currentPhase = $gameInfo->current_phase;
+        
+        echo $currentPhase;
         
         $gameToSave = $this->Games->get($gameInfo->id);
         
