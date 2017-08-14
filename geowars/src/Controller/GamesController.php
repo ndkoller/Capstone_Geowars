@@ -495,6 +495,7 @@ class GamesController extends AppController
         $newGame->atStart_opt = $this->request->data['atStart'];
         $newGame->join_opt = $this->request->data['join'];
         $newGame->current_phase = 'deploy';
+        $newGame->last_completed_turn = 0;
         if ($Games->save($newGame)) {
 				    $results = 1;
                     //Create 20 territores for our game
