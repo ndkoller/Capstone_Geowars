@@ -4,8 +4,9 @@
 //$this->Flash->info(sprintf('<b>%s</b> %s', h($highlight), h($message)), ['escape' => false]);
 
 ?>
-<!--
+
 <form class="form-horizontal">
+<!--
   <div class="form-group">
     <label for="map" class="col-sm-2 control-label">Map</label>
     <div class="col-sm-6">
@@ -33,7 +34,7 @@
   </div>
   -->
   <div class="form-group">
-  <label for="minPlayers" class="col-sm-2 control-label">Minimum Players</label>
+  <label for="minPlayers" class="col-sm-2 control-label">Minimum Human Players</label>
   <div class="col-sm-6">
       <select class="form-control" id="minPlayers">
           <option value="1">1</option>
@@ -152,14 +153,15 @@ function makeGame() {
     var ajaxreq = new XMLHttpRequest();
     ajaxreq.onload = function() {
           if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
-            /*
+            
             var responseObject = JSON.parse(ajaxreq.responseText);
             if (responseObject.results == 1) {
               //Todo
+              window.location.replace('/games/mygames');
             } else {
               //Todo
             }
-            */
+            
           }
     };
     

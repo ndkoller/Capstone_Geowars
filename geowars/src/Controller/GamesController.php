@@ -15,20 +15,27 @@ class GamesController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('add','findAll','createProcess','join'));
+        $this->Auth->allow(array('view','add','findAll','createProcess','join','ShowMyGames','botFill'));
     }
     
     //Will eventualy take one vairable for the games ID
-    public function view()
+    public function view(){
+        
+    }
+    
+    
+    public function open()
     {
         if ($this->request->is('post')) {
             
             //For Ajax requests
             $this->viewBuilder()->layout('ajax');
             $ID = $this->request->data['game_id'];
-            $URL = 'games/view/'+ $ID;
-            return $this->redirect($URL);
-            
+            // add some validation criteria
+            $results = 1;
+            //$URL = 'games/view/'+ $ID;
+            //return $this->redirect($URL);
+            $this->set('results', $results);
         }
         
     }
@@ -418,10 +425,8 @@ class GamesController extends AppController
             // bot fill == 1 
             // game will be deleted on start to refactor logic branch to utilize start time instead.
         }
-
            
         $this->set('results', $results);
-        return $this->redirect('/games/mygames');
         }
     }
     
@@ -529,7 +534,6 @@ class GamesController extends AppController
         }
 
             $this->set('results', $results);
-            return $this->redirect('/games/mygames');
         }
     }
     
