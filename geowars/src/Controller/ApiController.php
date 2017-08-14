@@ -727,7 +727,8 @@ class ApiController extends AppController
         for($i = 0; $i < 20; $i++) {
             $userId = $territoryById[$i]->user_id;
             if($userId == NULL){
-                $userId = 0;
+                // neutral territories are saved in the user account 1
+                $userId = 1;
             }
             $map[$i] = array(
                 "points" => $mapInfo['points'][$i],
