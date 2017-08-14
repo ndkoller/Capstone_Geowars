@@ -154,7 +154,7 @@ class GamesController extends AppController
                 $x = $newTerritory->tile_id;
                 if($x == 0 && $newTerritory->is_occupied == 0) {
                     $newTerritory->is_occupied = 1;
-                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->user_id = $botID;
                     $newTerritory->num_troops = 5;
                     $newPlayer->color = 'FireBrick';
                     if(!$Territories->save($newTerritory)) {
@@ -164,7 +164,7 @@ class GamesController extends AppController
                     break;
                 } elseif ($x == 2 && $newTerritory->is_occupied == 0) {
                     $newTerritory->is_occupied = 1;
-                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->user_id = $botID;
                     $newTerritory->num_troops = 5;
                     $newPlayer->color = 'MediumBlue';
                     if(!$Territories->save($newTerritory)) {
@@ -174,7 +174,7 @@ class GamesController extends AppController
                     break;
                 } elseif ($x == 6 && $newTerritory->is_occupied == 0) {
                     $newTerritory->is_occupied = 1;
-                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->user_id = $botID;
                     $newTerritory->num_troops = 5;
                     $newPlayer->color = 'Gold';
                     if(!$Territories->save($newTerritory)) {
@@ -184,7 +184,7 @@ class GamesController extends AppController
                     break;
                 } elseif ($x == 13 && $newTerritory->is_occupied == 0) {
                     $newTerritory->is_occupied = 1;
-                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->user_id = $botID;
                     $newTerritory->num_troops = 5;
                     $newPlayer->color = 'DarkGreen';
                     if(!$Territories->save($newTerritory)) {
@@ -194,7 +194,7 @@ class GamesController extends AppController
                     break;
                 } elseif ($x == 16 && $newTerritory->is_occupied == 0) {
                     $newTerritory->is_occupied = 1;
-                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->user_id = $botID;
                     $newTerritory->num_troops = 5;
                     $newPlayer->color = 'DarkOrange';
                     if(!$Territories->save($newTerritory)) {
@@ -204,7 +204,7 @@ class GamesController extends AppController
                     break;
                 } elseif ($x == 19 && $newTerritory->is_occupied == 0) {
                     $newTerritory->is_occupied = 1;
-                    $newTerritory->user_id = $this->Auth->User('id');
+                    $newTerritory->user_id = $botID;
                     $newTerritory->num_troops = 5;
                     $newPlayer->color = 'Purple';
                     if(!$Territories->save($newTerritory)) {
