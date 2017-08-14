@@ -5,14 +5,7 @@
 #map{
 	/*position: relative;*/
 }
-.deploy_phase_menu{
-    display: none;
-    position: absolute;
-    background-color: white;
-    padding: 10px;
-    top: 350px;
-    left: 550px;
-}
+
 #move_phase_menu{
     display: none;
     position: absolute;
@@ -22,45 +15,23 @@
     left: 475px;
     width: 250px;
 }
-.attack_phase_menu{
+#attack_phase_menu{
     display: none;
     position: absolute;
     background-color: white;
     padding: 10px;
     top: 350px;
-    left: 550px;
+    left: 475px;
+    width: 250px;
 }
+
 </style>
 <div id="map">
 	<canvas id="canvas" width="800" height="700"></canvas>
 
-	<form class="deploy_phase_menu" method="POST" >
-		<fieldset>
-			<legend>Deploy Phase</legend>
-			<div>
-			  <label>Owner:</label>
-			  <text id="deploy_phase_owner_name"></text>
-			</div>
-			<div>
-			  <label>Troops:</label>
-			  <text id="deploy_phase_troop_numbers"></text>
-			</div>   
-			<p>
-				<input type="button" value="Deploy" id="deploy_phase_deploy_button">
-				<input type="button" value="Move" id="deploy_phase_move_button">  
-			</p>
-			<p>
-				<input type="submit">
-				<input id="deploy_phase_cancel" type="button" value="Cancel">
-			</p>
-		</fieldset>
-	</form>
-	
 	<div id="move_phase_menu" >
 		<fieldset>
 			<legend>Move Phase</legend>
-			
-			
 			<div>
 			  <label>Move From:</label>
 			  <text id="move_from"></text>
@@ -78,7 +49,6 @@
 			</div>
 			<br>
 			<div>
-			
 				<button type="button" id="move_cancel">Cancel</button>
 				<button type="button" id="move_to_button">Move To</button>
 				<button type="button" id="move_submit">Submit</button>
@@ -87,28 +57,33 @@
 		
 	</div>
 	
-	<form class="attack_phase_menu" method="POST" >
+	<div id="attack_phase_menu" >
 		<fieldset>
 			<legend>Attack Phase</legend>
 			<div>
-			  <label>Owner:</label>
-			  <text id="attack_phase_owner_name"></text>
+			  <label>Attack From:</label>
+			  <text id="attack_from"></text>
 			</div>
 			<div>
-			  <label>Troops:</label>
-			  <text id="attack_phase_troop_numbers"></text>
-			</div>   
-			<p>
-				<input type="button" value="Attack" id="attack_phase_attack_button">
-				<input type="button" value="Move" id="attack_phase_move_button">  
-			</p>
-			<p>
-				<input type="submit">
-				<input id="attack_phase_cancel" type="button" value="Cancel">
-			</p>
+			  <label>Attack:</label>
+			  <text id="attack_to"></text>
+			</div>
+			<div>
+			  <label>Troops to Attack:</label>
+			  <input type="number" id="to_attack">
+			</div>
+			<div>
+			  <label id=>*You can attack with x troops.</label>
+			</div>
+			<br>
+			<div>
+				<button type="button" id="attack_cancel">Cancel</button>
+				<button type="button" id="attack_to_button">Attack To</button>
+				<button type="button" id="attack_submit">Submit</button>
+			</div>
 		</fieldset>
-	</form>
-	
+		
+	</div>
 </div>
 
 
@@ -138,6 +113,14 @@ var moveCancelButton = document.getElementById('move_cancel');
 var moveToButton = document.getElementById('move_to_button');
 var moveSubmitButton = document.getElementById('move_submit');
 
+var attackWindow = document.getElementById("attack_phase_menu");
+var attackTroopsTo = document.getElementById("attack_to");
+var attackTroopsFrom = document.getElementById("attack_from");
+var attackTroopsNumber = document.getElementById("to_attack");
+var attackCancelButton = document.getElementById('attack_cancel');
+var attackToButton = document.getElementById('attack_to_button');
+var attackSubmitButton = document.getElementById('attack_submit');
+
 //Loop to check chars and build gameID string
 for(var c = stringURL.length - 1; c > 0; c--) {
 	
@@ -150,6 +133,7 @@ for(var c = stringURL.length - 1; c > 0; c--) {
 	}
 }
 
+var canAttack = [];
 
 // gameInfo holds all information about map that is sent from server in ajax call
 var gameInfo;
@@ -302,6 +286,15 @@ function drawBoard() {
 			//Indicate which territores the user can move troops from
 			drawBorders(ownedTerritories, 2);
 		}
+		
+/////////////Attack Phase/////////////////
+		if(!gameInfo.phase.localeCompare("attack")) {
+			alert("This is the attack phase, select a territory to attack " + 
+			" from. Then you will choose where to attack and with how many troops.");
+			
+			//Indicate which territores the user can attack from
+			drawBorders(ownedTerritories, 2);
+		}
 	}
 }
 
@@ -309,13 +302,8 @@ function drawBoard() {
 //Handle clicks on board
 canvas.addEventListener('click', function(event) {
 	
-	var x = document.getElementsByClassName("deploy_phase_menu"),
-    style = window.getComputedStyle(x[0]),
-    display = style.getPropertyValue('display');
-    var map = gameInfo.map;
-	if(display === "none"){
-		
-		// moved the location determining point inside the code for the menu because we don't care where clicks originate from if the menu is visible.
+		//Create map variable
+		var map = gameInfo.map;
 		
 		//Get location of click from click event
 		//Because canvas is not at page location 0, 0 apply offset
@@ -369,6 +357,20 @@ canvas.addEventListener('click', function(event) {
 				+ ".") == true) {
     			apiRequest = "/api/postdeploy/" + gameInfo.gameID + "/" +
     			gameInfo.userID + "/" + tileClicked + "/" + gameInfo.troopsAvailable;
+    			
+    			//AJAX Request
+				var xhttp = new XMLHttpRequest();
+
+				//The function that will be run on state change
+				xhttp.onreadystatechange = function() {
+    				if (this.readyState == 4 && this.status == 200) {
+						//Add here id needed
+    				}
+				};
+				
+				xhttp.open("GET", apiRequest, true);
+				xhttp.send();
+				
 			} else {
     			return;
 			}
@@ -386,7 +388,7 @@ canvas.addEventListener('click', function(event) {
 				}
 			
 				territoryFrom = tileClicked;
-				drawBorders([territoryFrom], 4)
+				drawBorders([territoryFrom], 4);
 				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
 				moveTroopsTo.textContent = "";
 				moveSubmitButton.disabled = true;
@@ -394,7 +396,7 @@ canvas.addEventListener('click', function(event) {
 				moveWindow.style.display = "block";
 			} else {
 				territoryTo = tileClicked;
-				drawBorders([territoryTo], 4)
+				drawBorders([territoryTo], 4);
 				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
 				moveTroopsTo.textContent = gameInfo.map[territoryTo].shape;
 				moveSubmitButton.disabled = false;
@@ -404,126 +406,70 @@ canvas.addEventListener('click', function(event) {
 			
 		}
 		
-		//Use Funtion to draw new boarders
-		//Draw different borders depending on game phase
-		
-		//drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 1);
-		
-		
-		//Removing this for now
-		
-		var xhttp = new XMLHttpRequest();
-
-		//The function that will be run on state change
-		xhttp.onreadystatechange = function() {
-    		if (this.readyState == 4 && this.status == 200) {
-    			//Parse the JSON response
-    			//var response = JSON.parse(this.responseText);
-    			
-    			/*
-    			if(response.phase == 'deploy'){
-    			
-    				// updating owner information
-					var owner = document.getElementById("deploy_phase_owner_name");
-					owner.innerHTML = map[bestObject].color;
-					// updating Troop Numbers
-					var troops = document.getElementById("deploy_phase_troop_numbers");
-					troops.innerHTML = map[bestObject].troops
-					var x = document.getElementsByClassName("deploy_phase_menu");
-					x[0].style.display = "block";
-    			}else {
-    				// updating owner information
-					var owner = document.getElementById("attack_phase_owner_name");
-					owner.innerHTML = map[bestObject].color;
-					// updating Troop Numbers
-					// ensure that this is communicating with other gameplay functionality
-					var troops = document.getElementById("attack_phase_troop_numbers");
-					troops.innerHTML = map[bestObject].troops
-
-					var x = document.getElementsByClassName("attack_phase_menu");
-					x[0].style.display = "block";
-    			} */
-    			
-
-    		}
-		};
-		xhttp.open("GET", apiRequest, true);
-		xhttp.send(); 
-		
+		//////////////////Attack Phase///////////////////////
+		if(!gameInfo.phase.localeCompare('attack')) {
+			
+			if(territoryFrom == -1) {
+				//User does not own this territory
+				if(map[tileClicked].owner != gameInfo.userID) {
+					alert("You do not own this " + map[tileClicked].shape +
+					", please select another territory.");
+					return;
+				}
+				
+				//Ensure canAttack has no items in it
+				canAttack = [];
+				
+				//Add Value to canAttack
+				for(var r = 0; r < gameInfo.map[tileClicked].adjacentTerritories.length; r++) {
+					if(gameInfo.map[gameInfo.map[tileClicked].adjacentTerritories[r]].owner != gameInfo.userID) {
+						canAttack.push(gameInfo.map[tileClicked].adjacentTerritories[r]);
+					}
+				}	
+				
+				//If no location can be attacked notify user
+				if(canAttack.length == 0) {
+					alert("This territoy does not have any adjacent" +
+					"territories you can attack. Please choose a different territory");
+					return;
+				}
+				
+				territoryFrom = tileClicked;
+				
+				//All owned territories go black
+				drawBorders(ownedTerritories, 3);
+				
+				//Adjacent turn red
+				drawBorders(canAttack, 1);
+				attackTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
+				attackTroopsTo.textContent = "";
+				attackSubmitButton.disabled = true;
+				attackToButton.disabled = false;
+				attackWindow.style.display = "block";
+			} else {
+				territoryTo = tileClicked;
+				drawBorders(canAttack, 3);
+				drawBorders([territoryTo], 1);
+				attackTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
+				attackTroopsTo.textContent = gameInfo.map[territoryTo].shape;
+				attackSubmitButton.disabled = false;
+				attackToButton.disabled = true;
+				attackWindow.style.display = "block";
+			}
+			
+		}
+	
 		
 			
-	}
+	
 
 }, false);
 
 // The following are the button listeners for the Deploy menu.
 // They should be invisible until a territory click occurs
 // Deploy Phase Menu's Cancel button listener
-document.getElementById("deploy_phase_cancel").addEventListener("click", function(){
-    
-    //Add: Clear any data fields that haven't been submitted
-	
-	var x = document.getElementsByClassName("deploy_phase_menu");
-    x[0].style.display = "none";
-    drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 3);
-	
-});
-
-document.getElementById("deploy_phase_move_button").addEventListener("click", function(){
-
-	// fill in with move functionality
-
-});
-
-document.getElementById("deploy_phase_deploy_button").addEventListener("click", function(){
-	if(tileClicked!=-1){
-		var xhttp = new XMLHttpRequest();
-
-		//The function that will be run on state change
-		xhttp.onreadystatechange = function() {
-  	
-  			//What will happen once return is succesful
-    		if (this.readyState == 4 && this.status == 200) {
-    			//Parse the JSON response
-    			var response = this.responseText;
-				refreshBoard();
-				var x = document.getElementsByClassName("deploy_phase_menu");
-    			x[0].style.display = "none";
-    		}
-		};
-		var urlString = "/api/postdeploy/" + gameInfo.gameID + "/";
-		urlString += gameInfo.userID + "/" + tileClicked + "/5";
-		xhttp.open("POST",  urlString , true);
-		xhttp.send();	
-	}
 
 
-});
-
-// The following are the button listeners for the Attack menu.
-// They should be invisible until a territory click occurs
-// Attack Phase Menu's Cancel button listener
-document.getElementById("attack_phase_cancel").addEventListener("click", function(){
-    
-    //Add: Clear any data fields that haven't been submitted
-	
-	var x = document.getElementsByClassName("attack_phase_menu");
-    x[0].style.display = "none";
-    drawBorders(gameInfo.map[tileClicked].adjacentTerritories, 3);
-	
-});
-
-document.getElementById("attack_phase_move_button").addEventListener("click", function(){
-
-	// fill in with move functionality
-
-});
-
-document.getElementById("attack_phase_attack_button").addEventListener("click", function(){
-
-	// fill in with Attack functionality 
-
-});
 ////////////////Move Menu Buttons ///////////////////////
 moveCancelButton.addEventListener("click", function(){
 
@@ -550,7 +496,95 @@ moveToButton.addEventListener("click", function(){
 
 moveSubmitButton.addEventListener("click", function(){
 	
-	//Todo Submit move to server
+	//Check if user is trying to move to many troops
+	if(parseInt(moveTroopsNumber.value) > gameInfo.map[territoryFrom].troops - 1) {
+		alert("You have tried to move more troops out of this territory than you are allowed." + 
+			" Please select less than" + (gameInfo.map[territoryFrom].troops - 1) +" troops to move.");
+		return;
+	}
+	
+	//Submit to API
+	var apiRequest = "/api/postmove/"  + gameInfo.gameID + "/" +
+    			gameInfo.userID + "/" + territoryFrom + "/" + territoryTo
+    			+ "/" + parseInt(moveTroopsNumber.value);
+    			
+    //AJAX Request
+	var xhttp = new XMLHttpRequest();
+
+	//The function that will be run on state change
+	xhttp.onreadystatechange = function() {
+    	if (this.readyState == 4 && this.status == 200) {
+			//Add here id needed
+    	}
+	};
+	xhttp.open("GET", apiRequest, true);
+	xhttp.send();
+	
+	//Clean up game and hide menu
+	drawBorders([territoryFrom], 2);
+	territoryFrom = -1;
+	drawBorders([territoryTo], 2);
+	territoryTo = -1;
+	moveWindow.style.display = "none";
+
+});
+
+////////////////Attack Menu Buttons ///////////////////////
+attackCancelButton.addEventListener("click", function(){
+
+	//Adjacent turn black
+	drawBorders(canAttack, 3);
+	
+	//All owned territories go green
+	drawBorders(ownedTerritories, 2);
+		
+	territoryFrom = -1;
+	territoryTo = -1;
+		
+	canAttack = [];
+
+	attackWindow.style.display = "none";
+
+});
+
+attackToButton.addEventListener("click", function(){
+
+	attackWindow.style.display = "none";
+
+});
+
+attackSubmitButton.addEventListener("click", function(){
+	
+	//Check if user is trying to move to many troops
+	if(parseInt(attackTroopsNumber.value) > gameInfo.map[territoryFrom].troops - 1) {
+		alert("You have tried to move more troops out of this territory than you are allowed." + 
+			" Please select less than " + (gameInfo.map[territoryFrom].troops - 1) +" troops to move.");
+		return;
+	}
+	
+	//Submit to API
+	//var apiRequest = "/api/postmove/"  + gameInfo.gameID + "/" +
+    //			gameInfo.userID + "/" + territoryFrom + "/" + territoryTo
+    //			+ "/" + parseInt(moveTroopsNumber.value);
+    			
+    //AJAX Request
+	var xhttp = new XMLHttpRequest();
+
+	//The function that will be run on state change
+	xhttp.onreadystatechange = function() {
+    	if (this.readyState == 4 && this.status == 200) {
+			//Add here id needed
+    	}
+	};
+	//xhttp.open("GET", apiRequest, true);
+	//xhttp.send();
+	
+	//Clean up game and hide menu
+	drawBorders([territoryFrom], 2);
+	territoryFrom = -1;
+	drawBorders([territoryTo], 2);
+	territoryTo = -1;
+	canAttack = [];
 	moveWindow.style.display = "none";
 
 });
