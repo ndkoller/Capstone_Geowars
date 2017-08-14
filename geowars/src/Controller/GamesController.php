@@ -21,7 +21,15 @@ class GamesController extends AppController
     //Will eventualy take one vairable for the games ID
     public function view()
     {
-        
+        if ($this->request->is('post')) {
+            
+            //For Ajax requests
+            $this->viewBuilder()->layout('ajax');
+            $ID = $this->request->data['game_id'];
+            $URL = 'games/view/'+ $ID;
+            return $this->redirect($URL);
+            
+        }
         
     }
     
@@ -78,12 +86,7 @@ class GamesController extends AppController
         
     }
     
-    public function open()
-    {
-        
-    }
-    
-    
+
     public function find()
     {
         
@@ -228,9 +231,10 @@ class GamesController extends AppController
         // finished filling game to max characters w/ bots
         // ready to start
         $GameJoin[0]->started = 1; 
-        $Games->save($GameJoin);
+        $Games->save($GameJoin[0]);
         
     }
+    
     
     public function join()
     {
@@ -392,7 +396,7 @@ class GamesController extends AppController
                // failed to add player current players add = or exceed MaxPlayers
                $results = 0;
                $GameJoin[0]->started = 1; // Shouldn't be pulling into Join list so updating Started status here as an error correct.
-               $Games->save($GameJoin);
+               $Games->save($GameJoin[0]);
            }
 
            
@@ -417,7 +421,7 @@ class GamesController extends AppController
 
            
         $this->set('results', $results);
-        
+        return $this->redirect('/games/mygames');
         }
     }
     
@@ -525,6 +529,7 @@ class GamesController extends AppController
         }
 
             $this->set('results', $results);
+            return $this->redirect('/games/mygames');
         }
     }
     

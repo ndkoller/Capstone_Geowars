@@ -139,7 +139,8 @@ var xhttp = new XMLHttpRequest();
         
         //Values to post
         var postString = 'game_id=' + ID;
-        ajaxreq.open('POST', '/games/open', true);
+
+        ajaxreq.open('POST', '/games/view', true);
         ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         ajaxreq.send(postString);
     }
