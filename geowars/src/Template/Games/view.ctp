@@ -364,7 +364,8 @@ canvas.addEventListener('click', function(event) {
 				//The function that will be run on state change
 				xhttp.onreadystatechange = function() {
     				if (this.readyState == 4 && this.status == 200) {
-						//Add here id needed
+						//Add here if needed
+						refreshBoard();
     				}
 				};
 				
@@ -514,7 +515,8 @@ moveSubmitButton.addEventListener("click", function(){
 	//The function that will be run on state change
 	xhttp.onreadystatechange = function() {
     	if (this.readyState == 4 && this.status == 200) {
-			//Add here id needed
+			//Add here if needed
+			refreshBoard();
     	}
 	};
 	xhttp.open("GET", apiRequest, true);
@@ -563,9 +565,9 @@ attackSubmitButton.addEventListener("click", function(){
 	}
 	
 	//Submit to API
-	//var apiRequest = "/api/postmove/"  + gameInfo.gameID + "/" +
-    //			gameInfo.userID + "/" + territoryFrom + "/" + territoryTo
-    //			+ "/" + parseInt(moveTroopsNumber.value);
+	var apiRequest = "/api/postattack/"  + gameInfo.gameID + "/" +
+    			gameInfo.userID + "/" + territoryFrom + "/" + territoryTo
+    			+ "/" + parseInt(moveTroopsNumber.value);
     			
     //AJAX Request
 	var xhttp = new XMLHttpRequest();
@@ -573,18 +575,25 @@ attackSubmitButton.addEventListener("click", function(){
 	//The function that will be run on state change
 	xhttp.onreadystatechange = function() {
     	if (this.readyState == 4 && this.status == 200) {
-			//Add here id needed
+			//Add here if needed
+			refreshBoard();
     	}
 	};
-	//xhttp.open("GET", apiRequest, true);
-	//xhttp.send();
+	xhttp.open("GET", apiRequest, true);
+	xhttp.send();
 	
 	//Clean up game and hide menu
-	drawBorders([territoryFrom], 2);
+	//Adjacent turn black
+	drawBorders(canAttack, 3);
+	
+	//All owned territories go green
+	drawBorders(ownedTerritories, 2);
+		
 	territoryFrom = -1;
-	drawBorders([territoryTo], 2);
 	territoryTo = -1;
+		
 	canAttack = [];
+	
 	moveWindow.style.display = "none";
 
 });
