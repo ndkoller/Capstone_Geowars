@@ -46,16 +46,16 @@ function register() {
     var ajaxreq = new XMLHttpRequest();
     ajaxreq.onload = function() {
           if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
-            var responseObject = JSON.parse(ajaxreq.responseText);
-            if (responseObject.success == true) {
-              //Todo
+            var response = ajaxreq.responseText;
+            if(!response.localeCompare("1")) {
+                window.location.href = "/users/login";
             } else {
-              //Todo
+                alert("Registration failed please try again later.");
             }
           }
     };
     var postString = 'username=' + username + '&password=' + password1 + '&email=' + email;
-    ajaxreq.open('POST', '/users/add', true);
+    ajaxreq.open('POST', '/users/processadd', true);
     ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     ajaxreq.send(postString);
 
