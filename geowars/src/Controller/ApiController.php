@@ -34,8 +34,7 @@ class ApiController extends AppController
     // test endpoint to just test whatever.
     public function test(){
         $this->viewBuilder()->layout('ajax');
-        $this->updateGamePhase(26);
-        $output = 'stuff';
+        $output = $this->isGameOver(52);
         $this->set('result', $output);
     }
     
@@ -67,7 +66,7 @@ class ApiController extends AppController
         }
     }
     
-    
+    // API Endpoint to post a
     public function postDeploy($gameId, $userId,$tileId, $numTroops){
         $this->viewBuilder()->layout('ajax');
         $saved = $this->saveNewDeploy($gameId, $userId, $tileId, $numTroops);
@@ -86,6 +85,7 @@ class ApiController extends AppController
         }
     }
     
+    // 
     public function saveNewDeploy($gameId,$userId,$tileId,$numTroops){
         $this->loadModel('Games');
         $gamesInfo = $this->Games
@@ -105,6 +105,7 @@ class ApiController extends AppController
         return $this->DeploymentActions->save($newDeploymentAction);
     }
     
+    // API Endpoint to post a
     public function postMove($gameId, $userId,$fromTileId, $toTileId, $numTroops){
         $this->viewBuilder()->layout('ajax');
         $saved = $this->saveNewMove($gameId, $userId, $fromTileId, $toTileId, $numTroops);
@@ -141,6 +142,7 @@ class ApiController extends AppController
         return $this->MoveActions->save($newMove);
     }
     
+    // API Endpoint to post an attack phase move
     public function postAttack($gameId,$userId, $fromTileId, $toTileId, $numTroops) {
         
         echo $gameId;
@@ -180,6 +182,36 @@ class ApiController extends AppController
         $newAttack->attack_from = $fromTileId;
         $newAttack->attack_target = $toTileId;
         return $this->AttackActions->save($newAttack);
+    }
+    
+    // Function to check if the game is over. Returns a positive number
+    // of the user's ID that won the game. Otherwise returns -1
+    public function isGameOver($gameId) {
+        $this->loadModel('Territories');
+        $territories = $this->Territories
+                            ->find()
+                            ->where(['game_id' => $gameId])
+                            ->all()->toArray();
+                            
+        $possibleWinnerUserId = -1;
+        foreach($territories as $territory) {
+            // Check if neutral territory
+            if ($territory->user_id == 1) {
+                continue;
+            }
+            if ($possibleWinnerUserId == -1) {
+                $possibleWinnerUserId = $territory->user_id;
+            } else if ($possibleWinnerUserId != $territory->user_id) {
+                // Two different players own territory. Game not over
+                return -1;
+            }
+        }
+        // Every territory is either neutral or owned by 1 player. Game over
+        $this->loadModel('Games');
+        $game = $this->Games->get($gameId);
+        $game->completed = 1;
+        $this->Games->save($game);
+        return $possibleWinnerUserId;
     }
     
     public function activePlayersCompletedPhase($gameId, $phase) {
@@ -311,33 +343,6 @@ class ApiController extends AppController
         $attacks = $this->AttackActions->find()
                                     ->where(['game_id' => $gameId, 'turn_number' => ($gameInfo->last_completed_turn + 1)])
                                     ->all()->toArray();
-                          
-        // Below was a first attempt at processing all moves fairly.
-        // Kinda hard, especially thinking about what to do if territory 1
-        // attacks territory 2, territory 2 attacks territory 3 and territory 3
-        // attacks territory 1
-        // $attackMap = array();
-        // $attackToTerritory = array();
-        // $attackMap['attackedTo'] = $attackToTerritory;
-        // $attackFromTerritory = array();
-        // $attackMap['attackedFrom'] = $attackToTerritory;
-        
-        // foreach($attacks as $attack) {
-        //     array_push($attackMap['attackedTo'], $attack->attack_target);
-        //     array_push($attackMap['attackedFrom'], $attack->attack_from);
-        // }
-        
-        // foreach($attacks as $attack) {
-        //     // If no one else is attacking the same target 
-        //     if(!in_array($attack->attack_target,$attackMap['attackedTo'])) {
-        //         // If no one is attacking the from target, process
-        //         if(!in_array($attack->attack_from,$attackMap['attackedTo'])) {
-        //             $this->performAttackBattle($attack);
-        //         } else {
-        //             //
-        //         }
-        //     }
-        // }
         
         foreach($attacks as $attack) {
             $numAttackingTroops = $attack->num_troops;
@@ -351,25 +356,25 @@ class ApiController extends AppController
                                 ->where(['game_id' => $gameId, 'tile_id' => $attack->attack_from])
                                 ->all()->toArray();
             
-            $territoryToUpdate = $this->Territories->get($territories[0]->id);
+            $territoryFrom = $this->Territories->get($territories[0]->id);
             
             // If user does not own territory anymore, continue on. They must have
             // lost a battle already for this territory
-            if($attack->game_user_id != $territoryToUpdate->user_id) {
+            if($attack->game_user_id != $territoryFrom->user_id) {
                 continue;
             }
         
             // If the number of available troops in the territory is smaller than 
             // those used to attack, update. They must have lost troops defending
             // this territory already
-            if($numAttackingTroops > ($territoryToUpdate->num_troops - 1)) {
+            if($numAttackingTroops > ($territoryFrom->num_troops - 1)) {
                 // Assume the player wants to use as many as they can
                 $numAttackingTroops = $territoryToUpdate->num_troops - 1;
             }
         
-            $newTroopNum = $territoryToUpdate->num_troops - $numAttackingTroops;
-            $territoryToUpdate->num_troops = $newTroopNum;
-            $this->Territories->save($territoryToUpdate);
+            $newTroopNum = $territoryFrom->num_troops - $numAttackingTroops;
+            $territoryFrom->num_troops = $newTroopNum;
+            $this->Territories->save($territoryFrom);
             
             // Get the target territory
             $territories = $this->Territories
@@ -378,13 +383,25 @@ class ApiController extends AppController
                                 ->all()->toArray();
             $territoryAttacked = $territories[0];
             
-            $result = $this->performAttackBattle($attack->num_troops, $territoryAttacked->num_troops);
+            $result = $this->performAttackBattle($numAttackingTroops, $territoryAttacked->num_troops);
             $userId = 0;
             if($result > 0) {
                 $userId = $attack->game_user_id;
+                
+                // Defender lost all troops
+                $this->subtractGameUserNumTroops($gameId, $territoryAttacked->user_id, $territoryAttacked->num_troops);
+                
+                // Attacker lost some troops
+                $this->subtractGameUserNumTroops($gameId, $attack->game_user_id, ($numAttackingTroops - $result));
             } else {
                 $userId = $territoryAttacked->user_id;
                 $result = abs($result);
+                
+                // Attacker lost all troops
+                $this->subtractGameUserNumTroops($gameId, $attack->game_user_id, $numAttackingTroops);
+                
+                // Defender lost some troops
+                $this->subtractGameUserNumTroops($gameId, $territoryAttacked->user_id, ($territoryAttacked->num_troops - $result));
             }
             
             $territoryToUpdate = $this->Territories->get($territoryAttacked->id);
@@ -471,7 +488,7 @@ class ApiController extends AppController
                 } else {
                     $territoryFromId = $territories[0]->tile_id;
                     $territoryToId = $territories[1]->tile_id;
-                    $numToMove= round($territoryFrom->num_troops / 2);
+                    $numToMove= round($territories[0]->num_troops / 2);
                     $this->saveNewMove($gameId, $aiUser->user_id, $territoryFromId, $territoryToId, $numToMove);
                     
                 }
@@ -482,6 +499,7 @@ class ApiController extends AppController
     // This function will go through the Game Users that are bot accounts
     // and submit attack actions
     public function processAiAttack($gameId) {
+        debug('testing the ai attack');
         $this->loadModel('GamesUsers');
         $aiGameUsers = $this->GamesUsers->find()
                                     ->where(['game_id' => $gameId, 'is_bot' => 1])
@@ -527,10 +545,10 @@ class ApiController extends AppController
         $this->loadModel('Territories');
         
         $mapInfo = $this->getMapPoints();
-        foreach($mapInfo['adjacentTerritories'][0] as $tileId){
+        foreach($mapInfo['adjacentTerritories'][$tileId] as $tId){
             $territories = $this->Territories
                                 ->find()
-                                ->where(['game_id' => $gameId, 'is_occupied' => 0, 'tile_id' => $tileId])
+                                ->where(['game_id' => $gameId, 'is_occupied' => 0, 'tile_id' => $tId])
                                 ->all()->toArray();
             if($territories != NULL) {
                 return $territories[0];
@@ -543,10 +561,10 @@ class ApiController extends AppController
         $this->loadModel('Territories');
         
         $mapInfo = $this->getMapPoints();
-        foreach($mapInfo['adjacentTerritories'][0] as $tileId){
+        foreach($mapInfo['adjacentTerritories'][$tileId] as $tId){
             $territories = $this->Territories
                                 ->find()
-                                ->where(['game_id' => $gameId, 'is_occupied' => 1, 'tile_id' => $tileId])
+                                ->where(['game_id' => $gameId, 'is_occupied' => 1, 'tile_id' => $tId])
                                 ->all()->toArray();
             if($territories != NULL && $territories[0]->user_id != $userId) {
                 return $territories[0];
@@ -564,11 +582,7 @@ class ApiController extends AppController
                     
         $gameInfo = $gamesInfo[0];
         
-        echo $gameInfo;
-        
         $currentPhase = $gameInfo->current_phase;
-        
-        echo $currentPhase;
         
         $gameToSave = $this->Games->get($gameInfo->id);
         
@@ -599,12 +613,39 @@ class ApiController extends AppController
                                 ->all()->toArray();
             if($territories != NULL) {
                 $numNewTroops = count($territories) * 2;
-                $numTroops = $numNewTroops + $user->troops;
-                $userToUpdate = $this->GamesUsers->get($user->id);
-                $userToUpdate->troops = $numTroops;
-                $this->GamesUsers->save($userToUpdate);
+                $this->addGameUserNumTroops($gameId, $user->user_id, $numNewTroops);
             }                    
         }
+    }
+    
+    public function addGameUserNumTroops($gameId, $userId, $numTroops) {
+        if($userId == 1){
+            return;
+        }
+        $this->loadModel('GamesUsers');
+        $gameUsers = $this->GamesUsers->find()
+                                    ->where(['game_id' => $gameId, 'user_id' => $userId])
+                                    ->all()
+                                    ->toArray();
+        $userToUpdate = $this->GamesUsers->get($gameUsers[0]->id);
+        $existingTroops = $userToUpdate->troops;
+        $userToUpdate->troops = ($existingTroops + $numTroops);
+        $this->GamesUsers->save($userToUpdate);
+    }
+    
+    public function subtractGameUserNumTroops($gameId, $userId, $numTroops) {
+        if($userId == 1){
+            return;
+        }
+        $this->loadModel('GamesUsers');
+        $gameUsers = $this->GamesUsers->find()
+                                    ->where(['game_id' => $gameId, 'user_id' => $userId])
+                                    ->all()
+                                    ->toArray();
+        $userToUpdate = $this->GamesUsers->get($gameUsers[0]->id);
+        $existingTroops = $userToUpdate->troops;
+        $userToUpdate->troops = ($existingTroops - $numTroops);
+        $this->GamesUsers->save($userToUpdate);
     }
     
     //Ajax action
@@ -686,12 +727,14 @@ class ApiController extends AppController
         $game["troopsAvailable"] = $troopsAvailable;
         $game["userID"] = $currentUserId;
         $game["gameID"] = $game_id;
+        $game["winner"] = $this->isGameOver($game_id);
         
         //Set the map array to be available in the view with name of map
         $this->set('game', $game);
     }
     
     public function getTroopsAvailableForUser($gameId, $userId) {
+        
         $this->loadModel('GamesUsers');
         $users = $this->GamesUsers->find()
                                 ->where(['game_id' => $gameId, 'user_id' => $userId])

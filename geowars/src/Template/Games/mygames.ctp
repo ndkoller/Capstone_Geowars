@@ -12,11 +12,13 @@
                 <th>Joined Players</th>
                 <th>Minimum Players</th>
                 <th>Maximum Players</th>
+                <!--
                 <th>Planning Phase Time (Min)</th>
                 <th>Attack Phase Time (Min)</th>
                 <th>Start Timer</th>
+                -->
                 <th>Bots</th>
-                <th>Map</th>
+                <!--<th>Map</th>-->
                 <th>Join</th>
             </tr>
         </thead>
@@ -88,7 +90,7 @@ var xhttp = new XMLHttpRequest();
             
             MaxPlayers.appendChild(document.createTextNode(gameList[i].max_users));
             tr.appendChild(MaxPlayers);
-            
+            /*
             PlanningPhase.appendChild(document.createTextNode(gameList[i].phase_one_duration));
             tr.appendChild(PlanningPhase);
             
@@ -98,7 +100,7 @@ var xhttp = new XMLHttpRequest();
             var formattedTime = timeConverter(gameList[i].start_time);
             StartTime.appendChild(document.createTextNode(formattedTime));
             tr.appendChild(StartTime);
-            
+            */
             // Bots Conversion logic
             if(gameList[i].atStart_opt === 2 || gameList[i].atStart_opt === 3){
                 Bots.appendChild(document.createTextNode('Yes'));
@@ -108,10 +110,10 @@ var xhttp = new XMLHttpRequest();
                 Bots.appendChild(document.createTextNode('No'));
             }
             tr.appendChild(Bots);
-            
+            /*
             Map.appendChild(document.createTextNode(gameList[i].map));
             tr.appendChild(Map);
-
+            */
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode("Open");       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
@@ -128,17 +130,21 @@ var xhttp = new XMLHttpRequest();
         var ajaxreq = new XMLHttpRequest();
         ajaxreq.onload = function() {
               if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
+                
                 var responseObject = JSON.parse(ajaxreq.responseText);
                 if (responseObject.results == 1) {
+                window.location.replace('/games/view/' + ID);
                   //Todo
                 } else {
                   //Todo
                 }
+                
               }
         };
         
         //Values to post
         var postString = 'game_id=' + ID;
+
         ajaxreq.open('POST', '/games/open', true);
         ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         ajaxreq.send(postString);
