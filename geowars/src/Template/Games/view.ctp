@@ -24,6 +24,24 @@
     left: 475px;
     width: 250px;
 }
+#winner_display{
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    top: 350px;
+    left: 475px;
+    width: 250px;
+}
+#loser_display{
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    top: 350px;
+    left: 475px;
+    width: 250px;
+}
 /* Spinner from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader4 */
 .loader {
   display: none;
@@ -114,6 +132,13 @@
 		</fieldset>
 		
 	</div>
+	
+	<div id="winner_display">
+		<h1>You Won!</h1>
+	</div>
+	<div id="loser_display">
+		<h1>You Lost!</h1>
+	</div>
 </div>
 
 
@@ -152,6 +177,9 @@ var attackToButton = document.getElementById('attack_to_button');
 var attackSubmitButton = document.getElementById('attack_submit');
 
 var theSpinner = document.getElementById('spinner');
+
+var winnerDisplay = document.getElementById('winner_display');
+var loserDisplay = document.getElementById('loser_display');
 
 //Loop to check chars and build gameID string
 for(var c = stringURL.length - 1; c > 0; c--) {
@@ -663,8 +691,13 @@ function refreshBoard(){
 				ownedTerritories.push(i);
 			}
 		}
-    
+    	if(ownedTerritories.length === 0) {
+    		loserDisplay.style.display = 'block';
+    	}else if(gameInfo.winner === gameInfo.userID){
+    		winnerDisplay.style.display = 'block';
+    	}
     	drawBoard();
+    	
 
     	}
 	};
