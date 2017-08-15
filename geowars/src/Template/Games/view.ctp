@@ -24,8 +24,36 @@
     left: 475px;
     width: 250px;
 }
+/* Spinner from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader4 */
+.loader {
+  display: none;
+  position: absolute;
+  top: 500px;
+  left: 525px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid blue;
+  border-right: 16px solid green;
+  border-bottom: 16px solid red;
+  border-left: 16px solid pink;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
 </style>
+
 <div id="map">
 	<canvas id="canvas" width="800" height="700"></canvas>
 
@@ -56,6 +84,8 @@
 		</fieldset>
 		
 	</div>
+	
+	<div id="spinner" class="loader"></div>
 	
 	<div id="attack_phase_menu" >
 		<fieldset>
@@ -120,6 +150,8 @@ var attackTroopsNumber = document.getElementById("to_attack");
 var attackCancelButton = document.getElementById('attack_cancel');
 var attackToButton = document.getElementById('attack_to_button');
 var attackSubmitButton = document.getElementById('attack_submit');
+
+var theSpinner = document.getElementById('spinner');
 
 //Loop to check chars and build gameID string
 for(var c = stringURL.length - 1; c > 0; c--) {
@@ -368,12 +400,14 @@ canvas.addEventListener('click', function(event) {
 				xhttp.onreadystatechange = function() {
     				if (this.readyState == 4 && this.status == 200) {
 						//Add here if needed
+						theSpinner.style.display = "none";
 						refreshBoard();
     				}
 				};
 				
 				xhttp.open("GET", apiRequest, true);
 				xhttp.send();
+				theSpinner.style.display = "block";
 				
 			} else {
     			return;
@@ -519,11 +553,13 @@ moveSubmitButton.addEventListener("click", function(){
 	xhttp.onreadystatechange = function() {
     	if (this.readyState == 4 && this.status == 200) {
 			//Add here if needed
+			theSpinner.style.display = "none";
 			refreshBoard();
     	}
 	};
 	xhttp.open("GET", apiRequest, true);
 	xhttp.send();
+	theSpinner.style.display = "block";
 	
 	//Clean up game and hide menu
 	drawBorders([territoryFrom], 2);
@@ -579,6 +615,7 @@ attackSubmitButton.addEventListener("click", function(){
 	xhttp.onreadystatechange = function() {
     	if (this.readyState == 4 && this.status == 200) {
 			//Add here if needed
+			theSpinner.style.display = "none";
 			refreshBoard();
     	}
 	};
@@ -597,7 +634,7 @@ attackSubmitButton.addEventListener("click", function(){
 		
 	canAttack = [];
 	
-	attackWindow.style.display = "none";
+	attackWindow.style.display = "block";
 
 });
 
