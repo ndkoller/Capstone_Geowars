@@ -185,7 +185,7 @@ var territoryTo = -1;
 //move troops
 function drawBorders(territories, phase) {
 	var board = gameInfo.map;
-	
+	console.log(territories);
 	//Create new path to draw shape boarder
 			
 		for(var b = 0; b < territories.length; b++) {
@@ -657,6 +657,7 @@ function refreshBoard(){
     	
     	
 		//Create a list of territories a player owns
+		ownedTerritories = []; // clear out the previous list
 		for(var i = 0; i < gameInfo.map.length; i++){
 			if(gameInfo.map[i].owner == gameInfo.userID){
 				ownedTerritories.push(i);
