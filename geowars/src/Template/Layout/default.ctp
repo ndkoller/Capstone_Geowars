@@ -93,7 +93,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="#"><i class="fa fa-fw fa-file"></i> Manage Account</a>
                     </li>
                 </ul>
@@ -112,6 +112,7 @@
                             GeoWars
                             <small>A Geometric war where only one faction can remain standing</small>
                         </h1>
+                        <!--
                         <ol class="breadcrumb">
                             <li>
                                 <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
@@ -120,6 +121,7 @@
                                 <i class="fa fa-file"></i> Blank Page
                             </li>
                         </ol>
+                        -->
                     </div>
                 </div>
                 <div>
