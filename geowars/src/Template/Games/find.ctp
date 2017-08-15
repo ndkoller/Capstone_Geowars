@@ -7,13 +7,13 @@
                 <th>Game ID</th>
                 <th>Created By</th>
                 <th>Joined Players</th>
-                <th>Minimum Players</th>
+                <th>Minimum Human Players</th>
                 <th>Maximum Players</th>
-                <th>Planning Phase Time (Min)</th>
+                <!-- <th>Planning Phase Time (Min)</th>
                 <th>Attack Phase Time (Min)</th>
-                <th>Start Timer</th>
+                <th>Start Timer</th> -->
                 <th>Bots</th>
-                <th>Map</th>
+               <!-- <th>Map</th> -->
                 <th>Join</th>
             </tr>
         </thead>
@@ -86,7 +86,7 @@ var xhttp = new XMLHttpRequest();
             
             MaxPlayers.appendChild(document.createTextNode(gameList[i].max_users));
             tr.appendChild(MaxPlayers);
-            
+            /*
             PlanningPhase.appendChild(document.createTextNode(gameList[i].phase_one_duration));
             tr.appendChild(PlanningPhase);
             
@@ -96,7 +96,7 @@ var xhttp = new XMLHttpRequest();
             var formattedTime = timeConverter(gameList[i].start_time);
             StartTime.appendChild(document.createTextNode(formattedTime));
             tr.appendChild(StartTime);
-            
+            */
             // Bots Conversion logic
             if(gameList[i].atStart_opt === 2 || gameList[i].atStart_opt === 3){
                 Bots.appendChild(document.createTextNode('Yes'));
@@ -107,9 +107,10 @@ var xhttp = new XMLHttpRequest();
             }
             tr.appendChild(Bots);
             
+           /* 
             Map.appendChild(document.createTextNode(gameList[i].map));
             tr.appendChild(Map);
-
+            */
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode("Join");       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
@@ -129,9 +130,12 @@ var xhttp = new XMLHttpRequest();
                 var responseObject = JSON.parse(ajaxreq.responseText);
                 if (responseObject.results == 1) {
                   //Todo
+                window.location.replace('/games/mygames');
+                    
                 } else {
                   //Todo
                 }
+                
               }
         };
         

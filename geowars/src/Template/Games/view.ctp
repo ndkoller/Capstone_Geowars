@@ -254,11 +254,11 @@ function drawBoard() {
 
 		}
 		
-		ctx.font = 'normal 16px/1 "Segoe UI",Arial';
+		ctx.font = '16px Georgia';
 		ctx.fillStyle = '#888888';
-		ctx.strokeText('Current Phase: ' + gameInfo.phase, 650, 50 );
-		ctx.strokeText('Current Turn: ' + gameInfo.currentTurn, 650, 70 );
-		ctx.strokeText('Available Troops: ' + gameInfo.troopsAvailable, 650, 90 );
+		ctx.fillText('Current Phase: ' + gameInfo.phase, 625, 50 );
+		ctx.fillText('Current Turn: ' + gameInfo.currentTurn, 625, 70 );
+		//ctx.fillText('Available Troops: ' + gameInfo.troopsAvailable, 625, 90 );
 		
 		//Give user instrucitons on what to do after board is drawn
 		
