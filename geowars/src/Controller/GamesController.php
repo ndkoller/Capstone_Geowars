@@ -16,6 +16,10 @@ class GamesController extends AppController
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
         $this->Auth->allow(array('view','add','findAll','createProcess','join','ShowMyGames','botFill'));
+        $this->set('username', $this->Auth->User('username'));
+       //$this->Auth->User('id')
+    
+
     }
     
     //Will eventualy take one vairable for the games ID
@@ -503,7 +507,7 @@ class GamesController extends AppController
         $newGame->max_users = $this->request->data['maxPlayers'];
         $newGame->atStart_opt = $this->request->data['atStart'];
         $newGame->join_opt = $this->request->data['join'];
-        $newGame->current_phase = 'deploy';
+        $newGame->current_phase = 'attack'; 
         $newGame->last_completed_turn = 0;
         if ($Games->save($newGame)) {
 				    $results = 1;
