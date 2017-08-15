@@ -486,11 +486,14 @@ class ApiController extends AppController
                     $tId = $territories[0]->tile_id;
                     $this->saveNewMove($gameId,$aiUser->user_id, $tId, $tId, 0);
                 } else {
-                    $territoryFromId = $territories[0]->tile_id;
-                    $territoryToId = $territories[1]->tile_id;
-                    $numToMove= round($territories[0]->num_troops / 2);
-                    $this->saveNewMove($gameId, $aiUser->user_id, $territoryFromId, $territoryToId, $numToMove);
-                    
+                    foreach($territories as $territory){
+                        $territoryTo = $this->getAdjacentTerritoryToMove($gameId, $aiUser->user_id, $territory->tile_id);
+                        if($territoryTo != NULL) {
+                            $numToMove= round($territory->num_troops / 2);
+                            $this->saveNewMove($gameId, $aiUser->user_id, $territory->tile_id, $territoryTo->tile_id, $numToMove);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -529,8 +532,8 @@ class ApiController extends AppController
             foreach($territories as $territory) {
                 $fromId = $territory->tile_id;
                 
-                if($botHardMode > 0) {
-                    // Hard mode will have AI try to take over as many territories first
+                if($botHardMode == 0) {
+                    // Easy mode will have AI try to take over as many territories first
                     // in order to get as many new troops as possible. It will also 
                     // deploy a little more troops to those territories
                     $numTroops = round($territory->num_troops / 2);
@@ -548,9 +551,7 @@ class ApiController extends AppController
                         break;
                     }
                 } else {
-                    // Easy mode will have the AI try to attack as soon as possible. Players
-                    // always lose troops doing attacks so doing it early and often will make
-                    // them weaker
+                    // Hard mode will have the AI try to attack as soon as possible. 
                     $numTroops = floor($territory->num_troops / 2);
                     $territoryToAttack = $this->getAdjacentTerritoryToAttack($gameId, $aiUser->user_id, $fromId);
                     if ($territoryToAttack != NULL) {
@@ -600,6 +601,22 @@ class ApiController extends AppController
                                 ->where(['game_id' => $gameId, 'is_occupied' => 1, 'tile_id' => $tId])
                                 ->all()->toArray();
             if($territories != NULL && $territories[0]->user_id != $userId) {
+                return $territories[0];
+            }
+        }
+        return NULL;
+    }
+    
+    public function getAdjacentTerritoryToMove($gameId, $userId, $tileId) {
+        $this->loadModel('Territories');
+        
+        $mapInfo = $this->getMapPoints();
+        foreach($mapInfo['adjacentTerritories'][$tileId] as $tId){
+            $territories = $this->Territories
+                                ->find()
+                                ->where(['game_id' => $gameId, 'is_occupied' => 1, 'tile_id' => $tId])
+                                ->all()->toArray();
+            if($territories != NULL && $territories[0]->user_id == $userId) {
                 return $territories[0];
             }
         }
