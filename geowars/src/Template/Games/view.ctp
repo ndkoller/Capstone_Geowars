@@ -634,7 +634,7 @@ attackSubmitButton.addEventListener("click", function(){
 		
 	canAttack = [];
 	
-	attackWindow.style.display = "none";
+	attackWindow.style.display = "block";
 
 });
 
