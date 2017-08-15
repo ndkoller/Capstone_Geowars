@@ -98,7 +98,7 @@
     <label  class="col-sm-2 control-label"></label>
     <div class="col-sm-6 checkbox">
       <label>
-        <input id="join" type="checkbox">
+        <input id="join" type="checkbox" value="join">
         Join Game on creation
       </label>
     </div>
