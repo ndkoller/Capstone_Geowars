@@ -121,7 +121,7 @@ class GamesController extends AppController
             
         $players = $this->GamesUsers
                         ->find()
-                        ->where(['game_id' => $this->request->data['game_id']])
+                        ->where(['game_id' => $gameId])
                         ->all()
                         ->toArray();
         $alreadyJoined = false;
@@ -247,7 +247,7 @@ class GamesController extends AppController
     }
     
     
-    public function join()
+    public function join($passedID)
     {
         
         //Set up connections to all requred tables
@@ -255,10 +255,13 @@ class GamesController extends AppController
         $Territories = TableRegistry::get('Territories');
         $GamesUsers = TableRegistry::get('GamesUsers');
         $Users = TableRegistry::get('Users');
-        
-        //If request is post then create new game.      
-        if ($this->request->is('post')) {
-            
+        $gameID;
+         if ($this->request->is('post') && !($passedID)) {
+             $gameID = $this->request->data['game_id'];
+         }
+         else{
+             $gameID = $passedID;
+         }
             //For Ajax requests
             $this->viewBuilder()->layout('ajax');
         
@@ -266,13 +269,13 @@ class GamesController extends AppController
             $this->loadModel('GamesUsers');
            
             $GameJoin = $Games->find()
-                              ->where(['id' => $this->request->data['game_id']])
+                              ->where(['id' => $gameID])
                               ->all()
                               ->toArray();
             
             $players = $this->GamesUsers
                                  ->find()
-                                 ->where(['game_id' => $this->request->data['game_id']])
+                                 ->where(['game_id' => $gameID])
                                  ->all()
                                  ->toArray();
            $alreadyJoined = false;
@@ -298,8 +301,8 @@ class GamesController extends AppController
                     $Gameusers = TableRegistry::get('GamesUsers');
                     $newPlayer = $Gameusers->newEntity();
                     $newPlayer->user_id = $this->Auth->User('id');
-            	    $newPlayer->is_bot = 0; // alter logic here for when bots are implemented 0 = false 1 = true
-            	    $newPlayer->game_id = $this->request->data['game_id'];
+            	    $newPlayer->is_bot = 0; 
+            	    $newPlayer->game_id = $gameID;
             	    $newPlayer->troops = 5;
                     
                     // Hexagon locations for game start- 0, 2, 6, 13, 16, 19
@@ -312,7 +315,7 @@ class GamesController extends AppController
                     // Hexagon 19, Player 5 = Purple
                     
                     $PlayerTerritory = $Territories->find()
-                              ->where(['game_id' => $this->request->data['game_id']])
+                              ->where(['game_id' => $gameID])
                               ->all()
                               ->toArray();
                     for($j = 0; $j < count($PlayerTerritory); $j++){
@@ -421,7 +424,7 @@ class GamesController extends AppController
         }
         elseif($botFill == 3){
             // Fill To Maximum Player with bots
-            $this->botFill($this->request->data['game_id']);
+            $this->botFill($gameID);
             
 
         }
@@ -431,7 +434,7 @@ class GamesController extends AppController
         }
            
         $this->set('results', $results);
-        }
+        
     }
     
     
@@ -507,6 +510,7 @@ class GamesController extends AppController
         $newGame->max_users = $this->request->data['maxPlayers'];
         $newGame->atStart_opt = $this->request->data['atStart'];
         $newGame->join_opt = $this->request->data['join'];
+
         $newGame->current_phase = 'attack'; 
         $newGame->last_completed_turn = 0;
         if ($Games->save($newGame)) {
@@ -529,9 +533,10 @@ class GamesController extends AppController
                         }
                       
                     }
-                    //echo "success";
-                    //$this->Flash->success(__('The game has been created.'));
-                    //return $this->redirect(['action' => 'add']);
+                    if($this->request->data['join'] == 'join'){
+                       $this->join($newGame->id);
+                    }
+                    
         }  else {
             $results = 0;
             //$this->Flash->error(__('Unable to add the user.'));    
