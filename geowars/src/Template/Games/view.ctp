@@ -192,6 +192,9 @@ function drawBoard() {
 	//Get context	
 	if (canvas.getContext) {
     	
+    	//Start with clear canvas
+    	ctx.clearRect(0, 0, canvas.width, canvas.height);
+    	
     	//Loop through ever shape in array passed into board function
 		for(var i = 0; i < board.length; i++) {
 		

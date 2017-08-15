@@ -16,6 +16,10 @@ class GamesController extends AppController
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
         $this->Auth->allow(array('view','add','findAll','createProcess','join','ShowMyGames','botFill'));
+        $this->set('username', $this->Auth->User('username'));
+       //$this->Auth->User('id')
+    
+
     }
     
     //Will eventualy take one vairable for the games ID
