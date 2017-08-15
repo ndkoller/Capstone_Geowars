@@ -621,6 +621,7 @@ attackSubmitButton.addEventListener("click", function(){
 	};
 	xhttp.open("GET", apiRequest, true);
 	xhttp.send();
+	theSpinner.style.display = "block";
 	
 	//Clean up game and hide menu
 	//Adjacent turn black
@@ -634,7 +635,7 @@ attackSubmitButton.addEventListener("click", function(){
 		
 	canAttack = [];
 	
-	attackWindow.style.display = "block";
+	attackWindow.style.display = "none";
 
 });
 
