@@ -34,7 +34,7 @@ class ApiController extends AppController
     // test endpoint to just test whatever.
     public function test(){
         $this->viewBuilder()->layout('ajax');
-        $output = $this->isGameOver(52);
+        $output = $this->getNeutralAdjacentTerritory(57, 4);
         $this->set('result', $output);
     }
     
@@ -499,7 +499,15 @@ class ApiController extends AppController
     // This function will go through the Game Users that are bot accounts
     // and submit attack actions
     public function processAiAttack($gameId) {
-        debug('testing the ai attack');
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $game_id])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        
+        $botHardMode = $gameInfo->bot_hard_mode;
         $this->loadModel('GamesUsers');
         $aiGameUsers = $this->GamesUsers->find()
                                     ->where(['game_id' => $gameId, 'is_bot' => 1])
@@ -517,24 +525,49 @@ class ApiController extends AppController
                 continue;
             }
             // Go from most troops to least and see if there is an adjacent
-            // tile that can be attacked. Try to take over empty ones before
-            // Attacking owned territories
+            // tile that can be attacked.
             foreach($territories as $territory) {
                 $fromId = $territory->tile_id;
-                $numTroops = round($territory->num_troops / 2);
-                $neutralTerritory = $this->getNeutralAdjacentTerritory($gameId, $fromId);
-                if ($neutralTerritory != NULL) {
-                    $toId = $neutralTerritory->tile_id;
-                    $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
-                    break;
+                
+                if($botHardMode > 0) {
+                    // Hard mode will have AI try to take over as many territories first
+                    // in order to get as many new troops as possible. It will also 
+                    // deploy a little more troops to those territories
+                    $numTroops = round($territory->num_troops / 2);
+                    $neutralTerritory = $this->getNeutralAdjacentTerritory($gameId, $fromId);
+                    if ($neutralTerritory != NULL) {
+                        $toId = $neutralTerritory->tile_id;
+                        $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
+                        break;
+                    }
+                
+                    $territoryToAttack = $this->getAdjacentTerritoryToAttack($gameId, $aiUser->user_id, $fromId);
+                    if ($territoryToAttack != NULL) {
+                        $toId = $territoryToAttack->tile_id;
+                        $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
+                        break;
+                    }
+                } else {
+                    // Easy mode will have the AI try to attack as soon as possible. Players
+                    // always lose troops doing attacks so doing it early and often will make
+                    // them weaker
+                    $numTroops = floor($territory->num_troops / 2);
+                    $territoryToAttack = $this->getAdjacentTerritoryToAttack($gameId, $aiUser->user_id, $fromId);
+                    if ($territoryToAttack != NULL) {
+                        $toId = $territoryToAttack->tile_id;
+                        $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
+                        break;
+                    }
+                    
+                    $neutralTerritory = $this->getNeutralAdjacentTerritory($gameId, $fromId);
+                    if ($neutralTerritory != NULL) {
+                        $toId = $neutralTerritory->tile_id;
+                        $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
+                        break;
+                    }
+                    
                 }
                 
-                $territoryToAttack = $this->getAdjacentTerritoryToAttack($gameId, $aiUser->user_id, $fromId);
-                if ($territoryToAttack != NULL) {
-                    $toId = $territoryToAttack->tile_id;
-                    $this->saveNewAttack($gameId,$aiUser->user_id, $fromId, $toId, $numTroops);
-                    break;
-                }
             }
             
             

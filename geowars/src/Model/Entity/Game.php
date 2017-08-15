@@ -11,6 +11,7 @@ use Cake\ORM\Entity;
  * @property bool $completed
  * @property int $last_completed_turn
  * @property string $current_phase
+ * @property int $bot_hard_mode
  * @property int $turn_end_time
  * @property int $map
  * @property int $created_by
