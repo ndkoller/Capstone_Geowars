@@ -13,6 +13,7 @@
                 <th>Attack Phase Time (Min)</th>
                 <th>Start Timer</th> -->
                 <th>Bots</th>
+                <th>Bot Difficulty</th>
                <!-- <th>Map</th> -->
                 <th>Join</th>
             </tr>
@@ -69,6 +70,7 @@ var xhttp = new XMLHttpRequest();
             var AttackPhase = document.createElement('TD');
             var StartTime = document.createElement('TD');
             var Bots = document.createElement('TD');
+            var Difficulty = document.createElement('TD');
             var Map = document.createElement('TD');
             var joinButton = document.createElement('TD');
 
@@ -111,6 +113,15 @@ var xhttp = new XMLHttpRequest();
             Map.appendChild(document.createTextNode(gameList[i].map));
             tr.appendChild(Map);
             */
+            if(gameList[i].bot_hard_mode == 1){
+                Difficulty.appendChild(document.createTextNode("Hard"));
+            }
+            else{
+                Difficulty.appendChild(document.createTextNode("Easy"));
+            }
+            
+            tr.appendChild(Difficulty);
+            
             var btn = document.createElement("BUTTON");        // Create a <button> element
             var t = document.createTextNode("Join");       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>

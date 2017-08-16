@@ -247,7 +247,7 @@ class GamesController extends AppController
     }
     
     
-    public function join($passedID)
+    public function join($passedID = null)
     {
         
         //Set up connections to all requred tables
@@ -417,7 +417,9 @@ class GamesController extends AppController
            // Bot Fill Logic
             
         if($botFill == 2){
-            if($currentPlayers < $minPlayers){
+            // +1 for recently add player not in the current player count.
+            if($currentPlayers+1 >= $minPlayers){
+                $this->botFill($gameID);
                 // Fill to minimum with bots
                 // need to Refactor BotFill to take min fill or max fill
             }
@@ -493,10 +495,10 @@ class GamesController extends AppController
         $GamesUsers = TableRegistry::get('GamesUsers');
         $Users = TableRegistry::get('Users');
             
-          //Values from create form post
-          /*    var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
+        //Values from create form post
+        /*var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
         + '&minPlayers=' + minPlayers + '&maxPlayers=' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
-        +  "&atStart=" + atStart + '&join=' + join; */     
+        +  "&atStart=" + atStart + '&join=' + join; + '&botDifficulty=' + botDifficulty */     
       
         $newGame = $Games->newEntity();
         $newGame->created_by = $this->Auth->User('id');
@@ -510,7 +512,12 @@ class GamesController extends AppController
         $newGame->max_users = $this->request->data['maxPlayers'];
         $newGame->atStart_opt = $this->request->data['atStart'];
         $newGame->join_opt = $this->request->data['join'];
-
+        if($this->request->data['botDifficulty'] == 'hard'){
+            $newGame->bot_hard_mode = 1;
+        }
+        else{
+            $newGame->bot_hard_mode = 0;
+        }
         $newGame->current_phase = 'attack'; 
         $newGame->last_completed_turn = 0;
         if ($Games->save($newGame)) {
