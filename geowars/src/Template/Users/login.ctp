@@ -6,7 +6,7 @@
         <div class="form-group">
             <label>Username</label>
             <input id="username" name="username" class="form-control">
-            <p class="help-block">This username will be what other users see< p>
+            <p class="help-block">This username will be what other users see </p>
         </div>
         <div class="form-group">
             <label>Password</label>

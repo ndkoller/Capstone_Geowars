@@ -1,4 +1,4 @@
-<p>Show a list of games I am currently playing</p>
+<p>A list of games that I am currently playing.</p>
 
 <?= $this->Flash->render() ?>
  <div class="table-responsive">

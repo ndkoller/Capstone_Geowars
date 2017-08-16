@@ -394,6 +394,7 @@ class GamesController extends AppController
                             break;
                         } else {
                             // failed to join because all starting territories were full.
+                            $this->Flash->error(__('Failed to join: Territories are full.'));
                             // Change because it is overwritten below.
                             $results = 0; 
                         }
@@ -405,20 +406,23 @@ class GamesController extends AppController
                         if($currentPlayers+1 == $maxPlayers){
                             // if this most recent player addition hit Max then the game can start.
                             $GameJoin[0]->started = 1; 
-                            $Games->save($GameJoin[0]);
+                            $Games->save($GameJoin);
                         }
                     } else {
                         // failed GameUser save
+                        $this->Flash->error(__('Error with saving user account.'));
                         $results = 0;
                     }
                     
                 } else {
                     // Failed Unique User Check
+                    $this->Flash->error(__('Unable to join game because already added to game'));
                     $results = 0;
                 }     
            }
            else{
                // failed to add player current players add = or exceed MaxPlayers
+               $this->Flash->error(__('Unable to join game because max players already added'));
                $results = 0;
                $GameJoin[0]->started = 1; // Shouldn't be pulling into Join list so updating Started status here as an error correct.
                $Games->save($GameJoin[0]);
@@ -500,65 +504,66 @@ class GamesController extends AppController
             //For Ajax requests
             $this->viewBuilder()->layout('ajax');
             
-         //Set up connections to all requred tables
-        $Games = TableRegistry::get('Games');
-        $Territories = TableRegistry::get('Territories');
-        $GamesUsers = TableRegistry::get('GamesUsers');
-        $Users = TableRegistry::get('Users');
-            
-        //Values from create form post
-        /*var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
-        + '&minPlayers=' + minPlayers + '&maxPlayers=' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
-        +  "&atStart=" + atStart + '&join=' + join; + '&botDifficulty=' + botDifficulty */     
-      
-        $newGame = $Games->newEntity();
-        $newGame->created_by = $this->Auth->User('id');
-        $newGame->completed = false;
-        $newGame->map = $this->request->data['map'];
-        $newGame->phase_one_duration = $this->request->data['planningPhase'];
-        $newGame->phase_two_duration = $this->request->data['attackPhase'];
-        $newGame->turn_end_time = $this->request->data['planningPhase'] + $this->request->data['attackPhase'];
-        $newGame->start_time = $this->request->data['startUNIXTime'];
-        $newGame->min_users = $this->request->data['minPlayers'];
-        $newGame->max_users = $this->request->data['maxPlayers'];
-        $newGame->atStart_opt = $this->request->data['atStart'];
-        $newGame->join_opt = $this->request->data['join'];
-        if($this->request->data['botDifficulty'] == 'hard'){
-            $newGame->bot_hard_mode = 1;
-        }
-        else{
-            $newGame->bot_hard_mode = 0;
-        }
-        $newGame->current_phase = 'attack'; 
-        $newGame->last_completed_turn = 0;
-        if ($Games->save($newGame)) {
-				    $results = 1;
-                    //Create 20 territores for our game
-                    for ($x = 0; $x < 20; $x++) {
-                        $newTerritory = $Territories->newEntity();
-                        
-                        $newTerritory->game_id = $newGame->id;
-                        $newTerritory->tile_id = $x;
-                        
-                        $newTerritory->is_occupied = 0;
-                        $newTerritory->user_id = 1;
-                        $newTerritory->num_troops = 0;
-                        
-                        //echo ". Creating territory";  
-                        if($Territories->save($newTerritory)) {
-                            //echo ".  Territory Created";
-                            //debug($this->validationErrors); die();
+            //Set up connections to all requred tables
+            $Games = TableRegistry::get('Games');
+            $Territories = TableRegistry::get('Territories');
+            $GamesUsers = TableRegistry::get('GamesUsers');
+            $Users = TableRegistry::get('Users');
+                
+            //Values from create form post
+            /*var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
+            + '&minPlayers=' + minPlayers + '&maxPlayers=' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
+            +  "&atStart=" + atStart + '&join=' + join; + '&botDifficulty=' + botDifficulty */     
+          
+            $newGame = $Games->newEntity();
+            $newGame->created_by = $this->Auth->User('id');
+            $newGame->completed = false;
+            $newGame->map = $this->request->data['map'];
+            $newGame->phase_one_duration = $this->request->data['planningPhase'];
+            $newGame->phase_two_duration = $this->request->data['attackPhase'];
+            $newGame->turn_end_time = $this->request->data['planningPhase'] + $this->request->data['attackPhase'];
+            $newGame->start_time = $this->request->data['startUNIXTime'];
+            $newGame->min_users = $this->request->data['minPlayers'];
+            $newGame->max_users = $this->request->data['maxPlayers'];
+            $newGame->atStart_opt = $this->request->data['atStart'];
+            $newGame->join_opt = $this->request->data['join'];
+            if($this->request->data['botDifficulty'] == 'hard'){
+                $newGame->bot_hard_mode = 1;
+            }
+            else{
+                $newGame->bot_hard_mode = 0;
+            }
+            $newGame->current_phase = 'attack'; 
+            $newGame->last_completed_turn = 0;
+            if ($Games->save($newGame)) {
+    				    $results = 1;
+    				    $this->Flash->error(__('Successfully created game.'));
+                        //Create 20 territores for our game
+                        for ($x = 0; $x < 20; $x++) {
+                            $newTerritory = $Territories->newEntity();
+                            
+                            $newTerritory->game_id = $newGame->id;
+                            $newTerritory->tile_id = $x;
+                            
+                            $newTerritory->is_occupied = 0;
+                            $newTerritory->user_id = 1;
+                            $newTerritory->num_troops = 0;
+                            
+                            //echo ". Creating territory";  
+                            if($Territories->save($newTerritory)) {
+                                //echo ".  Territory Created";
+                                //debug($this->validationErrors); die();
+                            }
+                          
                         }
-                      
-                    }
-                    if($this->request->data['join'] == 'join'){
-                       $this->join($newGame->id);
-                    }
-                    
-        }  else {
-            $results = 0;
-            //$this->Flash->error(__('Unable to add the user.'));    
-        }
+                        if($this->request->data['join'] == 'join'){
+                           $this->join($newGame->id);
+                        }
+                        
+            }  else {
+                $results = 0;
+                $this->Flash->error(__('Unable to create game.'));    
+            }
 
             $this->set('results', $results);
         }
