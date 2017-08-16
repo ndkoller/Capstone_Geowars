@@ -58,7 +58,7 @@ class UsersController extends AppController
             $user = $this->Auth->identify();
             if ($user) {
                 $this->Auth->setUser($user);
-                $this->Flash->success('This was successful');
+                $this->Flash->success('Login was successful');
                 //echo "Logged in?";
                 return $this->redirect($this->Auth->redirectUrl());
             } else {

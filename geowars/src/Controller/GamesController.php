@@ -36,9 +36,20 @@ class GamesController extends AppController
             $this->viewBuilder()->layout('ajax');
             $ID = $this->request->data['game_id'];
             // add some validation criteria
-            $results = 1;
-            //$URL = 'games/view/'+ $ID;
-            //return $this->redirect($URL);
+            
+            $this->loadModel('Games');
+            $games = $this->Games
+                          ->find()
+                          ->where(['id' => $ID]) 
+                          ->order(['start_time' => 'ASC'])
+                          ->all()->toArray();
+            if($games[0]->started == 1){
+                $results = 1;   
+            }
+            else{
+                $this->Flash->error(__('Game has not started.'));
+                $results = 0;
+            }
             $this->set('results', $results);
         }
         
@@ -69,7 +80,7 @@ class GamesController extends AppController
             $this->loadModel('Games');
             $games = $this->Games
                           ->find()
-                          ->where(['id' => $MyJoinedGames[$i]->game_id]) // add max player calculations
+                          ->where(['id' => $MyJoinedGames[$i]->game_id, 'completed' => 0])
                           ->order(['start_time' => 'ASC'])
                           ->all()->toArray();
          
