@@ -1,8 +1,6 @@
 <p>Show a list of games I am currently playing</p>
-<p>Here is a link to the only game we have (its just out map canvas) : 
-<a href="/games/view/1">Your Game with id of 1</a></p>
 
-
+<?= $this->Flash->render() ?>
  <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
         <thead id="find_table_head">
@@ -143,10 +141,10 @@ var xhttp = new XMLHttpRequest();
                 
                 var responseObject = JSON.parse(ajaxreq.responseText);
                 if (responseObject.results == 1) {
-                window.location.replace('/games/view/' + ID);
-                  //Todo
+                    window.location.replace('/games/view/' + ID);
+
                 } else {
-                  //Todo
+                    window.location.replace('/games/mygames');
                 }
                 
               }
