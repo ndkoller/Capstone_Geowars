@@ -74,12 +74,12 @@
       <input type="time" class="form-control" id="time" required="true">
     </div>
   </div>
-  -->
+
   <div class="form-group">
   <label for="atStart" class="col-sm-2 control-label">At start time</label>
   <div class="col-sm-6">
       <select class="form-control" id="atStart">
-         <!-- <option value="1">Cancel Game</option> -->
+         <option value="1">Cancel Game</option> 
           <option value="2">Add Bots to reach minimum players</option>
           <option value="3">Add Bots to reach maximum players</option>
       </select>
@@ -93,7 +93,14 @@
       by start time.</p>
     </div>
   </div>
-  
+  -->
+   <div class="form-group">
+  <label for="botDifficulty" class="col-sm-2 control-label">Bot Difficulty</label>
+    <div class="col-sm-6">
+          <input type="radio" id="r1" name="botDifficulty" value="easy"> Easy<br>
+          <input type="radio" id="r2" name="botDifficulty" value="hard"> Hard<br>
+    </div>
+  </div>
   <div class="form-group">
     <label  class="col-sm-2 control-label"></label>
     <div class="col-sm-6 checkbox">
@@ -129,7 +136,17 @@ function makeGame() {
     var maxPlayers = document.getElementById('maxPlayers').value;
     //var startDate = document.getElementById('date').value;
     //var startTime = document.getElementById('time').value;
-    var atStart = document.getElementById('atStart').value;
+    //var atStart = document.getElementById('atStart').value;
+    var atStart = 2;
+    var botDifficulty;
+    // defaults to easy if no selction made
+    if (document.getElementById('r2').checked) {
+       botDifficulty = document.getElementById('r2').value;
+    }
+    else
+    {
+      botDifficulty = "easy";
+    }
     var join = document.getElementById('join').value;
     
     //Convert entered time to unix time to sent to server
@@ -169,7 +186,7 @@ function makeGame() {
     //The start day and time have been combined and posted as startUNIXTime
     var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
         + '&minPlayers=' + minPlayers + '&maxPlayers=' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
-        +  "&atStart=" + atStart + '&join=' + join;
+        +  "&atStart=" + atStart + '&join=' + join + '&botDifficulty=' + botDifficulty;
     ajaxreq.open('POST', '/games/createprocess', true);
     ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     ajaxreq.send(postString);
