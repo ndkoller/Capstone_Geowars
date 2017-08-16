@@ -91,7 +91,7 @@
 			  <input type="number" id="to_move">
 			</div>
 			<div>
-			  <label id=>*You can move x troops.</label>
+			  <label id='moveNote'>*You can move x troops.</label>
 			</div>
 			<br>
 			<div>
@@ -121,7 +121,7 @@
 			  <input type="number" id="to_attack">
 			</div>
 			<div>
-			  <label id=>*You can attack with x troops.</label>
+			  <label id='attackNote'>*You can attack with x troops.</label>
 			</div>
 			<br>
 			<div>
@@ -167,6 +167,7 @@ var moveTroopsNumber = document.getElementById("to_move");
 var moveCancelButton = document.getElementById('move_cancel');
 var moveToButton = document.getElementById('move_to_button');
 var moveSubmitButton = document.getElementById('move_submit');
+var moveNote = document.getElementById('moveNote');
 
 var attackWindow = document.getElementById("attack_phase_menu");
 var attackTroopsTo = document.getElementById("attack_to");
@@ -175,6 +176,7 @@ var attackTroopsNumber = document.getElementById("to_attack");
 var attackCancelButton = document.getElementById('attack_cancel');
 var attackToButton = document.getElementById('attack_to_button');
 var attackSubmitButton = document.getElementById('attack_submit');
+var attackNote = document.getElementById('attackNote');
 
 var theSpinner = document.getElementById('spinner');
 
@@ -249,12 +251,12 @@ function drawBorders(territories, phase) {
 //This cycles through and draws each shape but looping through the list of points
 function drawBoard() {
 	var board = gameInfo.map;
+	
 	//Get context	
 	if (canvas.getContext) {
-    	
-    	//Start with clear canvas
-    	ctx.clearRect(0, 0, canvas.width, canvas.height);
-    	
+	
+   		ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
     	//Loop through ever shape in array passed into board function
 		for(var i = 0; i < board.length; i++) {
 		
@@ -316,10 +318,12 @@ function drawBoard() {
 		
 		ctx.font = '16px Georgia';
 		ctx.fillStyle = '#888888';
+		ctx.textAlign = 'start';
 		ctx.fillText('Current Phase: ' + gameInfo.phase, 625, 50 );
 		ctx.fillText('Current Turn: ' + gameInfo.currentTurn, 625, 70 );
-		//ctx.fillText('Available Troops: ' + gameInfo.troopsAvailable, 625, 90 );
-		
+		if(!gameInfo.phase.localeCompare('deploy')) {
+			ctx.fillText('Deployable Troops: ' + gameInfo.troopsAvailable, 625, 90 );
+		}
 		//Give user instrucitons on what to do after board is drawn
 		
 /////////////Deploy Phase/////////////////
@@ -327,15 +331,15 @@ function drawBoard() {
 		//User has no troops to deploy
 		if(!gameInfo.phase.localeCompare('deploy') && gameInfo.troopsAvailable < 1) {
 			
-			alert("You have no troops to deploy, once all users have completed their" + 
-			" deployments the game will move on to the next phase.");
+		/*	alert("You have no troops to deploy, once all users have completed their" + 
+			" deployments the game will move on to the next phase."); */
 		
 		//User has troops to deploy
 		} else if(!gameInfo.phase.localeCompare("deploy")) {
 			//Alert to let user know what to do
-			alert("This is the deployment phase, select a territory to deploy " +
+		/*	alert("This is the deployment phase, select a territory to deploy " +
 			 "your troops. You have " + gameInfo.troopsAvailable + " troops available " +
-			 "to deply");
+			 "to deply"); */
 			
 			//Indicate which territores the user can deploy to
 			drawBorders(ownedTerritories, 2);
@@ -343,8 +347,8 @@ function drawBoard() {
 		
 /////////////Move Phase/////////////////
 		if(!gameInfo.phase.localeCompare("move")) {
-			alert("This is the move phase, select a territory to move troops" + 
-			" from. Then you will choose how many troops to move and where to move them.");
+			/* alert("This is the move phase, select a territory to move troops" + 
+			" from. Then you will choose how many troops to move and where to move them."); */
 			
 			//Indicate which territores the user can move troops from
 			drawBorders(ownedTerritories, 2);
@@ -352,13 +356,77 @@ function drawBoard() {
 		
 /////////////Attack Phase/////////////////
 		if(!gameInfo.phase.localeCompare("attack")) {
-			alert("This is the attack phase, select a territory to attack " + 
-			" from. Then you will choose where to attack and with how many troops.");
+			/*alert("This is the attack phase, select a territory to attack " + 
+			" from. Then you will choose where to attack and with how many troops."); */
 			
 			//Indicate which territores the user can attack from
 			drawBorders(ownedTerritories, 2);
 		}
 	}
+}
+
+//
+function drawUI() {
+	var delayMillis = 1850;
+	var showText1;
+	var showText2;
+	var showText3;
+	
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	
+	/////////////Deploy Phase/////////////////
+		
+		//User has no troops to deploy
+		if(!gameInfo.phase.localeCompare('deploy') && gameInfo.troopsAvailable < 1) {
+			showText1 = "Deploy Phase";
+			
+			showText2 = "You have no troops to deploy, once all users have completed their"; 
+			showText3 = " deployments the game will move on to the next phase.";
+		
+		//User has troops to deploy
+		} else if(!gameInfo.phase.localeCompare("deploy")) {
+			showText1 = "Deploy Phase";
+			//Alert to let user know what to do
+			showText2 = "This is the deployment phase, select a territory to deploy ";
+			showText3 = "your troops. You have " + gameInfo.troopsAvailable + " troops available " +
+			 "to deply";
+			
+			//Indicate which territores the user can deploy to
+			//drawBorders(ownedTerritories, 2);
+		}
+		
+/////////////Move Phase/////////////////
+		if(!gameInfo.phase.localeCompare("move")) {
+			showText1 = "Move Phase";
+			showText2 = "This is the move phase, select a territory to move troops"; 
+			showText3 = " from. Then you will choose how many troops to move and where to move them.";
+			
+			//Indicate which territores the user can move troops from
+			//drawBorders(ownedTerritories, 2);
+		}
+		
+/////////////Attack Phase/////////////////
+		if(!gameInfo.phase.localeCompare("attack")) {
+			showText1 = "Attack Phase";
+			showText2 = "This is the attack phase, select a territory to attack ";
+			showText3 = " from. Then you will choose where to attack and with how many troops.";
+			
+			//Indicate which territores the user can attack from
+			//drawBorders(ownedTerritories, 2);
+		}
+	
+	ctx.font = '48px Georgia';
+	ctx.fillStyle = '#888888';
+	ctx.textAlign = 'center';
+	ctx.fillText(showText1, 400, 50);
+	ctx.font = '18px Georgia';
+	ctx.fillText(showText2, 400, 100);
+	ctx.fillText(showText3, 400, 136);
+		
+	setTimeout(function() {
+		drawBoard();
+	}, delayMillis);
+	
 }
 
 
@@ -459,6 +527,9 @@ canvas.addEventListener('click', function(event) {
 				moveTroopsTo.textContent = "";
 				moveSubmitButton.disabled = true;
 				moveToButton.disabled = false;
+				moveTroopsNumber.value = (gameInfo.map[territoryFrom].troops - 1);
+				moveNote.textContent = "*You can move " + 
+					(gameInfo.map[territoryFrom].troops - 1) + " troops.";
 				moveWindow.style.display = "block";
 			} else {
 				territoryTo = tileClicked;
@@ -467,6 +538,9 @@ canvas.addEventListener('click', function(event) {
 				moveTroopsTo.textContent = gameInfo.map[territoryTo].shape;
 				moveSubmitButton.disabled = false;
 				moveToButton.disabled = true;
+				moveTroopsNumber.value = (gameInfo.map[territoryFrom].troops - 1);
+				moveNote.textContent = "*You can move " + 
+					(gameInfo.map[territoryFrom].troops - 1) + " troops.";
 				moveWindow.style.display = "block";
 			}
 			
@@ -511,6 +585,9 @@ canvas.addEventListener('click', function(event) {
 				attackTroopsTo.textContent = "";
 				attackSubmitButton.disabled = true;
 				attackToButton.disabled = false;
+				attackTroopsNumber.value = (gameInfo.map[territoryFrom].troops - 1);
+				attackNote.textContent = "*You can attack with " + 
+					(gameInfo.map[territoryFrom].troops - 1) + " troops.";
 				attackWindow.style.display = "block";
 			} else {
 				territoryTo = tileClicked;
@@ -520,6 +597,9 @@ canvas.addEventListener('click', function(event) {
 				attackTroopsTo.textContent = gameInfo.map[territoryTo].shape;
 				attackSubmitButton.disabled = false;
 				attackToButton.disabled = true;
+				attackTroopsNumber.value = (gameInfo.map[territoryFrom].troops - 1);
+				attackNote.textContent = "*You can attack with " + 
+					(gameInfo.map[territoryFrom].troops - 1) + " troops.";
 				attackWindow.style.display = "block";
 			}
 			
@@ -696,7 +776,7 @@ function refreshBoard(){
     	}else if(gameInfo.winner === gameInfo.userID){
     		winnerDisplay.style.display = 'block';
     	}
-    	drawBoard();
+    	drawUI();
     	
 
     	}
