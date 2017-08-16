@@ -81,7 +81,7 @@
                     </li>
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Games <i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo" class="collapse">
+                        <ul id="demo" >
                             <li>
                                 <a href="/games/mygames">My Games</a>
                             </li>
@@ -92,9 +92,6 @@
                                 <a href="/games/create">Create New Game</a>
                             </li>
                         </ul>
-                    </li>
-                    <li >
-                        <a href="#"><i class="fa fa-fw fa-file"></i> Manage Account</a>
                     </li>
                 </ul>
             </div>
