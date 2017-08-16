@@ -24,6 +24,15 @@
     left: 475px;
     width: 250px;
 }
+#deploy_phase_menu{
+    display: none;
+    position: absolute;
+    background-color: white;
+    padding: 10px;
+    top: 350px;
+    left: 475px;
+    width: 250px;
+}
 #winner_display{
     display: none;
     position: absolute;
@@ -73,7 +82,9 @@
 </style>
 
 <div id="map">
-	<canvas id="canvas" width="800" height="700"></canvas>
+	<canvas id="canvasTitle" width="800" height="100"></canvas>
+	<br/>
+	<canvas id="canvas" width="800" height="900"></canvas>
 
 	<div id="move_phase_menu" >
 		<fieldset>
@@ -133,6 +144,29 @@
 		
 	</div>
 	
+	<div id="deploy_phase_menu" >
+		<fieldset>
+			<legend>Deploy Phase</legend>
+			<div>
+			  <label>Deploy:</label>
+			  <text id="deploy_to"></text>
+			</div>
+			<div>
+			  <label>Troops to Deploy:</label>
+			  <input type="number" id="to_deploy">
+			</div>
+			<div>
+			  <label id='deployNote'>*You can deploy with x troops.</label>
+			</div>
+			<br>
+			<div>
+				<button type="button" id="deploy_cancel">Cancel</button>
+				<button type="button" id="deploy_submit">Submit</button>
+			</div>
+		</fieldset>
+		
+	</div>
+	
 	<div id="winner_display">
 		<h1>You Won!</h1>
 	</div>
@@ -152,6 +186,9 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
+var canvasTitle = document.getElementById('canvasTitle');
+var titleCTX = canvasTitle.getContext('2d');
+
 //Get game id from string
 var stringURL = window.location.href;
 var gameID = "";
@@ -160,6 +197,13 @@ var gameID = "";
 var apiRequest = "";
 
 //Assign id to vars
+var deployWindow = document.getElementById("deploy_phase_menu");
+var deployTroopsTo = document.getElementById("deploy_to");
+var deployTroopsNumber = document.getElementById("to_deploy");
+var deployCancelButton = document.getElementById('deploy_cancel');
+var deploySubmitButton = document.getElementById('deploy_submit');
+var deployNote = document.getElementById('deployNote');
+
 var moveWindow = document.getElementById("move_phase_menu");
 var moveTroopsTo = document.getElementById("move_to");
 var moveTroopsFrom = document.getElementById("move_from");
@@ -255,7 +299,7 @@ function drawBoard() {
 	//Get context	
 	if (canvas.getContext) {
 	
-   		ctx.clearRect(0, 0, canvas.width, canvas.height);
+   		ctx.clearRect(0, 0, canvas.width, 700);//canvas.height);
 	
     	//Loop through ever shape in array passed into board function
 		for(var i = 0; i < board.length; i++) {
@@ -316,14 +360,14 @@ function drawBoard() {
 
 		}
 		
-		ctx.font = '16px Georgia';
-		ctx.fillStyle = '#888888';
-		ctx.textAlign = 'start';
-		ctx.fillText('Current Phase: ' + gameInfo.phase, 625, 50 );
-		ctx.fillText('Current Turn: ' + gameInfo.currentTurn, 625, 70 );
-		if(!gameInfo.phase.localeCompare('deploy')) {
-			ctx.fillText('Deployable Troops: ' + gameInfo.troopsAvailable, 625, 90 );
-		}
+		// ctx.font = '16px Georgia';
+		// ctx.fillStyle = '#888888';
+		// ctx.textAlign = 'start';
+		// ctx.fillText('Current Phase: ' + gameInfo.phase, 625, 50 );
+		// ctx.fillText('Current Turn: ' + gameInfo.currentTurn, 625, 70 );
+		// //if(!gameInfo.phase.localeCompare('deploy')) {
+		// 	ctx.fillText('Deployable Troops: ' + gameInfo.troopsAvailable, 625, 90 );
+		//}
 		//Give user instrucitons on what to do after board is drawn
 		
 /////////////Deploy Phase/////////////////
@@ -372,7 +416,9 @@ function drawUI() {
 	var showText2;
 	var showText3;
 	
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	titleCTX.clearRect(0,0,canvasTitle.width, canvasTitle.height);
+	
+	ctx.clearRect(0, 700, canvas.width, canvas.height);
 	
 	/////////////Deploy Phase/////////////////
 		
@@ -418,14 +464,24 @@ function drawUI() {
 	ctx.font = '48px Georgia';
 	ctx.fillStyle = '#888888';
 	ctx.textAlign = 'center';
-	ctx.fillText(showText1, 400, 50);
+	//ctx.fillText(showText1, 350, 750);
 	ctx.font = '18px Georgia';
-	ctx.fillText(showText2, 400, 100);
-	ctx.fillText(showText3, 400, 136);
+	ctx.fillText(showText2, 350, 800);
+	ctx.fillText(showText3, 350, 836);
+	
+	titleCTX.font = '40px Georgia';
+	titleCTX.fillStyle = '#888888';
+	titleCTX.textAlign = 'center';
+	titleCTX.fillText(showText1, 350, 40);
+	
+	titleCTX.font = '18px Georgia';
+	titleCTX.fillText('Turn ' + gameInfo.currentTurn, 350, 80);
 		
-	setTimeout(function() {
-		drawBoard();
-	}, delayMillis);
+	drawBoard();
+		
+	// setTimeout(function() {
+	// 	drawBoard();
+	// }, delayMillis);
 	
 }
 
@@ -483,31 +539,37 @@ canvas.addEventListener('click', function(event) {
 				", please select another territory.");
 				return;
 			}
+			
+			territoryTo = tileClicked;
+			deployTroopsNumber.value = gameInfo.troopsAvailable;
+			deployWindow.style.display = "block";
+			deployNote.textContent = "*You can deploy " + gameInfo.troopsAvailable + " troops.";
+			
 		
-			if (confirm("You want to delpoy your troops to " + map[tileClicked].shape
-				+ ".") == true) {
-    			apiRequest = "/api/postdeploy/" + gameInfo.gameID + "/" +
-    			gameInfo.userID + "/" + tileClicked + "/" + gameInfo.troopsAvailable;
+			// if (confirm("You want to delpoy your troops to " + map[tileClicked].shape
+			// 	+ ".") == true) {
+   // 			apiRequest = "/api/postdeploy/" + gameInfo.gameID + "/" +
+   // 			gameInfo.userID + "/" + tileClicked + "/" + gameInfo.troopsAvailable;
     			
-    			//AJAX Request
-				var xhttp = new XMLHttpRequest();
+   // 			//AJAX Request
+			// 	var xhttp = new XMLHttpRequest();
 
-				//The function that will be run on state change
-				xhttp.onreadystatechange = function() {
-    				if (this.readyState == 4 && this.status == 200) {
-						//Add here if needed
-						theSpinner.style.display = "none";
-						refreshBoard();
-    				}
-				};
+			// 	//The function that will be run on state change
+			// 	xhttp.onreadystatechange = function() {
+   // 				if (this.readyState == 4 && this.status == 200) {
+			// 			//Add here if needed
+			// 			theSpinner.style.display = "none";
+			// 			refreshBoard();
+   // 				}
+			// 	};
 				
-				xhttp.open("GET", apiRequest, true);
-				xhttp.send();
-				theSpinner.style.display = "block";
+			// 	xhttp.open("GET", apiRequest, true);
+			// 	xhttp.send();
+			// 	theSpinner.style.display = "block";
 				
-			} else {
-    			return;
-			}
+			// } else {
+   // 			return;
+			// }
 		}
 		
 		//////////////////Move Phase///////////////////////
@@ -538,7 +600,7 @@ canvas.addEventListener('click', function(event) {
 				moveTroopsTo.textContent = gameInfo.map[territoryTo].shape;
 				moveSubmitButton.disabled = false;
 				moveToButton.disabled = true;
-				moveTroopsNumber.value = (gameInfo.map[territoryFrom].troops - 1);
+				//moveTroopsNumber.value = (gameInfo.map[territoryFrom].troops - 1);
 				moveNote.textContent = "*You can move " + 
 					(gameInfo.map[territoryFrom].troops - 1) + " troops.";
 				moveWindow.style.display = "block";
@@ -597,7 +659,7 @@ canvas.addEventListener('click', function(event) {
 				attackTroopsTo.textContent = gameInfo.map[territoryTo].shape;
 				attackSubmitButton.disabled = false;
 				attackToButton.disabled = true;
-				attackTroopsNumber.value = (gameInfo.map[territoryFrom].troops - 1);
+				//attackTroopsNumber.value = (gameInfo.map[territoryFrom].troops - 1);
 				attackNote.textContent = "*You can attack with " + 
 					(gameInfo.map[territoryFrom].troops - 1) + " troops.";
 				attackWindow.style.display = "block";
@@ -613,7 +675,62 @@ canvas.addEventListener('click', function(event) {
 
 // The following are the button listeners for the Deploy menu.
 // They should be invisible until a territory click occurs
-// Deploy Phase Menu's Cancel button listener
+
+
+////////////////Deploy Menu Buttons ///////////////////////
+deployCancelButton.addEventListener("click", function(){
+
+	if(territoryFrom > -1) {
+		drawBorders([territoryFrom], 2);
+		territoryFrom = -1;
+	}
+	
+	if(territoryTo > -1) {
+		drawBorders([territoryTo], 2);
+		territoryTo = -1;
+		
+	}		
+	
+	deployWindow.style.display = "none";
+
+});
+
+deploySubmitButton.addEventListener("click", function(){
+	
+	//Check if user is trying to deploy to many troops
+	if(parseInt(deployTroopsNumber.value) > gameInfo.troopsAvailable) {
+		alert("You have tried to deploy more troops out of this territory than you are allowed." + 
+			" Please select " + (gameInfo.troopsAvailable) +" or less troops to move.");
+		return;
+	}
+	
+	//Submit to API
+	var apiRequest = "/api/postdeploy/"  + gameInfo.gameID + "/" +
+    			gameInfo.userID + "/" + territoryTo
+    			+ "/" + parseInt(deployTroopsNumber.value);
+    			
+    //AJAX Request
+	var xhttp = new XMLHttpRequest();
+
+	//The function that will be run on state change
+	xhttp.onreadystatechange = function() {
+    	if (this.readyState == 4 && this.status == 200) {
+			//Add here if needed
+			theSpinner.style.display = "none";
+			refreshBoard();
+    	}
+	};
+	xhttp.open("GET", apiRequest, true);
+	xhttp.send();
+	theSpinner.style.display = "block";
+	
+	//Clean up game and hide menu
+	territoryFrom = -1;
+	drawBorders([territoryTo], 2);
+	territoryTo = -1;
+	deployWindow.style.display = "none";
+
+});
 
 
 ////////////////Move Menu Buttons ///////////////////////
