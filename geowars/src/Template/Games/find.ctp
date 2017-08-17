@@ -127,6 +127,7 @@ var xhttp = new XMLHttpRequest();
             var t = document.createTextNode("Join");       // Create a text node
             btn.appendChild(t);                                // Append the text to <button>
             btn.addEventListener("click",function(){ join(this);}, false);
+            btn.setAttribute('id', 'join' + gameList[i].id);
             joinButton.appendChild(btn);
             tr.appendChild(joinButton);
 
@@ -136,6 +137,9 @@ var xhttp = new XMLHttpRequest();
     function join(joinID){
         var ID = joinID.parentNode.parentNode.cells[0].innerHTML;
         console.log(ID);
+        
+        var joinButton = document.getElementById('join' + ID);
+        joinButton.disabled = true;
         var ajaxreq = new XMLHttpRequest();
         ajaxreq.onload = function() {
               if (ajaxreq.readyState == 4 && ajaxreq.status === 200) {
