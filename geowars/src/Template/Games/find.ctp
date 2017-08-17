@@ -146,10 +146,11 @@ var xhttp = new XMLHttpRequest();
                 var responseObject = JSON.parse(ajaxreq.responseText);
                 if (responseObject.results == 1) {
                   //Todo
-                window.location.replace('/games/mygames');
+                  window.location.replace('/games/mygames');
                     
                 } else {
                   //Todo
+                  window.location.replace('/games/find');
                 }
                 
               }

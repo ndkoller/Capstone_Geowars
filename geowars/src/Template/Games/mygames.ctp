@@ -49,7 +49,7 @@ var xhttp = new XMLHttpRequest();
   //The function that will be run on state change
   xhttp.onload = function() {
   	
-  	//What will happen once return is succesful
+  	//What will happen once return is successful
     if (this.readyState == 4 && this.status == 200) {
 
         //Parse the JSON response
@@ -61,75 +61,77 @@ var xhttp = new XMLHttpRequest();
         var i;
         var tableBody = document.getElementById('find_table_body');
         for (i = 0; i < gameList.length; i++) {
-            var tr = document.createElement('TR');
+            if(gameList[i] != null){
+                var tr = document.createElement('TR');
             
-            var gameID = document.createElement('TD');
-            var CreatedBy = document.createElement('TD');
-            var JoinedPlayers = document.createElement('TD');
-            var MinPlayers = document.createElement('TD');
-            var MaxPlayers = document.createElement('TD');
-            var PlanningPhase = document.createElement('TD');
-            var AttackPhase = document.createElement('TD');
-            var StartTime = document.createElement('TD');
-            var Bots = document.createElement('TD');
-            var Difficulty = document.createElement('TD');
-            var Map = document.createElement('TD');
-            var joinButton = document.createElement('TD');
-
-            gameID.appendChild(document.createTextNode(gameList[i].id));
-            tr.appendChild(gameID);
-            
-            CreatedBy.appendChild(document.createTextNode(gameList[i].created_by));
-            tr.appendChild(CreatedBy);
-            
-            JoinedPlayers.appendChild(document.createTextNode(gameList[i].currentPlayers)); // replace with the count of the userID's from the query 'JOIN game_users with game on gameID'
-            tr.appendChild(JoinedPlayers);
-            
-            MinPlayers.appendChild(document.createTextNode(gameList[i].min_users));
-            tr.appendChild(MinPlayers);
-            
-            MaxPlayers.appendChild(document.createTextNode(gameList[i].max_users));
-            tr.appendChild(MaxPlayers);
-            /*
-            PlanningPhase.appendChild(document.createTextNode(gameList[i].phase_one_duration));
-            tr.appendChild(PlanningPhase);
-            
-            AttackPhase.appendChild(document.createTextNode(gameList[i].phase_two_duration));
-            tr.appendChild(AttackPhase);
-            
-            var formattedTime = timeConverter(gameList[i].start_time);
-            StartTime.appendChild(document.createTextNode(formattedTime));
-            tr.appendChild(StartTime);
-            */
-            // Bots Conversion logic
-            if(gameList[i].atStart_opt === 2 || gameList[i].atStart_opt === 3){
-                Bots.appendChild(document.createTextNode('Yes'));
+                var gameID = document.createElement('TD');
+                var CreatedBy = document.createElement('TD');
+                var JoinedPlayers = document.createElement('TD');
+                var MinPlayers = document.createElement('TD');
+                var MaxPlayers = document.createElement('TD');
+                var PlanningPhase = document.createElement('TD');
+                var AttackPhase = document.createElement('TD');
+                var StartTime = document.createElement('TD');
+                var Bots = document.createElement('TD');
+                var Difficulty = document.createElement('TD');
+                var Map = document.createElement('TD');
+                var joinButton = document.createElement('TD');
+    
+                gameID.appendChild(document.createTextNode(gameList[i].id));
+                tr.appendChild(gameID);
+                
+                CreatedBy.appendChild(document.createTextNode(gameList[i].created_by));
+                tr.appendChild(CreatedBy);
+                
+                JoinedPlayers.appendChild(document.createTextNode(gameList[i].currentPlayers)); // replace with the count of the userID's from the query 'JOIN game_users with game on gameID'
+                tr.appendChild(JoinedPlayers);
+                
+                MinPlayers.appendChild(document.createTextNode(gameList[i].min_users));
+                tr.appendChild(MinPlayers);
+                
+                MaxPlayers.appendChild(document.createTextNode(gameList[i].max_users));
+                tr.appendChild(MaxPlayers);
+                /*
+                PlanningPhase.appendChild(document.createTextNode(gameList[i].phase_one_duration));
+                tr.appendChild(PlanningPhase);
+                
+                AttackPhase.appendChild(document.createTextNode(gameList[i].phase_two_duration));
+                tr.appendChild(AttackPhase);
+                
+                var formattedTime = timeConverter(gameList[i].start_time);
+                StartTime.appendChild(document.createTextNode(formattedTime));
+                tr.appendChild(StartTime);
+                */
+                // Bots Conversion logic
+                if(gameList[i].atStart_opt === 2 || gameList[i].atStart_opt === 3){
+                    Bots.appendChild(document.createTextNode('Yes'));
+                }
+                else
+                {
+                    Bots.appendChild(document.createTextNode('No'));
+                }
+                tr.appendChild(Bots);
+                /*
+                Map.appendChild(document.createTextNode(gameList[i].map));
+                tr.appendChild(Map);
+                */
+                if(gameList[i].bot_hard_mode == 1){
+                    Difficulty.appendChild(document.createTextNode("Hard"));
+                }
+                else{
+                    Difficulty.appendChild(document.createTextNode("Easy"));
+                }
+                
+                tr.appendChild(Difficulty);
+                var btn = document.createElement("BUTTON");        // Create a <button> element
+                var t = document.createTextNode("Open");       // Create a text node
+                btn.appendChild(t);                                // Append the text to <button>
+                btn.addEventListener("click",function(){ open(this);}, false);
+                joinButton.appendChild(btn);
+                tr.appendChild(joinButton);
+    
+                tableBody.appendChild(tr);
             }
-            else
-            {
-                Bots.appendChild(document.createTextNode('No'));
-            }
-            tr.appendChild(Bots);
-            /*
-            Map.appendChild(document.createTextNode(gameList[i].map));
-            tr.appendChild(Map);
-            */
-            if(gameList[i].bot_hard_mode == 1){
-                Difficulty.appendChild(document.createTextNode("Hard"));
-            }
-            else{
-                Difficulty.appendChild(document.createTextNode("Easy"));
-            }
-            
-            tr.appendChild(Difficulty);
-            var btn = document.createElement("BUTTON");        // Create a <button> element
-            var t = document.createTextNode("Open");       // Create a text node
-            btn.appendChild(t);                                // Append the text to <button>
-            btn.addEventListener("click",function(){ open(this);}, false);
-            joinButton.appendChild(btn);
-            tr.appendChild(joinButton);
-
-            tableBody.appendChild(tr);
         }
     }
     function open(openID){

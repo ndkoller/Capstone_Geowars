@@ -47,7 +47,7 @@ class GamesController extends AppController
                 $results = 1;   
             }
             else{
-                $this->Flash->error(__('Game has not started.'));
+                $this->Flash->error(__('Unable to open - Game has not started.'));
                 $results = 0;
             }
             $this->set('results', $results);
@@ -103,10 +103,12 @@ class GamesController extends AppController
             if($games){
                 $gamesList[$i] = $games[0]; // should only ever be one game. Will refactor to remove loop since it's unnecessary.    
             }
+            else {
+                $gamesList[$i] = null;
+            }
             
                    
         }
-        
         $this->set('games', $gamesList);
         
     }
@@ -397,7 +399,7 @@ class GamesController extends AppController
                             break;
                         } else {
                             // failed to join because all starting territories were full.
-                            $this->Flash->error(__('Failed to join: Territories are full.'));
+                            $this->Flash->error(__('Failed to join - Territories are full.'));
                             // Change because it is overwritten below.
                             $results = 0; 
                         }
@@ -419,13 +421,13 @@ class GamesController extends AppController
                     
                 } else {
                     // Failed Unique User Check
-                    $this->Flash->error(__('Unable to join game because already added to game'));
+                    $this->Flash->error(__('Unable to join game - This account has already been added to this game'));
                     $results = 0;
                 }     
            }
            else{
                // failed to add player current players add = or exceed MaxPlayers
-               $this->Flash->error(__('Unable to join game because max players already added'));
+               $this->Flash->error(__('Unable to join game - Game already has max players added'));
                $results = 0;
                $GameJoin[0]->started = 1; // Shouldn't be pulling into Join list so updating Started status here as an error correct.
                $Games->save($GameJoin[0]);
