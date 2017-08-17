@@ -18,6 +18,25 @@ class ApiController extends AppController
         $this->Auth->allow(array('test', 'checkGameState', 'getMap', 'postAttack', 'postDeploy','postMove', 'getPhase'));
     }
     
+    public function updateUserPhase($gameId, $phase) {
+        
+        //Get the requried Model
+        $this->loadModel('GamesUsers');
+        
+        //Get user information for the current player
+        $player = $this->GamesUsers
+                        ->find()
+                        ->where(['game_id' => $gameId])
+                        ->where(['user_id' => $this->Auth->User('id')])
+                        ->all()->toArray();
+        
+        //Update Phase for player                
+        $player[0]->completed_phase = $phase;
+        
+        //Save the changed phase
+        $this->GamesUsers->save($player[0]);
+    }
+    
     public function getPhase($gameId) {
         $this->viewBuilder()->layout('ajax');
         $this->loadModel('Games');
@@ -72,12 +91,15 @@ class ApiController extends AppController
         $saved = $this->saveNewDeploy($gameId, $userId, $tileId, $numTroops);
             
         if($saved){
+            
+            $this->updateUserPhase($gameId, "deploy");
             if ($this->activePlayersCompletedPhase($gameId, 'deploy')){
                 // Everything is done with real players. Process AI deploys,
                 // modify territories and update the phase
                 $this->processAiDeployment($gameId);
                 $this->updateTerritoryAfterDeployment($gameId);
                 $this->updateGamePhase($gameId);
+                
                 $this->set('result', "success");
             }
         }else{
@@ -111,10 +133,13 @@ class ApiController extends AppController
         $saved = $this->saveNewMove($gameId, $userId, $fromTileId, $toTileId, $numTroops);
             
         if($saved){
+            
+            $this->updateUserPhase($gameId, "move");
             if ($this->activePlayersCompletedPhase($gameId, 'move')){
                 $this->processAiMove($gameId);
                 $this->updateTerritoryAfterMove($gameId);
                 $this->updateGamePhase($gameId);
+                
                 $this->set('result', "success");
             }
         }else{
@@ -153,10 +178,13 @@ class ApiController extends AppController
         echo $saved;
         
         if($saved){
+            
+            $this->updateUserPhase($gameId, "attack");
             if ($this->activePlayersCompletedPhase($gameId, 'attack')){
                 $this->processAiAttack($gameId);
                 $this->updateTerritoryAfterAttack($gameId);
                 $this->updateGamePhase($gameId);
+                
                 $this->set('result', "success");
             }
         }else{
@@ -740,6 +768,17 @@ class ApiController extends AppController
         }
         $game = array();
         $map = array();
+        
+        //Pass all users to client could be used to build legend
+        $game['users'] = $players;
+        
+        //Get user information for the current player
+        $player = $this->GamesUsers
+                        ->find()
+                        ->where(['game_id' => $game_id])
+                        ->where(['user_id' => $this->Auth->User('id')])
+                        ->all()->toArray();
+        $game['player'] = $player[0];
          
         for($i = 0; $i < 20; $i++) {
             $userId = $territoryById[$i]->user_id;
@@ -821,7 +860,7 @@ class ApiController extends AppController
                         array( 'x' => 150, 'y' => 233.3333333334),
                         array( 'x'=> 100, 'y' => 116.666667));
         $mapPointCenters[0] = array( 'x' => 200, 'y' => 116.666667);
-        $adjacentTerritories[0] = array(1, 3, 4);
+        $adjacentTerritories[0] = array(1, 3, 4, 7);
         $shape[0] = "Hexagon";
         
         $mapPoints[1] = array( array('x' => 250, 'y' => 0), 
@@ -839,7 +878,7 @@ class ApiController extends AppController
                         array( 'x' => 450, 'y' => 233.3333333334),
                         array( 'x'=> 400, 'y' => 116.666667));
         $mapPointCenters[2] = array( 'x' => 500, 'y' => 116.6666667);
-        $adjacentTerritories[2] = array(1, 4, 5);
+        $adjacentTerritories[2] = array(1, 4, 5, 9);
         $shape[2] = "Hexagon";
         
         $mapPoints[3] = array( array('x' => 100, 'y' => 116.666667), 

@@ -15,7 +15,7 @@ class GamesController extends AppController
         // cause problems with normal functioning of AuthComponent.
        // $this->Auth->allow(['get']);
       //  $this->loadComponent('RequestHandler');
-        $this->Auth->allow(array('view','add','findAll','createProcess','join','ShowMyGames','botFill'));
+        //$this->Auth->allow(array('view','add','findAll','createProcess','join','ShowMyGames','botFill'));
         $this->set('username', $this->Auth->User('username'));
        //$this->Auth->User('id')
     
