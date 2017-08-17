@@ -110,8 +110,8 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            GeoWars
-                            <small>A Geometric war where only one color can remain!</small>
+                            Geo Wars
+                            <small>The game where only one color can remain!</small>
                         </h1>
                         <!--
                         <ol class="breadcrumb">

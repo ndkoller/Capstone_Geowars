@@ -100,7 +100,10 @@ class GamesController extends AppController
                                    ->toArray();
                 $games[$j]->created_by = $playerName[0]->username;
             }
-            $gamesList[$i] = $games[0]; // should only ever be one game. Will refactor to remove loop since it's unnecessary.
+            if($games){
+                $gamesList[$i] = $games[0]; // should only ever be one game. Will refactor to remove loop since it's unnecessary.    
+            }
+            
                    
         }
         
