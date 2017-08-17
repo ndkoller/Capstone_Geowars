@@ -860,7 +860,7 @@ class ApiController extends AppController
                         array( 'x' => 150, 'y' => 233.3333333334),
                         array( 'x'=> 100, 'y' => 116.666667));
         $mapPointCenters[0] = array( 'x' => 200, 'y' => 116.666667);
-        $adjacentTerritories[0] = array(1, 3, 4);
+        $adjacentTerritories[0] = array(1, 3, 4, 7);
         $shape[0] = "Hexagon";
         
         $mapPoints[1] = array( array('x' => 250, 'y' => 0), 
@@ -878,7 +878,7 @@ class ApiController extends AppController
                         array( 'x' => 450, 'y' => 233.3333333334),
                         array( 'x'=> 400, 'y' => 116.666667));
         $mapPointCenters[2] = array( 'x' => 500, 'y' => 116.6666667);
-        $adjacentTerritories[2] = array(1, 4, 5);
+        $adjacentTerritories[2] = array(1, 4, 5, 9);
         $shape[2] = "Hexagon";
         
         $mapPoints[3] = array( array('x' => 100, 'y' => 116.666667), 
