@@ -411,7 +411,7 @@ class GamesController extends AppController
                         if($currentPlayers+1 == $maxPlayers){
                             // if this most recent player addition hit Max then the game can start.
                             $GameJoin[0]->started = 1; 
-                            $Games->save($GameJoin);
+                            $Games->save($GameJoin[0]);
                         }
                     } else {
                         // failed GameUser save
