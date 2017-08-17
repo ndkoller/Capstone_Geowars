@@ -485,6 +485,85 @@ function drawUI() {
 	
 }
 
+//Stops game to wait for other players to complete their turns
+function holdUI() {
+	var delayMillis = 3000;
+	var showText1;
+	var showText2;
+	var showText3;
+	
+	titleCTX.clearRect(0,0,canvasTitle.width, canvasTitle.height);
+	
+	ctx.clearRect(0, 700, canvas.width, canvas.height);
+	
+	/////////////Deploy Phase/////////////////
+		
+		//User has no troops to deploy
+		if(!gameInfo.phase.localeCompare('deploy') && gameInfo.troopsAvailable < 1) {
+			showText1 = "Deploy Phase - In Progress";
+			
+			showText2 = "You have no troops to deploy, once all users have completed their"; 
+			showText3 = " deployments the game will move on to the next phase.";
+		
+		//User has troops to deploy
+		} else if(!gameInfo.phase.localeCompare("deploy")) {
+			showText1 = "Deploy Phase - In Progress";
+			//Alert to let user know what to do
+			showText2 = "This is the deployment phase, select a territory to deploy ";
+			showText3 = "your troops. You have " + gameInfo.troopsAvailable + " troops available " +
+			 "to deply";
+			
+			//Indicate which territores the user can deploy to
+			//drawBorders(ownedTerritories, 2);
+		}
+		
+/////////////Move Phase/////////////////
+		if(!gameInfo.phase.localeCompare("move")) {
+			showText1 = "Move Phase - In Progress";
+			showText2 = "This is the move phase, select a territory to move troops"; 
+			showText3 = " from. Then you will choose how many troops to move and where to move them.";
+			
+			//Indicate which territores the user can move troops from
+			//drawBorders(ownedTerritories, 2);
+		}
+		
+/////////////Attack Phase/////////////////
+		if(!gameInfo.phase.localeCompare("attack")) {
+			showText1 = "Attack Phase - In Progress";
+			showText2 = "This is the attack phase, select a territory to attack ";
+			showText3 = " from. Then you will choose where to attack and with how many troops.";
+			
+			//Indicate which territores the user can attack from
+			//drawBorders(ownedTerritories, 2);
+		}
+	
+	ctx.font = '48px Georgia';
+	ctx.fillStyle = '#888888';
+	ctx.textAlign = 'center';
+	//ctx.fillText(showText1, 350, 750);
+	ctx.font = '18px Georgia';
+	ctx.fillText(showText2, 350, 800);
+	ctx.fillText(showText3, 350, 836);
+	
+	titleCTX.font = '40px Georgia';
+	titleCTX.fillStyle = '#888888';
+	titleCTX.textAlign = 'center';
+	titleCTX.fillText(showText1, 350, 40);
+	
+	titleCTX.font = '18px Georgia';
+	titleCTX.fillText('Turn ' + gameInfo.currentTurn + ' - You have completed this '+
+		"phase for this turn. Waiting for other players.", 350, 80);
+	
+	gameInfo.phase = "hold";
+	drawBoard();
+	
+	//Check for update at every delay interval	
+	setTimeout(function() {
+	 	refreshBoard();
+	}, delayMillis);
+	
+}
+
 
 //Handle clicks on board
 canvas.addEventListener('click', function(event) {
@@ -875,26 +954,35 @@ function refreshBoard(){
     	if (this.readyState == 4 && this.status == 200) {
     
     	//Parse the JSON response
-    	var response = JSON.parse(this.responseText);
+    	try {
+    		var response = JSON.parse(this.responseText);
+		} catch(err) {
+    		location.reload();
+		}
+    	
      
     	//Call the drawboard function and send the map array in the response
     	gameInfo = response.game;
     	
-    	
-		//Create a list of territories a player owns
-		ownedTerritories = []; // clear out the previous list
-		for(var i = 0; i < gameInfo.map.length; i++){
-			if(gameInfo.map[i].owner == gameInfo.userID){
-				ownedTerritories.push(i);
+    	if(!gameInfo.phase.localeCompare(gameInfo.player.completed_phase)) {
+    		//Hold Game for all move to be completed
+    		holdUI();
+    	} else {
+
+			//Create a list of territories a player owns
+			ownedTerritories = []; // clear out the previous list
+			for(var i = 0; i < gameInfo.map.length; i++){
+				if(gameInfo.map[i].owner == gameInfo.userID){
+					ownedTerritories.push(i);
+				}
 			}
-		}
-    	if(ownedTerritories.length === 0) {
-    		loserDisplay.style.display = 'block';
-    	}else if(gameInfo.winner === gameInfo.userID){
-    		winnerDisplay.style.display = 'block';
+    		if(ownedTerritories.length === 0) {
+    			loserDisplay.style.display = 'block';
+    		}else if(gameInfo.winner === gameInfo.userID){
+    			winnerDisplay.style.display = 'block';
+    		}
+    		drawUI();
     	}
-    	drawUI();
-    	
 
     	}
 	};
