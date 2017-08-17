@@ -97,14 +97,6 @@
                             </li>
                         </ul>
                     </li>
-<<<<<<< HEAD
-=======
-                    <!--
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-file"></i> Manage Account</a>
-                    </li>
-                    -->
->>>>>>> b0a706bbae0bfcd8780514bd44818bae3504cedf
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
