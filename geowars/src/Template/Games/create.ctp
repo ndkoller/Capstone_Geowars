@@ -1,9 +1,5 @@
 <p>Create a new game.</p>
-<?php
-
-//$this->Flash->info(sprintf('<b>%s</b> %s', h($highlight), h($message)), ['escape' => false]);
-
-?>
+<?= $this->Flash->render() ?>
 
 <form class="form-horizontal">
 <!--
@@ -177,6 +173,7 @@ function makeGame() {
               window.location.replace('/games/mygames');
             } else {
               //Todo
+              window.location.replace('/games/create');
             }
             
           }
