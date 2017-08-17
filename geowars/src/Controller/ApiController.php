@@ -243,18 +243,28 @@ class ApiController extends AppController
     }
     
     public function activePlayersCompletedPhase($gameId, $phase) {
+        $this->loadModel('Games');
+        $gamesInfo = $this->Games
+                    ->find()
+                    ->where(['id' => $gameId])
+                    ->all()->toArray();
+                    
+        $gameInfo = $gamesInfo[0];
+        $currentTurn = $gameInfo->last_completed_turn + 1;
+        
         $this->loadModel('GamesUsers');
         $gameUsers = $this->GamesUsers->find()
                                     ->where(['game_id' => $gameId, 'is_bot' => 0])
                                     ->all()
                                     ->toArray();
+        
         $activePlayersCompletedTurn = true;
         
         if($phase == 'deploy') {
             $this->loadModel('DeploymentActions');
             foreach($gameUsers as $gameUser){
                 $actions = $this->DeploymentActions->find()
-                                                ->where(['game_id' => $gameId, 'game_user_id' => $gameUser->user_id])
+                                                ->where(['game_id' => $gameId, 'game_user_id' => $gameUser->user_id, 'turn_number' => $currentTurn])
                                                 ->all()->toArray();
                                                 
                 if($actions == NULL) {
@@ -266,7 +276,7 @@ class ApiController extends AppController
             $this->loadModel('MoveActions');
             foreach($gameUsers as $gameUser){
                 $actions = $this->MoveActions->find()
-                                                ->where(['game_id' => $gameId, 'game_user_id' => $gameUser->user_id])
+                                                ->where(['game_id' => $gameId, 'game_user_id' => $gameUser->user_id, 'turn_number' => $currentTurn])
                                                 ->all()->toArray();
                                                 
                 if($actions == NULL) {
@@ -278,7 +288,7 @@ class ApiController extends AppController
             $this->loadModel('AttackActions');
             foreach($gameUsers as $gameUser){
                 $actions = $this->AttackActions->find()
-                                                ->where(['game_id' => $gameId, 'game_user_id' => $gameUser->user_id])
+                                                ->where(['game_id' => $gameId, 'game_user_id' => $gameUser->user_id, 'turn_number' => $currentTurn])
                                                 ->all()->toArray();
                                                 
                 if($actions == NULL) {
