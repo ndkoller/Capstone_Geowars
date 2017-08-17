@@ -1,5 +1,5 @@
 <p>Find a game to join.</p>
-
+<?= $this->Flash->render() ?>
 <div class="table-responsive">
     <table class="table table-bordered table-hover table-striped">
         <thead id="find_table_head">
@@ -26,6 +26,7 @@
 
 <script type="text/javascript">
 //https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+// Will be utilized in future updates that rely on start game timing.
 function timeConverter(UNIX_timestamp){
   var a = new Date(UNIX_timestamp * 1000);
   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];

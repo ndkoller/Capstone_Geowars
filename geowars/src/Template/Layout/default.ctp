@@ -43,7 +43,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Geo Wars</a>
+                <a class="navbar-brand" href="/games/mygames">Geo Wars</a>
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
@@ -57,6 +57,7 @@
                     ?>
                     <b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <!--
                         <li>
                             <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
@@ -67,6 +68,7 @@
                             <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
+                        -->
                         <li>
                             <a href="/users/logout"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                         </li>
@@ -76,9 +78,11 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
+                    <!--
                     <li>
                         <a href="#"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
+                    -->
                     <li>
                         <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Games <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo" >
@@ -93,6 +97,14 @@
                             </li>
                         </ul>
                     </li>
+<<<<<<< HEAD
+=======
+                    <!--
+                    <li>
+                        <a href="#"><i class="fa fa-fw fa-file"></i> Manage Account</a>
+                    </li>
+                    -->
+>>>>>>> b0a706bbae0bfcd8780514bd44818bae3504cedf
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -107,7 +119,7 @@
                     <div class="col-lg-12">
                         <h1 class="page-header">
                             GeoWars
-                            <small>A Geometric war where only one faction can remain standing</small>
+                            <small>A Geometric war where only one color can remain!</small>
                         </h1>
                         <!--
                         <ol class="breadcrumb">
