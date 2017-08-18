@@ -673,6 +673,13 @@ canvas.addEventListener('click', function(event) {
 					(gameInfo.map[territoryFrom].troops - 1) + " troops.";
 				moveWindow.style.display = "block";
 			} else {
+				
+				if(map[tileClicked].owner != gameInfo.userID) {
+					alert("You do not own this " + map[tileClicked].shape +
+					", please select another territory.");
+					return;
+				}
+				
 				territoryTo = tileClicked;
 				drawBorders([territoryTo], 4);
 				moveTroopsFrom.textContent = gameInfo.map[territoryFrom].shape;
