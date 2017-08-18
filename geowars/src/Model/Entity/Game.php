@@ -22,6 +22,7 @@ use Cake\ORM\Entity;
  * @property int $max_users
  * @property int $join_opt
  * @property int $atStart_opt
+ * @property string $game_name
  *
  * @property \App\Model\Entity\LastCompletedTurn $last_completed_turn
  * @property \App\Model\Entity\Territory[] $territories

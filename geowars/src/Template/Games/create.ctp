@@ -29,6 +29,12 @@
     </div>
   </div>
   -->
+    <div class="form-group">
+    <label for="name" class="col-sm-2 control-label">Game Name</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="name" placeholder="ex. Shape War">
+    </div>
+  </div>
   <div class="form-group">
   <label for="minPlayers" class="col-sm-2 control-label">Minimum Human Players</label>
   <div class="col-sm-6">
@@ -118,6 +124,11 @@
 
 <script type="text/javascript">
 
+function randomIntFromInterval(min,max)
+{
+    return Math.floor(Math.random()*(max-min+1)+min);
+}
+
 function makeGame() {
 
     // stubbing in fixed data for testing a limited version of the game.
@@ -126,6 +137,10 @@ function makeGame() {
     //var planningPhase = document.getElementById('planningPhase').value;
     //var attackPhase = document.getElementById('attackPhase').value;
     var map = 1;
+    var game_name = document.getElementById('name').value;
+    if(game_name == ""){
+      game_name = 'No Name ' + randomIntFromInterval(1,100);
+    }
     var planningPhase = 1;
     var attackPhase = 1;
     var minPlayers = document.getElementById('minPlayers').value;
@@ -183,7 +198,7 @@ function makeGame() {
     //The start day and time have been combined and posted as startUNIXTime
     var postString = 'map=' + map + '&planningPhase=' + planningPhase + '&attackPhase=' + attackPhase
         + '&minPlayers=' + minPlayers + '&maxPlayers=' + maxPlayers + '&startUNIXTime=' + unixTime.getTime()  
-        +  "&atStart=" + atStart + '&join=' + join + '&botDifficulty=' + botDifficulty;
+        +  "&atStart=" + atStart + '&join=' + join + '&botDifficulty=' + botDifficulty + '&game_name=' + game_name;
     ajaxreq.open('POST', '/games/createprocess', true);
     ajaxreq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     ajaxreq.send(postString);
