@@ -528,8 +528,16 @@ class GamesController extends AppController
             $newGame->phase_two_duration = $this->request->data['attackPhase'];
             $newGame->turn_end_time = $this->request->data['planningPhase'] + $this->request->data['attackPhase'];
             $newGame->start_time = $this->request->data['startUNIXTime'];
-            $newGame->min_users = $this->request->data['minPlayers'];
-            $newGame->max_users = $this->request->data['maxPlayers'];
+            if($this->request->data['minPlayers'] > $this->request->data['maxPlayers']){
+                $this->Flash->error(__('Max Players were set to the Minimum Human Players'));    
+                $newGame->min_users = $this->request->data['minPlayers'];
+                $newGame->max_users = $this->request->data['minPlayers'];
+            }
+            else{
+                $newGame->min_users = $this->request->data['minPlayers'];
+                $newGame->max_users = $this->request->data['maxPlayers'];                
+            }
+
             $newGame->atStart_opt = $this->request->data['atStart'];
             $newGame->join_opt = $this->request->data['join'];
             if($this->request->data['botDifficulty'] == 'hard'){
