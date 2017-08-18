@@ -126,6 +126,9 @@ class GamesTable extends Table
         $validator
             ->integer('atStart_opt')
             ->allowEmpty('atStart_opt');
+        
+        $validator
+            ->allowEmpty('game_name');
 
         return $validator;
     }

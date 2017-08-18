@@ -5,6 +5,7 @@
         <thead id="find_table_head">
             <tr>
                 <th>Game ID</th>
+                <th>Game Name</th>
                 <th>Created By</th>
                 <th>Joined Players</th>
                 <th>Minimum Human Players</th>
@@ -63,6 +64,7 @@ var xhttp = new XMLHttpRequest();
             var tr = document.createElement('TR');
             
             var gameID = document.createElement('TD');
+            var game_name = document.createElement('TD');
             var CreatedBy = document.createElement('TD');
             var JoinedPlayers = document.createElement('TD');
             var MinPlayers = document.createElement('TD');
@@ -77,6 +79,9 @@ var xhttp = new XMLHttpRequest();
 
             gameID.appendChild(document.createTextNode(gameList[i].id));
             tr.appendChild(gameID);
+            
+            game_name.appendChild(document.createTextNode(gameList[i].game_name));
+            tr.appendChild(game_name);
             
             CreatedBy.appendChild(document.createTextNode(gameList[i].created_by));
             tr.appendChild(CreatedBy);

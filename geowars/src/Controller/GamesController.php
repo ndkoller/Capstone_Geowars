@@ -537,7 +537,7 @@ class GamesController extends AppController
                 $newGame->min_users = $this->request->data['minPlayers'];
                 $newGame->max_users = $this->request->data['maxPlayers'];                
             }
-
+            $newGame->game_name = $this->request->data['game_name'];
             $newGame->atStart_opt = $this->request->data['atStart'];
             $newGame->join_opt = $this->request->data['join'];
             if($this->request->data['botDifficulty'] == 'hard'){
