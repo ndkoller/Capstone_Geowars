@@ -13,7 +13,7 @@
             <input id="password1" name="password" type="password" class="form-control">
         </div>
         
-        <button  type="submit" class="btn btn-default">Submit Button</button>
+        <button  type="submit" class="btn btn-default">Submit</button>
     </form>
 
 </div>
