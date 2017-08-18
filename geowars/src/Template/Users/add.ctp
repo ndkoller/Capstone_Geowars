@@ -23,8 +23,8 @@
         </div> 
         
     </form>
-    <button  onclick="register()" class="btn btn-default">Submit Button</button>
-        <button type="reset" class="btn btn-default">Reset Button</button>
+    <button  onclick="register()" class="btn btn-default">Submit</button>
+        <!-- <button type="reset" class="btn btn-default">Reset</button> -->
 
 </div>
 

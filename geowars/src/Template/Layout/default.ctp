@@ -47,14 +47,12 @@
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
+                <?php if (isset($username)) : ?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> 
-                    <?php if (isset($username)) {
-                       echo h($username);
-                    } else {
-                        echo "Not Logged In";
-                    };
-                    ?>
+                    
+                      <?php echo h($username); ?>
+      
                     <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <!--
@@ -74,6 +72,24 @@
                         </li>
                     </ul>
                 </li>
+                <?php else: ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> 
+                        <?php echo "Not Logged In"; ?>
+                    <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        
+                        <li>
+                            <a href="/users/add"><i class="fa fa-fw fa-user"></i> Register</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/users/login"><i class="fa fa-fw fa-sign-in"></i> Login</a>
+                        </li>
+                        
+                    </ul>
+                </li>
+                <?php endif; ?>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
